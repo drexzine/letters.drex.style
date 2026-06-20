@@ -1,10 +1,10 @@
 {%- comment -%}
-  cite.html — a sourced blockquote: the quoted line on a highlighter-marked slip,
-  attributed to author + work (the canon's blockquote/cite pattern).
+  cite.html — a torn cream CLIPPING carrying the quoted line, with the source as a
+  STAMPED CREDIT on a kraft byline strip (ported from v6 .b-credit).
   API:  {% include cite.html author="Seth Godin" work="Permission Marketing" text="..." %}
         author — optional. work — optional. text — the quote (required).
 {%- endcomment -%}
-<figure class="cite">
+<figure class="cite reveal">
   <blockquote class="cite-text">{{ include.text }}</blockquote>
   {%- if include.author or include.work -%}
   <figcaption class="cite-attrib">

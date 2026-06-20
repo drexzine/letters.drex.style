@@ -24,11 +24,19 @@
       </a>
     </nav>
 
-    {%- comment -%} Mobile string-pull burger: a clean accessible toggle.
+    {%- comment -%} Mobile menu TAB: a baked Oats paper chip (torn edge via the
+                    --bk-edge-oats border-image, tooth via --bk-grain) carrying the
+                    LITERAL v6 "menu" icon SVG (the three-line text-tool glyph,
+                    M5 6h14M5 11h14M5 16h9), recoloured to Sambas ink. A Birdie
+                    'menu' label rides under it. NOT a generic system hamburger.
                     JS toggles .open on .mob-nav + aria-expanded on the button. {%- endcomment -%}
     <button class="burger" id="m-burger" type="button"
             aria-label="Menu" aria-expanded="false" aria-controls="mob-nav">
-      <span class="bars" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span class="burger-tab" aria-hidden="true">
+        <svg class="burger-ico" width="22" height="22" viewBox="0 0 24 24" fill="none" focusable="false"><path d="M5 6h14M5 11h14M5 16h9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <svg class="burger-ico burger-ico--x" width="22" height="22" viewBox="0 0 24 24" fill="none" focusable="false"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </span>
+      <span class="burger-label scrawl" aria-hidden="true">menu</span>
     </button>
   </div>
 

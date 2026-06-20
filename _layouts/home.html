@@ -1,56 +1,192 @@
 ---
 layout: default
 ---
-<section class="news">
+{%- comment -%}
+  THE BULLETIN BOARD / DESK — Chielo's notebook as colored torn-paper clippings
+  pinned & taped to the warm Oats desk under one soft top-left light. Each post
+  is a CLIPPING whose stock colour is SEEDED off its slug/date (never the loop
+  index) so adjacent clips never share a stock and the order varies post-to-post
+  — the board reads hand-arranged, not a tidy modulo grid. Off-grid, overlapping,
+  tilted, alive — yet fully navigable, legible, keyboard-accessible.
+
+  The desk is populated REGARDLESS of post count: persistent v6 furniture ported
+  from compose-v6.html (a Colorado quote scrap with a big quote-mark, a polaroid
+  of the studio with a chin shadow + Birdie caption, a Lazuli washi-taped slip, a
+  kraft/School-Bus byline strip with a green stamp, a stray pin + a hand-drawn
+  star) litters the board, so even at N=1 it is full, overlapping, off-grid — not
+  one lonely scrap.
+
+  Material: every clipping is a .scrap.piece (baked cardstock face + torn edge
+  from bakery.js). A .pin or .tape fastens it. Hover lifts it off the desk.
+{%- endcomment -%}
+<section class="board" aria-label="The notebook">
   <div class="wrap">
 
-    <header class="news-head">
+    {%- comment -%} The board header — a Grass torn banner pinned to the desk.
+      Kicker + period set in Oats with a School-Bus accent (the §4.3 Grass-ground
+      foundation pairing); Happy is a dark-ink-text-only 5% accent, never the
+      headline color on a saturated Grass field. {%- endcomment -%}
+    <header class="board-head slam">
+      <span class="pin" data-pin="red" aria-hidden="true"></span>
       <span class="eyebrow">the correspondence, archived</span>
-      <h1 class="slab">Chielo's <span class="hl">notebook<span class="stop">.</span></span></h1>
-      <p class="news-dek">{{ site.tagline }} Visionary essays, canon, and lore on bringing
-        your gifts into the world &mdash; together.</p>
+      <h1 class="board-title slab">Chielo&rsquo;s notebook<span class="stop">.</span></h1>
+      <p class="board-dek">Letters from the studio &mdash; visionary essays, canon,
+        and lore, set down the long way. Pull up a chair; the room was already
+        expecting you.</p>
     </header>
 
+    {%- comment -%} ===================================================================
+      PERSISTENT DESK FURNITURE — ported from compose-v6.html bakers. These are
+      decorative (aria-hidden) craft objects that litter the desk so the board is
+      never an empty void. They sit BEHIND/AROUND the pile via .board-litter.
+    =================================================================== {%- endcomment -%}
+    <div class="board-litter" aria-hidden="true">
+
+      {%- comment -%} v6 .b-quote — a Colorado torn quote scrap, big knocked-out
+        quote-mark, one of Chielo's lines, Sambas ink (high contrast on coral). {%- endcomment -%}
+      <figure class="litter litter--quote pullquote piece slam" data-mat="colorado" data-edge="torn">
+        <span class="tape" data-tape="happy"></span>
+        <p class="pq-text">Slow is a place, not a speed.</p>
+        <p class="pq-attrib">Chielo</p>
+      </figure>
+
+      {%- comment -%} v6 .b-photo — a placed-print polaroid of the studio with a
+        chin shadow under the image well and a Birdie caption on the cream lip. {%- endcomment -%}
+      <figure class="litter litter--photo figure polaroid piece slam" data-mat="oats" data-edge="cut">
+        <span class="tape" data-tape="lazuli"></span>
+        <div class="ph">
+          <img src="{{ '/assets/img/studio.jpg' | relative_url }}" alt=""
+               loading="lazy" decoding="async"
+               onerror="this.closest('.ph').classList.add('ph--empty');this.remove()">
+        </div>
+        <figcaption class="cap">the long way home &#10047;</figcaption>
+      </figure>
+
+      {%- comment -%} v6 washi-taped receipt slip — a small Lazuli slip held by a
+        torn piece of washi tape. {%- endcomment -%}
+      <div class="litter litter--slip scrap piece slam" data-mat="lazuli" data-edge="torn">
+        <span class="tape" data-tape="oats"></span>
+        <span class="slip-line">filed under: <em>communion</em></span>
+        <span class="slip-line">re: bringing your gifts</span>
+      </div>
+
+      {%- comment -%} v6 .b-credit — a kraft / School-Bus byline strip stamped with
+        a green author stamp. {%- endcomment -%}
+      <div class="litter litter--byline piece slam" data-mat="schoolbus" data-edge="cut">
+        <span class="stamp g">drex&middot;</span>
+        <span class="byline-who">
+          <span class="byline-by">written by</span>
+          <span class="byline-nm">Chielo Mbaezue</span>
+        </span>
+      </div>
+
+      {%- comment -%} a stray hand-drawn Grass star, off in the litter (v6 doodle). {%- endcomment -%}
+      <svg class="litter litter--star doodle reveal" width="34" height="32" viewBox="0 0 64 56" fill="none">
+        <path d="M32.5 6 L45.4 46.2 L10.6 21 L53.8 21.4 L19 46.5 Z"
+              stroke="var(--grass)" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+
+      {%- comment -%} a stray pin, just dropped on the desk. {%- endcomment -%}
+      <span class="litter litter--pin pin reveal" data-pin="red"></span>
+
+      {%- comment -%} ALWAYS-ON low-desk craft objects so even at N=1 the desk fills
+        down its full height: a faint coffee-ring decal, a steel paperclip, and a
+        torn admission ticket stub. Purely decorative (aria-hidden via the wrap). {%- endcomment -%}
+      <span class="litter litter--ring reveal" aria-hidden="true"></span>
+
+      <svg class="litter litter--clip-deco doodle reveal" width="26" height="58" viewBox="0 0 26 58" fill="none">
+        <path d="M13 53 C5 53 4 44 4 36 L4 14 C4 6 11 4 14 8 C17 12 16 20 16 28 L16 42
+                 C16 47 11 47 11 42 L11 18"
+              stroke="var(--sambas)" stroke-width="3" stroke-linecap="round"
+              stroke-linejoin="round" opacity="0.55"/>
+      </svg>
+
+      {%- comment -%} a torn admission ticket — small School-Bus FILLED tab, Sambas
+        ink (never yellow text), staying inside the 5% accent budget. {%- endcomment -%}
+      <div class="litter litter--ticket scrap piece slam" data-mat="schoolbus" data-edge="torn">
+        <span class="ticket-no">№ 001</span>
+        <span class="ticket-lbl">admit one &middot; the studio</span>
+      </div>
+
+    </div>
+
     {% if site.posts.size > 0 %}
-    <div class="splay news-splay">
+    <div class="board-pile">
       {% for post in site.posts %}
-      <article class="paper card reveal">
-        <span class="sheet ruled"></span>
-        {%- assign tapeclass = '' -%}
-        {%- assign m = forloop.index0 | modulo: 3 -%}
-        {%- if m == 0 -%}{%- assign tapeclass = 'tape' -%}
-        {%- elsif m == 1 -%}{%- assign tapeclass = 'tape c' -%}
-        {%- else -%}{%- assign tapeclass = 'tape b' -%}{%- endif -%}
-        <span class="{{ tapeclass }}" style="left:50%;margin-left:-59px;top:-15px"></span>
-        <a class="card-link" href="{{ post.url | relative_url }}" aria-label="Read: {{ post.title | strip_html }}">
-          <div class="inner">
-            {% if post.eyebrow %}<span class="cap card-eyebrow">{{ post.eyebrow }}</span>{% endif %}
-            <h2 class="card-title">{{ post.title }}</h2>
-            {% if post.dek %}<p class="card-dek">{{ post.dek | strip_html | truncate: 168 }}</p>{% endif %}
-            <div class="card-meta">
-              <time class="label" datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%b %-d, %Y" }}</time>
+      {%- comment -%} SEED the clipping STOCK off the post itself, NOT the loop
+        index — so adjacent clips never share a stock and the whole order varies
+        from post to post. Derive a per-post number from the date epoch (stable,
+        unique-ish) and fall back to slug length, then pick one of the 5 stocks.
+        We also offset by forloop.index so identical seeds in a single render
+        still diverge between neighbours. {%- endcomment -%}
+      {%- assign epoch = post.date | date: '%s' | plus: 0 -%}
+      {%- assign slugn = post.slug | size | times: 7 -%}
+      {%- assign seed = epoch | plus: slugn | plus: forloop.index0 -%}
+      {%- assign s5 = seed | modulo: 5 -%}
+      {%- comment -%} stagger the START offset per render-neighbour so two posts
+        sharing s5 still differ: rotate the stock list by (forloop.index0). {%- endcomment -%}
+      {%- assign pick = s5 | plus: forloop.index0 | modulo: 5 -%}
+      {%- case pick -%}
+        {%- when 0 -%}{%- assign stock = 'grass'  -%}{%- assign mat = 'grass'    -%}{%- assign fasten = 'pin' -%}
+        {%- when 1 -%}{%- assign stock = 'note'   -%}{%- assign mat = 'sambas'   -%}{%- assign fasten = 'tape-lazuli' -%}
+        {%- when 2 -%}{%- assign stock = 'coral'  -%}{%- assign mat = 'colorado' -%}{%- assign fasten = 'tape-happy' -%}
+        {%- when 3 -%}{%- assign stock = 'lazuli' -%}{%- assign mat = 'lazuli'   -%}{%- assign fasten = 'tape-oats' -%}
+        {%- else    -%}{%- assign stock = 'kraft'  -%}{%- assign mat = 'schoolbus' -%}{%- assign fasten = 'pin' -%}
+      {%- endcase -%}
+      {%- comment -%} seeded never-square tilt: >5 distinct angles chosen off the
+        seed so the resting rake varies independently of the stock. {%- endcomment -%}
+      {%- assign t = seed | modulo: 7 -%}
+
+      <article class="clip clip--{{ stock }} piece slam tilt-{{ t }}" data-mat="{{ mat }}" data-edge="torn">
+        {%- comment -%} the fastener — a real pinned/taped object on TOP of the scrap {%- endcomment -%}
+        {%- if fasten == 'pin' -%}
+          <span class="pin" data-pin="red" aria-hidden="true"></span>
+        {%- elsif fasten == 'tape-lazuli' -%}
+          <span class="tape" data-tape="lazuli" aria-hidden="true"></span>
+        {%- elsif fasten == 'tape-happy' -%}
+          <span class="tape" data-tape="happy" aria-hidden="true"></span>
+        {%- else -%}
+          <span class="tape" data-tape="oats" aria-hidden="true"></span>
+        {%- endif -%}
+
+        <a class="clip-link" href="{{ post.url | relative_url }}"
+           aria-label="Read: {{ post.title | strip_html }}">
+          <div class="clip-body">
+            {% if post.eyebrow %}<span class="clip-kicker">{{ post.eyebrow }}</span>{% endif %}
+            <h2 class="clip-title">{{ post.title }}</h2>
+            {% if post.dek %}<p class="clip-dek">{{ post.dek | strip_html | truncate: 150 }}</p>{% endif %}
+
+            <div class="clip-meta">
+              <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%b %-d, %Y" }}</time>
               {% assign words = post.content | strip_html | number_of_words %}
-              {% assign rt = words | divided_by: 200 | plus: 1 %}
-              <span class="label dot-sep">&middot;</span>
-              <span class="label">{{ rt }} min read</span>
+              {% assign rt = words | divided_by: 240 | plus: 1 %}
+              <span class="sep" aria-hidden="true">&middot;</span>
+              <span>{{ rt }} min read</span>
             </div>
+
             {% if post.tags.size > 0 %}
-            <div class="card-tags">
-              {% for tag in post.tags %}<span class="scrap">{{ tag }}</span>{% endfor %}
+            <div class="clip-tags">
+              {% for tag in post.tags limit:3 %}<span class="clip-tag">{{ tag }}</span>{% endfor %}
             </div>
             {% endif %}
-            <span class="card-go scrawl" aria-hidden="true">read &rarr;</span>
+
+            <span class="clip-go scrawl" aria-hidden="true">read &rarr;</span>
           </div>
         </a>
       </article>
       {% endfor %}
     </div>
     {% else %}
-    <div class="paper empty">
-      <span class="sheet"></span>
-      <div class="inner">
-        <p class="scrawl empty-scrawl">nothing pinned to the board yet &mdash; soon.</p>
-      </div>
+    <div class="board-pile">
+      <article class="clip clip--grass piece slam tilt-2" data-mat="grass" data-edge="torn">
+        <span class="pin" data-pin="red" aria-hidden="true"></span>
+        <div class="clip-body">
+          <span class="clip-kicker">soon</span>
+          <h2 class="clip-title">The first letter is being written.</h2>
+          <p class="clip-dek">Nothing pinned to the board yet &mdash; but the desk
+            is set, and the room is already expecting you.</p>
+        </div>
+      </article>
     </div>
     {% endif %}
 

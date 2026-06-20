@@ -1,19 +1,36 @@
 // =====================================================================
-//  _mobile.scss  —  THE RESPONSIVE OVERRIDE LAYER  (@imported LAST)
+//  _mobile.scss  —  THE RESPONSIVE REALISM LAYER  (@imported LAST)
 //
-//  Mobile is a FIRST-CLASS requirement and the essays are LONG. This file is
-//  the last word: it flattens whimsy tilts on small screens, hard-guards
-//  against horizontal overflow, fluidly clamps the type scale, guarantees
-//  >=44px tap targets, compacts the sticky masthead + burger nav, caps the
-//  expensive animated SVG-filter "boil" to a couple of hero elements on
-//  phones, and makes prefers-reduced-motion the final authority that kills
-//  every tilt, boil, and reveal.
+//  The v6 zine-maker mockup (compose-v6.png) IS a phone: a warm desk of
+//  COLORED torn-paper scraps, pins, washi tape and real layered shadow —
+//  every object a craft thing. So the prime directive here is the OPPOSITE
+//  of "flatten into plain boxes." The documented failure mode was killing
+//  the craft on small screens; we DON'T. On a phone the desk still reads as
+//  the desk: colored scraps, tape, pins, the green logo flat on Oats, real
+//  registration shadow, density preserved.
 //
-//  Breakpoints (mobile-first; base styles in the other partials are the
-//  phone defaults, these queries layer up / clamp down):
-//    <=600px   PHONE   — flatten ALL tilts to 0deg, guard overflow, compact nav
-//    <=414px   SMALL   — tighten padding, cap boil, kill remaining decoration
-//    768px     TABLET  — restore a little splay, two-up cards
+//  What this layer actually does, in priority order:
+//    1. HARD overflow guard — clip the decorative OVERHANGS (tilt/tape/shadow)
+//       so the craft survives with ZERO horizontal scroll at 360-414px.
+//    2. TAME, don't kill — reduce splay/tape/scrap tilts to gentle phone
+//       angles (still off-grid, still alive) instead of zeroing them.
+//    3. Fluid clamp type — the long .prose sheet comfortable full-width
+//       (~17px) and legible; display roles pull the engine's clamped tokens.
+//    4. >=44px tap targets everywhere a finger lands; :focus-visible Lazuli.
+//    5. Compact light mast + accessible string-pull burger (real markup:
+//       .mast / .mast-nav / .burger#m-burger / .mob-nav#mob-nav).
+//    6. PERF — freeze the expensive animated SVG-filter "boil" to a static
+//       frame on phones (the static torn look stays; only the per-frame
+//       redraw is dropped), leaving at most the hero alive.
+//    7. prefers-reduced-motion is the FINAL authority: it (and only it) fully
+//       flattens every tilt and kills every animation. Legibility is sacred.
+//
+//  Breakpoints (mobile-first; the other partials are the phone DEFAULTS,
+//  these queries layer up / clamp / tame):
+//    <=600px   PHONE   — tame tilts, tighten tape, clip overhang, freeze boil
+//    <=414px   SMALL   — extra padding/tape tightening for the narrowest decks
+//    <=720px   MAST    — sticky compact light mast + burger drawer
+//    768-1023  TABLET  — restore two-up cards with a little splay back
 //    >=1024px  DESKTOP — full whimsy, 62-66ch measure cap
 //
 //  Verified mentally at 360 / 390 / 414 / 768 / 1280.
@@ -22,10 +39,12 @@
 
 // ---------------------------------------------------------------------
 //  0. GLOBAL OVERFLOW GUARD  (the #1 mobile sin: a horizontal scrollbar)
-//     Tape, splay tilts, scrawl, stamps and absolutely-positioned scraps
-//     all stick out past the viewport edge. We clip every wrapper that can
-//     hold a tilted/taped/absolute object so nothing can drive an x-scroll
-//     at 360-414px, while keeping vertical scroll untouched.
+//     Tape, splay tilts, scrawl, stamps, pins and absolutely-positioned
+//     scraps all stick out past the viewport edge BY DESIGN — that's the
+//     desk overhang. We clip every framing container that can hold a
+//     tilted/taped/absolute object so the overhang is hidden, not scrolled,
+//     at 360-414px. `clip` (not `hidden`) so we never spawn a stray scroll
+//     context that would trap sticky/anchor scrolling.
 // ---------------------------------------------------------------------
 html,
 body {
@@ -33,32 +52,37 @@ body {
   overflow-x: hidden;            // hard stop: no horizontal scrollbar, ever
 }
 
-// Every framing/whimsy container that can carry overflowing decoration.
-// `clip` (not `hidden`) so we never create a stray scroll context that
-// would trap sticky/position or break anchor scrolling.
 .wrap,
-.sheet,
 .paper,
-.post-stage,
+.sheet,
+.news,
+.news-splay,
 .splay,
+.post,
+.post-header,
+.post-stage,
+.post-foot,
 .polaroid,
 .scrap,
 .callout,
+.definition,
 .pullquote,
-.figure,
 .patterns,
+.figure,
+.subscribe,
 .mast,
-.masthead,
 footer {
   max-width: 100%;
   overflow-x: clip;
 }
 
-// Tape and stamps are decorative absolutes; never let them extend the box.
+// Decorative absolutes (tape / stamp / scrawl / pin / cutline) never extend
+// the box past the viewport. Their parents above clip the overhang.
 .tape,
 .stamp,
 .scrawl,
-.cutline {
+.cutline,
+.mob-thread {
   max-width: 100%;
 }
 
@@ -73,277 +97,285 @@ pre {
   height: auto;
 }
 pre {
-  overflow-x: auto;             // long code lines scroll inside their box,
+  overflow-x: auto;                  // long code lines scroll inside their box,
   -webkit-overflow-scrolling: touch; // not the page
 }
-table { display: block; overflow-x: auto; }
+.prose table { display: block; overflow-x: auto; } // scoped: don't fight engine tables
 
 
 // ---------------------------------------------------------------------
-//  1. FLUID TYPE SCALE  (φ scale clamps: huge on desktop, legible on phone)
-//     The --t-* display tokens (--t-hero/--t-sub/--t-lede/--t-eyebrow) are
-//     OWNED + already clamp()'d by _tokens.scss (the engine). We do NOT
-//     redeclare them. We only add a fluid BODY token here and ensure the
-//     long-form reading column actually reads at ~17px on a phone and ~19px
-//     on desktop with generous leading so a 3,000-word essay never fatigues.
-//     min uses rem (respects user zoom); mid uses vw for fluidity.
+//  1. FLUID TYPE SCALE  (φ clamps: big on desktop, legible on a phone)
+//     The display tokens (--t-hero/--t-sub/--t-lede/--t-eyebrow) are OWNED
+//     and already clamp()'d by _tokens.scss. We do NOT redeclare them. We
+//     only add a fluid BODY token so a 3,000-word essay reads ~17px on a
+//     phone and settles ~19px on desktop. min uses rem (respects zoom);
+//     mid uses vw for fluidity.
 // ---------------------------------------------------------------------
 :root {
-  // Body: the running prose. Phone-comfortable, never tiny, never fatiguing.
   --t-body: clamp(1.0625rem, calc(0.98rem + 0.45vw), 1.1875rem); // ~17px -> ~19px
 }
 
-// Apply the fluid body size to the reading column explicitly so a long essay
-// is comfortable on a phone (17px+) and settled (~19px) on desktop.
 .prose {
   font-size: var(--t-body);
-  line-height: 1.62;            // generous leading for long-form fatigue
+  line-height: 1.62;                 // generous leading for long-form fatigue
 }
 .prose p,
 .prose li {
-  // belt-and-braces: inherit the fluid size even if a partial reset it
-  font-size: inherit;
+  font-size: inherit;                // belt-and-braces if a partial reset it
 }
 
-// Title / lede roles pull from the engine's clamped tokens (no redefinition).
-.post-stage h1,
-.prose > h1,
-.home .post-card h2 a,
-.post-card h2 a,
-.eyebrow.mono,
+// Tidy ragged lines on the small display headlines (engine tokens unchanged).
+.post-title,
+.news-head h1,
+.card-title,
 .dek {
-  text-wrap: balance;          // tidy ragged lines on small headlines
+  text-wrap: balance;
 }
-.post-stage h1 { font-size: var(--t-hero); line-height: 1.02; }
-.dek           { font-size: var(--t-lede); line-height: 1.4; }
 
 
 // ---------------------------------------------------------------------
-//  2. READING MEASURE  (comfortable full-width on phone, 62-66ch on desktop)
-//     Phone: full-bleed padded column (no awkward narrow gutters on a long
+//  2. READING MEASURE  (comfortable full-width on phone, 62-66ch desktop)
+//     Phone: a padded full-bleed column (no pinched gutters on a long
 //     essay). Desktop: cap the line length so the eye doesn't tire.
 // ---------------------------------------------------------------------
 .prose {
   width: 100%;
   margin-inline: auto;
-  // phone default: generous side padding, edge-to-edge otherwise.
-  // 4vw min keeps a usable measure on 360px (~331px text width) instead of
-  // pinching the column to ~19ch and forcing long-word breaks.
+  // 4vw min keeps a usable measure on 360px (~331px of text) instead of
+  // pinching to ~19ch and forcing ugly long-word breaks.
   padding-inline: clamp(0.9rem, 4vw, 1.5rem);
 }
-
 @media (min-width: 768px) {
-  .prose {
-    max-width: 68ch;           // tablet: start reining the measure in
-    padding-inline: 0;
-  }
+  .prose { max-width: 68ch; padding-inline: 0; }   // tablet: rein the measure in
 }
 @media (min-width: 1024px) {
-  .prose {
-    max-width: var(--measure, 64ch); // desktop: engine's 64ch comfort zone
-    line-height: 1.7;
-  }
+  .prose { max-width: var(--measure, 64ch); line-height: 1.7; } // desktop comfort
 }
 
 
 // =====================================================================
-//  3. PHONE LAYER  (<=600px) — FLATTEN ALL TILTS + COMPACT EVERYTHING
-//     Tilts are delightful at desktop and dangerous at 360px (they push
-//     content off-screen and tire the eye on a long read). Below 600px we
-//     zero EVERY rotation: splay, cards, tape, headings, eyebrows, stamps,
-//     scrawl, pull-quotes, polaroids, callouts.
+//  3. PHONE LAYER  (<=600px) — TAME THE TILTS, KEEP THE CRAFT
+//     The v6 phone mockup is NOT flat: scraps still sit off-grid, tape
+//     still crosses corners, the sheet still casts a real offset shadow.
+//     So we do NOT zero rotation. We REDUCE the desktop angles to gentle
+//     phone angles that read as hand-placed but never push content off the
+//     (clipped) edge. Overflow is already clipped in §0, so a small tilt is
+//     safe — it just lands inside the desk.
 // =====================================================================
 @media (max-width: 600px) {
 
-  // ---- 3a. Flatten every tilt to 0deg ----
-  .splay,
-  .splay > *,
-  .splay > :nth-child(n),     // beats .splay :nth-child(...) tilt specificity
-  .card,
-  .post-card,
-  .polaroid,
-  .scrap,
-  .stamp,
-  .tape,
-  .tape.b,
-  .tape.c,
-  .scrawl,
-  .eyebrow,
-  .pullquote,
-  .callout,
-  .figure,
-  .cutline,
-  .post-stage h1,
-  .post-stage h2,
-  .prose h2,
-  .prose h3 {
-    transform: rotate(0deg) !important;
-    rotate: none !important;
-  }
-
-  // The splay becomes a single, calm vertical stack on a phone.
-  .splay {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    gap: clamp(1.4rem, 6vw, 2rem);
-  }
+  // ---- 3a. Tame the splay tilts (don't flatten) ----
+  // Desktop splay angles are big (±3deg) and meant for a wide littered row.
+  // On a 1-up phone stack those would kiss the clipped edge; halve them so
+  // each card still reads as "pinned by hand," never as a plain box.
+  .splay { display: flex; flex-direction: column; align-items: stretch;
+           gap: clamp(1.4rem, 6vw, 2rem); }
   .splay > * { width: 100%; margin-inline: 0; }
-
-  // ---- 3b. Tape: keep it as a motif but small + inside the box ----
-  //  Tightened to 24vw so 360px maxes at ~86px (not ~101px) and 414px stays
-  //  inside the clipped column instead of forcing the tape past the edge.
-  .tape {
-    width: clamp(48px, 24vw, 96px);
-    height: 24px;
+  // 6 distinct SEEDED angles so no two visible cards share a rotation (v6).
+  .splay > :nth-child(6n+1) { transform: rotate(-1.6deg); }
+  .splay > :nth-child(6n+2) { transform: rotate(1.3deg);  }
+  .splay > :nth-child(6n+3) { transform: rotate(-0.9deg); }
+  .splay > :nth-child(6n+4) { transform: rotate(2.1deg);  }
+  .splay > :nth-child(6n+5) { transform: rotate(-2deg);   }
+  .splay > :nth-child(6n+6) { transform: rotate(0.7deg);  }
+  // Cheap GPU-only tap-lift (transform + opacity + soft tinted shadow grow) so
+  // the otherwise frozen-boil phone desk still FEELS alive under a finger.
+  // Gated entirely behind prefers-reduced-motion in §6 (it nulls transform).
+  .splay > * { transition: transform var(--t-micro) var(--ease-settle),
+                           box-shadow var(--t-micro) ease; }
+  .splay > *:active {
+    transform: rotate(0) translateY(-2px) scale(1.01);
+    box-shadow: var(--sh-hover);
+    opacity: 0.985;                      // micro feedback, never washes content
   }
 
-  // ---- 3c. Sheet/stage padding: comfortable but not wasteful ----
-  //  Engine markup is `.paper > .inner` (landing pattern); also cover the
-  //  contract's `.sheet > .inner` and the post stage / furniture boxes.
+  // ---- 3b. Furniture tilts: gentled, NOT zeroed — 7 distinct SEEDED angles ----
+  // No two visible scrap types share a rotation (v6: "no two alike"). Tame phone
+  // amplitudes, but spread across the whole set so the stack reads hand-placed,
+  // never metronomic. The .prose reading column is SACRED and untouched here.
+  .scrap         { transform: rotate(-1.4deg); }
+  .stamp         { transform: rotate(-2.3deg); }
+  .eyebrow       { transform: rotate(-0.8deg); }
+  .callout       { transform: rotate(0.6deg); }
+  .callout--note { transform: rotate(-1.1deg); }
+  .pullquote     { transform: rotate(1.2deg); }
+  .pullquote .pq-attrib { transform: rotate(-1.7deg); }
+  // bare-prose taped polaroids keep a whisper of tilt (real, but tame)
+  .prose p > img:only-child { transform: rotate(-0.9deg); }
+  .figure.polaroid,
+  .polaroid { transform: rotate(0); }   // the photo itself upright; its frame reads via shadow
+
+  // ---- 3b-ii. Varied scrap widths + nested overlap (v6: scraps tuck/nest,
+  //  NOT an evenly-spaced full-width column). Overhang stays clipped (§0); the
+  //  .prose reading column is left full-width & untouched (SACRED). Small
+  //  negative top-margins let adjacent furniture tuck under its neighbour. ----
+  .polaroid,
+  .figure.polaroid { width: 78%; }
+  .pullquote       { width: 85%; margin-top: -0.6rem; }
+  .callout         { width: 92%; }
+  .scrap           { width: 88%; margin-top: -0.5rem; }
+  .definition      { width: 90%; }
+  // a kraft/byline strip rides narrow like v6's School-Bus credit
+  .scrap--kraft,
+  .byline-strip    { width: 65%; margin-top: -0.4rem; }
+
+  // ---- 3b-iii. ONE scrap per screen must BREAK the column edge so every
+  //  mobile viewport holds a visible material cue right at the margin (v6:
+  //  scraps overhang the desk, they don't sit inside a tidy box). The overhang
+  //  is clipped by §0 so there is still ZERO horizontal scroll — the torn
+  //  colored edge just runs off-frame like a real clipping pinned half-off.
+  //  Alternating left/right so the bleed is hand-placed, not metronomic. The
+  //  .prose reading column is SACRED and is never bled. ----
+  .pullquote:nth-of-type(odd) {
+    width: 96%; margin-left: -3%;       // torn edge runs off the left margin
+  }
+  .callout:nth-of-type(even) {
+    width: 98%; margin-left: auto; margin-right: -4%;  // bleeds off the right
+  }
+  .scrap--kraft:nth-of-type(odd),
+  .byline-strip:nth-of-type(odd) {
+    margin-left: -2.5%;                 // kraft credit nudges off the left edge
+  }
+
+  // ---- home desk LITTER: keep the v6 furniture present but tamed on phones.
+  // Tilts gentled (no two alike), widths vw-capped so nothing overflows the
+  // clipped column at 360–414px. The litter still litters; it just behaves. ----
+  .board-litter { gap: 1.1rem 1.3rem; }
+  .board-litter .litter--quote  { width: min(15rem, 82vw); transform: rotate(1.6deg); }
+  .board-litter .litter--photo  { width: min(10rem, 46vw); transform: rotate(-2.2deg); }
+  .board-litter .litter--slip   { width: min(11rem, 58vw); transform: rotate(-1deg); }
+  .litter--byline               { width: min(13rem, 72vw); transform: rotate(-0.7deg); }
+  .litter--star                 { transform: rotate(-6deg); width: 28px; height: 26px; }
+  // the always-on craft objects, vw-capped so they never overflow the clip column
+  .board-litter .litter--ticket { width: min(10rem, 60vw); transform: rotate(1.8deg); }
+  .litter--ring                 { width: 64px; height: 64px; }
+  .litter--clip-deco            { transform: rotate(6deg); }
+
+  // ---- 3c. Tape stays a real motif, just smaller + inside the box ----
+  // 24vw cap: 360px -> ~86px, 414px -> ~99px, both inside the clipped column.
+  .tape { width: clamp(48px, 24vw, 96px); height: 24px; }
+
+  // ---- 3d. Real SOFT TINTED layered shadow STAYS (it's the depth that makes
+  //  the desk a desk). v6 / REFS 1–8 mandate warm Sambas-alpha contact+ambient
+  //  with real blur from ONE top-left light — never a hard zero-blur ink offset
+  //  (the documented flat-web FAILURE). Each scrap type gets a slightly
+  //  different lift so the casts are not metronomic; the down-right direction
+  //  (matching the upper-left key) is preserved across them all. ----
+  .paper,
+  .post-sheet { box-shadow: var(--sh-lift); }            // big sheet sits up
+  .definition { box-shadow: var(--sh-contact), var(--sh-ambient); }
+  .callout,
+  .patterns-splay .pattern { box-shadow: var(--sh-contact), var(--sh-ambient); }
+  // small chip hugs the desk — contact-led, lighter ambient (varied vs above)
+  .scrap { box-shadow: var(--sh-contact); }
+
+  // ---- 3d-ii. Cheap GPU-only tap-lift on furniture too: under a finger the
+  //  scrap lifts a hair and its soft tinted cast opens up (object peels off the
+  //  desk). transform/opacity/box-shadow only — no layout, no per-frame redraw.
+  //  Fully nulled by prefers-reduced-motion (§6). Keeps the frozen phone desk
+  //  feeling ALIVE without re-enabling the boil. ----
+  .scrap,
+  .callout,
+  .definition,
+  .polaroid,
+  .pullquote {
+    transition: transform var(--t-micro) var(--ease-settle),
+                box-shadow var(--t-micro) ease;
+  }
+  .scrap:active,
+  .callout:active,
+  .definition:active,
+  .polaroid:active,
+  .pullquote:active {
+    transform: rotate(0) translateY(-2px);
+    box-shadow: var(--sh-hover);
+  }
+
+  // ---- 3e. Padding: comfortable, not wasteful ----
   .paper > .inner,
-  .sheet > .inner,
   .post-stage,
   .callout,
-  .pullquote {
-    padding: clamp(1.1rem, 5vw, 1.6rem);
-  }
+  .definition,
+  .pullquote { padding: clamp(1.1rem, 5vw, 1.6rem); }
 
-  // Soften the hard offset shadow so an 8px ink offset doesn't itself
-  // create overflow against a clipped edge (keep it FLAT — no blur).
-  //  Engine paints the sheet shadow on `.paper`; override both.
-  //  `.post-sheet` carries its own 8px shadow in _post.scss — bring it down
-  //  to 5px too so it stays inside the ~18px (5vw) padded column on 360px.
-  .paper,
-  .sheet,
-  .post-sheet {
-    box-shadow: 5px 5px 0 0 var(--ink);
-  }
+  // ---- 3f. Eyebrow (Patrick Hand) stays sizeable — never tiny ----
+  .eyebrow { font-size: clamp(1.05rem, 5vw, 1.4rem); }
 
-  // Flatten the taped-polaroid tilt on bare prose images so a tilted frame
-  // can't drift toward the viewport edge inside the reduced phone padding.
-  .prose p > img:only-child {
-    transform: rotate(0deg);
-  }
+  // ---- 3g. Pull-quote: full width, readable, the highlighter band intact ----
+  .pullquote { margin-inline: 0; float: none; width: 100%; }
 
-  // ---- 3d. Eyebrow (Patrick Hand) stays sizeable, never tiny ----
-  .eyebrow {
-    font-size: clamp(1.05rem, 5vw, 1.4rem);
-  }
-
-  // ---- 3e. Pull-quote: full width, upright, readable ----
-  .pullquote {
-    margin-inline: 0;
-    float: none;
-    width: 100%;
-  }
-
-  // ---- 3f. Figures/polaroids: center, cap width inside the column ----
+  // ---- 3h. Figures/polaroids: center, cap width inside the column ----
   .figure,
-  .polaroid {
-    width: min(100%, 320px);
-    margin-inline: auto;
-  }
+  .polaroid { width: min(100%, 320px); margin-inline: auto; }
 
-  // ---- 3g. Post-header: breathing room below the sticky masthead +
-  //  legibility guards on the meta row so a 3,000-word essay's preamble
-  //  (eyebrow + title + dek + meta) doesn't crowd the nav or collapse to
-  //  cramped micro-type on a phone. ----
-  .post-header {
-    padding-top: clamp(1rem, 4vw, 1.5rem);
-  }
-  .post-header .wrap {
-    // never let the title block hide under the sticky bar
-    scroll-margin-top: 4rem;
-  }
-  .post-meta {
-    font-size: 0.75rem;
-    line-height: 1.4;            // explicit leading so the meta row holds
-  }
+  // ---- 3i. Post-header: breathing room under the sticky mast + meta legibility ----
+  .post-header { padding-top: clamp(1rem, 4vw, 1.5rem); }
+  .post-header .wrap { scroll-margin-top: 4.5rem; } // never hide under the sticky bar
+  .post-meta { font-size: 0.75rem; line-height: 1.4; }
 
-  // ---- 3h. Footer: the desktop `.top` is `display:flex; space-between`,
-  //  which reflows into a cramped two-up stack on a phone. Below 600px we
-  //  make the footer a calm single column with generous breathing room so
-  //  the brand block and the link list (the reader's last cue toward Notes /
-  //  drex.style / RSS) stack vertically, never side-by-side and pinched. ----
-  footer .top {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1.2rem;                  // generous breathing room between blocks
-  }
-  // Each block goes full-width and left-aligned so the link column isn't a
-  // cramped right-hugging stack.
+  // ---- 3j. Footer: a calm single column (desktop space-between would pinch) ----
+  footer .top { flex-direction: column; align-items: flex-start; gap: 1.2rem; }
   footer .ft-brand,
-  footer .links {
-    width: 100%;
-    align-items: flex-start;
-  }
-  // The link list itself wraps to a roomy vertical stack of tap targets
-  // (each link already clears 44px via the universal footer-a rule).
-  footer .links {
-    display: flex;
-    flex-direction: column;
-    gap: .25rem;
-  }
-  // Legal row stays a calm two-line stack rather than squeezing side-by-side.
-  footer .legal {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: .4rem;
-  }
+  footer .links { width: 100%; align-items: flex-start; }
+  footer .links { display: flex; flex-direction: column; gap: 0.25rem; }
+  footer .legal { flex-direction: column; align-items: flex-start; gap: 0.4rem; }
+}
+
+
+// ---- 3k. SMALL phones (<=414px): tighten tape + padding a touch more so
+//  the narrowest decks (360/390/414) never let a tilted scrap or a crossing
+//  tape end ride out past the clipped column. ----
+@media (max-width: 414px) {
+  .tape { width: clamp(44px, 22vw, 84px); }
+  .paper > .inner,
+  .post-stage { padding: clamp(1rem, 4.5vw, 1.4rem); }
+  // pull big display titles in a hair so they wrap cleanly (engine token sets size)
+  .post-title { max-width: 16ch; }
 }
 
 
 // =====================================================================
-//  4. COMPACT STICKY MASTHEAD + ACCESSIBLE BURGER NAV  (<=720px)
-//     The string-pull burger is the nav on small screens. Logo stays clean
-//     (one solid colour, upright, no effects — untouched here). Tap targets
-//     are all >=44px.
+//  4. COMPACT LIGHT MAST + ACCESSIBLE BURGER NAV  (<=720px)
+//     v6 has no dark chrome band: the mast is a near-invisible warm fade
+//     with the green logo flat on Oats. We keep it that way — just compact,
+//     sticky, opaque-Oats so prose scrolling under it stays legible. The
+//     logo is NEVER recoloured/tilted/filtered (logo law). Real markup:
+//       header.mast > .wrap > (a.brand, nav.mast-nav, button.burger#m-burger)
+//       header.mast > nav.mob-nav#mob-nav   (sibling of .wrap, drops below)
 // =====================================================================
 @media (max-width: 720px) {
 
-  // Engine ships `.mast`; contract names `.masthead`. Target both.
-  .mast,
-  .masthead {
+  .mast {
     position: sticky;
     top: 0;
     z-index: 50;
-    // keep it compact so it doesn't eat reading height
-    padding-block: clamp(.5rem, 2.2vw, .8rem);
-    // opaque paper so prose scrolling under it stays legible (no overlap blur)
-    background: var(--paper);
+    padding-block: clamp(0.5rem, 2.2vw, 0.8rem);
+    background: var(--oats);          // opaque warm light, palette-pure (no blur)
   }
 
-  .mast .wrap,
-  .masthead .wrap {
+  .mast .wrap {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: .75rem;
-    padding-block: 0;             // collapse the engine's 1rem mast padding
+    gap: 0.75rem;
+    padding-block: 0;                 // collapse the engine's 1rem mast padding
   }
 
-  // Compact logo — never recoloured/tilted/filtered, just sized down.
-  .mast .brand,    .masthead .brand,
-  .mast .lg-icon,  .masthead .lg-icon,
-  .mast .lg-word,  .masthead .lg-word {
-    transform: none !important;   // logo law: upright, no tilt
-  }
-  .mast .lg-icon, .masthead .lg-icon { width: clamp(30px, 9vw, 44px); }
-  .mast .lg-word, .masthead .lg-word { width: clamp(96px, 26vw, 132px); }
+  // Compact logo — sized down only; upright, one solid Grass fill (logo law).
+  .mast .brand,
+  .mast .lg-icon,
+  .mast .lg-word { transform: none !important; }   // never tilt the logo
+  .mast .lg-icon { width: clamp(28px, 8.5vw, 40px); }
+  .mast .lg-word { width: clamp(86px, 24vw, 124px); }
+  .mast .mast-kicker { font-size: 1rem; }          // the "blog" scrawl stays legible
 
-  // Inline desktop nav (if present) collapses; burger takes over.
-  .mast > .wrap > nav,
-  .masthead > .wrap > nav {
-    display: none;
-  }
+  // Inline desktop nav collapses (grounds renders it as .mast>.wrap>nav);
+  // the burger takes over. Engine targets `.mast>.wrap>nav` — match it.
+  .mast > .wrap > nav { display: none; }
 
-  // ---- Mobile burger drawer (.mob-nav) ----
-  // Direct child of the sticky masthead, so it drops directly below the bar.
-  // Closed = max-height 0 / clipped; JS toggles .open to animate it open.
-  // Flat Oats ground, palette-pure: no blur, no gradient.
-  .mast > .mob-nav,
-  .masthead > .mob-nav {
+  // ---- Burger drawer (.mob-nav): sibling of .wrap, drops below the bar ----
+  // Closed = max-height 0 / clipped; JS toggles .open. Flat Oats, no blur.
+  .mast > .mob-nav {
     position: absolute;
     top: 100%;
     left: 0;
@@ -352,195 +384,193 @@ table { display: block; overflow-x: auto; }
     overflow: hidden;
     background: var(--oats);
     z-index: 40;
-    transition: max-height .3s ease;
-    // flat ink offset shadow only (no blur), confined so it can't push
-    // horizontal overflow on small screens.
-    box-shadow: 0 4px 0 0 var(--ink);
+    transition: max-height 0.3s ease;
+    box-shadow: var(--sh-lift);         // soft tinted drop (drawer sits off the mast)
   }
-  .mast > .mob-nav.open,
-  .masthead > .mob-nav.open {
-    max-height: 60vh;
-    overflow-y: auto;
+  .mast > .mob-nav.open { max-height: 70vh; overflow-y: auto; }
+
+  // the "string-pull" thread above the drawer items (decorative, hand-feel)
+  .mob-thread {
+    display: block;
+    height: 14px;
+    margin: 0 auto;
+    width: 2px;
+    background: var(--grass);
   }
 
   .mob-nav ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-direction: column;
   }
   .mob-nav li { margin: 0; }
   .mob-nav a {
-    display: flex;
-    align-items: center;
-    min-height: 44px;             // a11y sacred: comfortable tap target
-    padding: .75rem 1rem;
-    font-size: .85rem;
-    border-bottom: 1px solid rgba(28, 171, 91, .1);  // faint Grass hairline
+    display: flex; align-items: center;
+    min-height: 48px;                   // a11y sacred: comfortable tap target
+    padding: 0.75rem 1.1rem;
+    font-family: var(--f-mono);
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--ink);
+    border-bottom: 1px solid rgba(28, 171, 91, 0.12);  // faint Grass hairline
   }
+  .mob-nav a:focus-visible { outline: 3px solid var(--lazuli); outline-offset: -3px; }
 
-  // The burger itself: >=44px square tap target, focus-visible Lazuli ring.
+  // ---- The menu TAB: a real baked Oats paper CHIP (not a system glyph) ----
+  // v6 controls are small craft objects, not flat UI. The button is a tilted
+  // Oats chip with a torn edge (--bk-edge-oats border-image) + baked tooth
+  // (--bk-grain), carrying the literal v6 menu SVG in Sambas ink, with a soft
+  // tinted contact shadow so it sits ON the desk. >=44px tap, Lazuli focus.
+  // The pre-baked fallback (a flat Oats border) keeps it a paper chip even
+  // before bakery.js runs / if JS is off.
   .burger {
     display: inline-flex !important;
-    align-items: center;
-    justify-content: center;
-    min-width: 44px;
-    min-height: 44px;
-    padding: .4rem;
-  }
-  .burger:focus-visible {
-    outline: 3px solid var(--lazuli);
-    outline-offset: 3px;
-  }
-
-  // Burger bars: the three stacked lines inside the toggle.
-  .burger .bars {
-    display: inline-flex;
     flex-direction: column;
-    justify-content: center;
-    gap: 4px;
-    width: 22px;
+    align-items: center; justify-content: center;
+    gap: 1px;
+    min-width: 46px; min-height: 46px;
+    padding: 0.3rem 0.4rem;
+    background: none; border: 0; cursor: pointer;
+    transform: rotate(-2.2deg);                  // hand-placed, off-grid (v6)
+    transition: transform var(--t-micro) var(--ease-settle),
+                filter var(--t-micro) ease;
   }
-  .burger .bars i {
-    display: block;
-    width: 100%;
-    height: 2.5px;
-    background: var(--ink);       // Sambas ink, no pure black
-    border-radius: 2px;
-    transform-origin: center;
-    transition: transform .25s ease, opacity .25s ease;
+  .burger:focus-visible { outline: 3px solid var(--lazuli); outline-offset: 3px; }
+
+  // The chip face: Oats cardstock with a torn paper edge + tooth + contact cast.
+  .burger .burger-tab {
+    position: relative;
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 38px; height: 30px;
+    color: var(--ink);                           // SVG strokes ride currentColor
+    background: var(--oats);                      // flat Oats fallback (pre-bake)
+    border: 1px solid rgba(28, 171, 91, 0.22);    // faint Grass keyline fallback
+    border-radius: 3px;
+    box-shadow: var(--sh-contact);                // soft tinted desk contact
+  }
+  // Once baked: swap the flat fallback for the real torn Oats edge + tooth tile.
+  html.baked .burger .burger-tab {
+    border: 0; border-radius: 0;
+    background: var(--paper) var(--bk-grain);
+    border-style: solid;
+    border-width: 8px;
+    border-image-source: var(--bk-edge-oats);
+    border-image-slice: var(--bk-edge-oats-slice, 38) fill;
+    border-image-repeat: round;
+    border-image-width: 9px;
+  }
+  .burger .burger-ico {
+    position: absolute; inset: 0; margin: auto;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+  .burger .burger-ico--x { opacity: 0; transform: rotate(-30deg) scale(0.7); }
+
+  // The Birdie 'menu' label under the chip — stays legible, never tiny.
+  .burger .burger-label {
+    font-family: var(--f-hand);
+    font-size: 0.72rem;
+    line-height: 1;
+    color: var(--ink);                           // Sambas: AA-safe label on the desk
+    transform: rotate(1.4deg);                   // a second tiny hand angle
   }
 
-  // Open state: the three bars morph to an X. Top + bottom bars cross,
-  // middle bar fades out. Hooked off aria-expanded (JS sets it) so the icon
-  // tracks state. Flat transforms only — no blur, no gradient (brand law).
-  .burger[aria-expanded="true"] .bars i:nth-child(1) {
-    transform: translateY(6.5px) rotate(45deg);
-  }
-  .burger[aria-expanded="true"] .bars i:nth-child(2) {
-    opacity: 0;
-  }
-  .burger[aria-expanded="true"] .bars i:nth-child(3) {
-    transform: translateY(-6.5px) rotate(-45deg);
-  }
+  // open state: the menu glyph cross-fades to an X (hooked off aria-expanded).
+  .burger[aria-expanded="true"] { transform: rotate(0); }
+  .burger[aria-expanded="true"] .burger-ico        { opacity: 0; transform: rotate(30deg) scale(0.7); }
+  .burger[aria-expanded="true"] .burger-ico--x     { opacity: 1; transform: rotate(0) scale(1); }
+  .burger[aria-expanded="true"] .burger-label      { color: var(--colorado); } // 'menu' -> tap-to-close cue
 
-  // Lock body scroll while the drawer is open so the page can't scroll behind
-  // the menu (JS sets `body.nav-open`). Pairs with the overflow guard above.
-  body.nav-open {
-    overflow: hidden;
-  }
+  // Lock page scroll while the drawer is open (JS sets body.nav-open).
+  body.nav-open { overflow: hidden; }
 
-  // Burger menu links / CTA — every interactive row >=44px tall.
-  .hb-tray a,
-  .hb-tray .btn,
-  .hb-tray .hb-cta .btn {
-    display: flex;
-    align-items: center;
-    min-height: 44px;
-    padding: .55rem .9rem;
-    font-size: .85rem;          // legible nav (a11y sacred), not micro-type
-  }
-
-  // RSS in the burger gets the same parallel-channel call-out as the desktop
-  // tab: grass-deep stamp + oats ink (AA-safe per tokens), inline rss-glyph.
-  // Palette-pure, flat — no blur/gradient. The link still clears the >=44px
-  // tap target via the universal .mast a rule.
+  // RSS in the burger gets the desktop tab's parallel-channel call-out:
+  // Sambas stamp + oats ink (budgeted 20% dark, AA-safe), soft tinted lift.
   .mob-nav .rss-link {
-    background: var(--grass-deep);
+    background: var(--sambas);
     color: var(--oats);
     border: 2px solid var(--ink);
     border-radius: 5px;
-    padding: .45rem .7rem;
-    gap: .45em;
-    box-shadow: 2px 2px 0 0 var(--ink);   // flat ink offset, no blur
+    margin: 0.6rem 1.1rem;
+    min-height: 44px;
+    gap: 0.45em;
+    box-shadow: var(--sh-contact), var(--sh-ambient);   // soft tinted lift, no flat offset
   }
   .mob-nav .rss-link .rss-glyph { width: 1em; height: 1em; flex: 0 0 auto; }
 }
 
-// Above the burger breakpoint, the burger is hidden and the inline nav shows.
+// Above the burger breakpoint: hide the burger, show inline nav, hide drawer.
 @media (min-width: 721px) {
   .burger { display: none !important; }
-  .mast > .wrap > nav,
-  .masthead > .wrap > nav { display: flex; }
-  // The mobile drawer is mobile-only: never render it on desktop.
-  .mast > .mob-nav,
-  .masthead > .mob-nav { display: none; }
+  .mast > .wrap > nav { display: flex; }
+  .mast > .mob-nav { display: none; }
+  .mob-thread { display: none; }
 }
 
-// ---- 4b. Universal >=44px tap targets for the reading surface ----
+
+// ---- 4b. Universal >=44px tap targets for interactive surfaces ----
 .btn,
-.btn.ink,
-nav a,
 .mast a,
-.masthead a,
+nav a,
 footer a,
-.post-card a {
-  // ensure any link-as-button clears the 44px touch minimum
+.card-go,
+.back-link,
+.post-nav-link {
   min-height: 44px;
   display: inline-flex;
   align-items: center;
 }
-// Inline links INSIDE running prose must NOT be forced to 44px (that would
-// wreck the text flow) — they get padding-based hit area instead.
-.prose a {
-  min-height: 0;
-  display: inline;
-}
+// Card-link is a flex COLUMN (it wraps the whole card body) — give it a tall
+// floor without forcing it inline-flex (that would break its column layout).
+.card-link { min-height: 44px; }
+
+// Inline links INSIDE running prose must NOT be forced to 44px (that wrecks
+// the text flow) — keep them inline; the link gradient gives a generous swipe.
+.prose a { min-height: 0; display: inline; }
+// The footer link list is a flex column; restore block-flow flex for items.
+footer .links a { display: inline-flex; }
 
 // Focus-visible Lazuli rings everywhere (a11y sacred), no content-hiding.
 a:focus-visible,
 button:focus-visible,
 .btn:focus-visible,
+.card-link:focus-visible,
 [tabindex]:focus-visible {
   outline: 3px solid var(--lazuli);
   outline-offset: 2px;
   border-radius: 2px;
 }
 
-// Card-as-a-link (home page .paper.card wraps its inner content in .card-link).
-// Keyboard users must see which card is focused — give the link the same Lazuli
-// ring as .btn and nav links, matching the sacred a11y focus pattern.
-.card-link:focus-visible {
-  outline: 3px solid var(--lazuli);
-  outline-offset: 2px;
-  border-radius: 3px;
-}
-
 
 // =====================================================================
-//  5. SMALL-SCREEN PERFORMANCE  (<=600px) — CAP / DISABLE ANIMATED FILTERS
-//     The boil = animated feTurbulence/feDisplacementMap. It's GPU-cheap as
-//     a static frame but expensive ANIMATED, and brutal on a phone scrolling
-//     a long essay. We freeze the boil to a static frame on everything except
-//     ONE-TO-TWO hero elements, and disable the heaviest animated filters.
+//  5. SMALL-SCREEN PERFORMANCE  (<=600px) — FREEZE THE ANIMATED BOIL
+//     The "boil" is animated feTurbulence/feDisplacementMap cycled with
+//     step-end — GPU-cheap as a STATIC frame, expensive ANIMATED, and
+//     brutal while scrolling a long essay on a phone. We freeze the boil to
+//     its static frame across the page (the torn/marker LOOK stays fully
+//     intact — only the per-frame redraw cost is dropped), keeping at most
+//     the post-title hero alive as the single "breathing" beat.
+//     (Reduced-motion in §6 is the final authority and kills even that.)
 // =====================================================================
 @media (max-width: 600px) {
-
-  // Freeze the boil ANIMATION across the page (keep the STATIC torn/marker
-  // filter — it's GPU-cheap when not animated, so the look stays intact;
-  // only the per-frame redraw cost is what we kill). Engine boils
-  // `.paper>.sheet`; furniture/whimsy boil the accents below.
   .paper > .sheet,
-  .sheet,
+  .post-sheet::before,
   .scrap,
   .stamp,
-  .hl,
-  .ul,
-  .pullquote,
-  .callout,
-  .polaroid,
-  .figure {
-    animation: none !important;   // static torn/marker frame (look intact)
+  footer .stamp,
+  .hl::before,
+  .ul::after,
+  .polaroid::before,
+  .pullquote .pq-text,
+  .cutline .cut-torn {
+    animation: none !important;        // static torn/marker frame (look intact)
   }
 
-  // ...but ALLOW the boil to keep running on AT MOST the post hero: the title
-  // marker + the dek underline. That's the one "alive" beat at the top of the
-  // essay; everything below scrolls cheap. (Reduced-motion still kills these
-  // in section 6, which is the final authority.)
-  .post-stage h1 .hl,
-  .post-stage h1.hl,
-  .post-stage .dek .ul {
+  // ...but let the post hero keep its one alive beat: the title highlighter +
+  // any underline draw at the very top of the essay.
+  .post-title .hl::before,
+  .post-title.hl::before,
+  .dek .ul::after {
     animation: revert !important;
   }
 }
@@ -548,34 +578,40 @@ button:focus-visible,
 
 // =====================================================================
 //  6. REDUCED MOTION — THE FINAL AUTHORITY
-//     Kills tilts, boil, reveal/slam, and any transition. Mirrors the
-//     landing's guard verbatim in spirit, extended to blog class names.
-//     This is last so it wins regardless of source order.
+//     This is the ONLY place the craft is fully flattened: every tilt to
+//     0deg, every boil/keyframe/transition off, reveal/slam settled to
+//     their final visible state (content can NEVER be trapped). Last in the
+//     file so it wins the cascade regardless of source order.
 // =====================================================================
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
-    animation: none !important;       // kills ALL boil/keyframes
+    animation: none !important;        // kills ALL boil / keyframes
     transition: none !important;
     scroll-behavior: auto !important;
   }
 
   // Flatten every tilt (no surprise rotation when motion is off).
-  .tape, .splay, .splay > *, .card, .post-card, .polaroid, .scrap,
-  .stamp, .scrawl, .eyebrow, .pullquote, .callout, .figure, .cutline,
-  .hl, .ul, .mast a, .mast > .wrap > nav a, .masthead a, footer .stamp {
+  .tape, .splay, .splay > *, .card, .polaroid, .scrap, .stamp,
+  .scrawl, .eyebrow, .pullquote, .pullquote .pq-attrib, .callout,
+  .callout--note, .definition, .figure, .cutline, .hl, .ul, .btn,
+  .mast > .wrap > nav a, .mast a, footer .stamp,
+  // the menu TAB chip + its hand-tilted Birdie label settle upright
+  .burger, .burger .burger-tab, .burger .burger-label,
+  .burger .burger-ico, .burger .burger-ico--x,
+  .prose p > img:only-child,
+  // home desk: clips, seeded tilts, and the persistent litter furniture
+  .board-pile > .clip, .board-head, .board-head > .pin,
+  .board-litter .litter, .board-litter .litter--quote,
+  .board-litter .litter--photo, .board-litter .litter--slip,
+  .litter--byline, .litter--star, .litter--pin, .litter > .tape {
     transform: none !important;
     rotate: none !important;
   }
 
-  // Reveal/slam motion hooks must show their final state immediately —
-  // no hidden content (a11y: no content-hiding overlap).
-  .reveal {
-    opacity: 1 !important;
-    translate: none !important;
-    transform: none !important;
-  }
+  // Reveal/slam hooks settle to their final visible state immediately.
+  .reveal { opacity: 1 !important; translate: none !important; transform: none !important; }
   .slam,
   .slam .tape {
     opacity: 1 !important;
@@ -584,44 +620,36 @@ button:focus-visible,
     rotate: none !important;
     transform: none !important;
   }
-
-  // Marker draw-on effects settle to fully-drawn.
+  // Marker/highlighter draw-on effects settle fully-drawn.
   .hl.draw::before,
-  .ul.draw::after {
-    scale: 1 1 !important;
-  }
+  .ul.draw::after { scale: 1 1 !important; }
 }
 
 
 // =====================================================================
-//  7. TABLET RESTORATION  (768-1023px) — TWO-UP splay, a little whimsy back
-//     Desktop runs the cards three-across; at tablet that compresses each card
-//     to ~280px and the titles/deks get hard to parse. Here we force a calm
-//     TWO-UP layout (cards breathe at legible widths) while keeping the
-//     scattered aesthetic via subtle alternating tilts. Overflow stays guarded;
-//     the gap fluidly clamps. Below 768px the phone layer (§3) takes over as a
-//     single full-width 1-up stack, and below 600px every tilt here is already
-//     zeroed by §3a — so these two-up tilts only ever apply in this 768-1023px
-//     band (flattening is coordinated, never doubled).
+//  7. TABLET RESTORATION  (768-1023px) — TWO-UP cards, a little splay back
+//     Desktop runs the newsstand three-across; at tablet that compresses
+//     each card to ~280px and titles/deks get hard to parse. Here we force
+//     a calm TWO-UP layout (cards breathe at legible widths) while keeping
+//     the scattered, hand-placed feel via subtle alternating tilts. Overflow
+//     stays clipped; the gap clamps fluidly. Below 768px the phone layer (§3)
+//     takes over as a 1-up stack with gentled tilts — so these tablet tilts
+//     only ever apply in this 768-1023px band (tilt handling is coordinated,
+//     never doubled).
 // =====================================================================
 @media (min-width: 768px) and (max-width: 1023px) {
   .splay {
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
+    flex-direction: row; flex-wrap: wrap; justify-content: center;
     gap: clamp(1.4rem, 3vw, 2.2rem);
-    max-width: 100%;
-    overflow-x: clip;          // container clips even when restored tilts kiss the edge
+    max-width: 100%; overflow-x: clip;
   }
-  // Two-up: basis just under half (minus its share of the gap) so exactly two
-  // cards fit per row and a third always wraps — never three compressed.
+  // Two-up: basis just under half (minus its gap share) so exactly two cards
+  // fit per row and a third always wraps — never three compressed.
   .splay > * {
     flex: 1 1 calc(50% - clamp(1.4rem, 3vw, 2.2rem));
     max-width: calc(50% - (clamp(1.4rem, 3vw, 2.2rem) / 2));
-    min-width: 0;
-    margin: 0;                 // no stray margin to compound a tilted card past the viewport
+    min-width: 0; margin: 0;
   }
-  // Tilts stay subtle on tablet (the heavy splay tilts are desktop-only).
   .splay > :nth-child(odd)  { transform: rotate(-1deg); }
   .splay > :nth-child(even) { transform: rotate(1.2deg); }
 }
@@ -629,13 +657,14 @@ button:focus-visible,
 
 // =====================================================================
 //  8. SAFE-AREA INSETS  (notched phones: 360/390/414 in landscape)
-//     Pad the masthead + footer for the home-indicator / notch so nothing
-//     is clipped behind system UI, and so the sticky bar never overlaps.
+//     Pad the mast + footer for the notch / home-indicator so nothing is
+//     clipped behind system UI and the sticky bar never overlaps content.
 // =====================================================================
 @supports (padding: max(0px)) {
-  .mast .wrap,
-  .masthead .wrap {
-    padding-inline: max(env(safe-area-inset-left), 0px) max(env(safe-area-inset-right), 0px);
+  .mast .wrap {
+    padding-inline:
+      max(env(safe-area-inset-left), 0px)
+      max(env(safe-area-inset-right), 0px);
   }
   footer { padding-bottom: max(1.8rem, env(safe-area-inset-bottom)); }
 }

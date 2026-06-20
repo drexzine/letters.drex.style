@@ -8,8 +8,9 @@
 // mobile is the responsive override layer and MUST come last so its
 // media-query rules win the cascade.
 @import
-  "tokens",   // :root palette, fonts, φ type scale, spacing, shadows
-  "grounds",  // body bg (dots + notebook rules + grain), .paper sheet, masthead, footer
-  "whimsy",   // tape, splay, hl, ul, btn, scrawl, polaroid, scrap, stamp, cutline
+  "tokens",   // :root palette, fonts, φ type scale, spacing, soft TINTED shadows + --bk-* slots
+  "realism",  // v6 BAKED-sprite material engine + CSS light + paper-physics @keyframes (html.baked)
+  "grounds",  // body bg fallback, .paper sheet, masthead, footer
+  "whimsy",   // legible fallback primitives: tape, splay, hl, ul, btn, scrawl, polaroid, scrap, stamp
   "post",     // .post-stage, .prose, all furniture component styles
   "mobile";   // responsive override layer (flatten tilts, fluid type, ≥44px targets)

@@ -1,8 +1,11 @@
 {%- comment -%}
-  callout.html — a taped margin slip pinned into the column. The "for-drex"
-  kind reads like a note Chielo taped to the page for the team.
+  callout.html — the v6 DARK ANSWER-NOTE (.b-answer), re-skinned as a margin slip.
+  kind="for-drex" (default) renders a Sambas dark torn cardstock note with a
+  Happy mono label + Bitter body in light ink (ported from v6 .b-answer);
+  kind="note" renders a kraft/School-Bus taped slip; kind="warning" a Colorado
+  accent. A washi tape strip pins it to the page at a tilt.
   API:  {% include callout.html kind="for-drex" title="For Drex" body="..." %}
-        kind  — optional: for-drex (default) | note | warning  (sets tape/accent colour)
+        kind  — optional: for-drex (default) | note | warning
         title — optional label; defaults from kind.
         body  — the slip's text (may contain inline HTML/markdownified text).
 {%- endcomment -%}
@@ -16,8 +19,13 @@
 {%- else -%}
   {%- assign label = "For Drex" -%}
 {%- endif -%}
-<aside class="callout callout--{{ kind }}" role="note">
-  <span class="tape c" aria-hidden="true"></span>
+{%- comment -%} tape colour follows the kind: lazuli washi on the kraft note,
+  colorado on a warning, default washi on the dark for-drex note. {%- endcomment -%}
+{%- if kind == "note" -%}{%- assign tapecls = "tape b" -%}
+{%- elsif kind == "warning" -%}{%- assign tapecls = "tape c" -%}
+{%- else -%}{%- assign tapecls = "tape" -%}{%- endif -%}
+<aside class="callout callout--{{ kind }} slam" role="note">
+  <span class="{{ tapecls }}" aria-hidden="true"></span>
   <span class="callout-label">{{ label }}</span>
   <div class="callout-body">{{ include.body | markdownify }}</div>
 </aside>

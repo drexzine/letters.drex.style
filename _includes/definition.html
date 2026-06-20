@@ -1,9 +1,10 @@
 {%- comment -%}
-  definition.html — a dark torn "index card" defining a term of art (the canon's
-  definition-block, ported to brand ink + grass edge).
+  definition.html — a ruled INDEX CARD defining a term of art: cream cardstock
+  with a printed red top rule + faint blue body rules and a Grass filed edge tab
+  (the canon's definition-block as a real card).
   API:  {% include definition.html term="Hub correspondent" body="..." %}
 {%- endcomment -%}
-<aside class="definition" role="note">
+<aside class="definition reveal" role="note">
   <span class="definition-label">Definition</span>
   <h3 class="definition-term">{{ include.term }}</h3>
   <div class="definition-body">{{ include.body | markdownify }}</div>

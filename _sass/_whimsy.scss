@@ -1,14 +1,16 @@
 // ===================================================================
 // _whimsy.scss — the scrapbook primitives: tape, splay, highlighter,
 // marker underline, rubber-stamp button, scrawl, polaroid, scrap, stamp,
-// cutline — plus the SQUIGGLE-VISION boil keyframes that bring the
-// hand-drawn wobble alive. Every value that exists on the shipped landing
-// (drex-landing/app.css) is ported VERBATIM. New general utilities the blog
-// contract adds (.scrap, general .stamp, .cutline) are built in the same
-// idiom: flat color, hard offset shadow, zero blur.
+// cutline — plus the SQUIGGLE-VISION boil keyframes.
 //
-// BRAND LAW: flat solid ink offset shadows only. No blur, no gradient fills
-// as shadows. prefers-reduced-motion (handled here + in _mobile) kills boil.
+// MATERIAL OVERHAUL: this file is now the LEGIBLE FALLBACK layer. When
+// bakery.js has run (html.baked), _realism.scss overrides the surfaces with the
+// v6 baked sprites + soft TINTED layered shadows. Without JS, these flat rules
+// keep the page whole and on-brand. Shadow REFERENCES here moved to the tinted
+// --sh-* tokens (no more neutral hard ink offsets), so even the fallback reads
+// as one-soft-light desk craft, not webslop.
+//
+// prefers-reduced-motion (handled here + in _mobile) kills boil + tilts.
 // ===================================================================
 
 // ---------- washi / scotch tape ----------
@@ -25,9 +27,17 @@
 
 // ---------- type primitives ----------
 .scrawl{font-family:var(--f-hand);font-weight:400;line-height:1.15}
-.eyebrow{font-family:var(--f-hand);font-size:var(--t-eyebrow);color:var(--colorado);transform:rotate(-1.2deg);display:inline-block}
+// Patrick-Hand kicker at the full --t-eyebrow (~24pt) role. Hand-pinned, so NO
+// two sit at the same angle — per-instance rotate + a hair of size jitter break
+// the clone look (a single fixed -1.2deg on every kicker read as templated).
+.eyebrow{font-family:var(--f-hand);font-size:var(--t-eyebrow);color:var(--colorado);
+  transform:rotate(-1.4deg);display:inline-block}
+.eyebrow:nth-of-type(4n+1){transform:rotate(-2.4deg);font-size:calc(var(--t-eyebrow) * 1.04)}
+.eyebrow:nth-of-type(4n+2){transform:rotate( 1.1deg);font-size:calc(var(--t-eyebrow) * .97)}
+.eyebrow:nth-of-type(4n+3){transform:rotate(-0.6deg);font-size:calc(var(--t-eyebrow) * 1.02)}
+.eyebrow:nth-of-type(4n+4){transform:rotate( 2deg);  font-size:calc(var(--t-eyebrow) * .99)}
 .label{font-family:var(--f-mono);font-weight:500;text-transform:uppercase;letter-spacing:.14em;font-size:var(--t-label)}
-.dot{color:var(--grass-deep);font-weight:700}
+.dot{color:var(--grass);font-weight:700}
 .slab{font-family:var(--f-slab);font-style:italic;font-weight:700;line-height:.98;letter-spacing:-.02em}
 
 // highlighter band — hand-swiped, tipped. Happy by default; .g = grass.
@@ -43,7 +53,7 @@
 
 // ---------- rubber-stamp press-down button ----------
 .btn{
-  --bg:var(--grass-deep);--fg:var(--oats);   // deep grass clears AA (oats label 5.9:1); bright grass was 2.78:1
+  --bg:var(--sambas);--fg:var(--oats);   // Sambas ground (budgeted 20% dark); oats label clears AA (8.9:1)
   font-family:var(--f-mono);font-weight:500;font-size:.86rem;letter-spacing:.12em;text-transform:uppercase;
   display:inline-flex;align-items:center;gap:.5rem;text-decoration:none;cursor:pointer;
   background:var(--bg);color:var(--fg);border:2.6px solid var(--ink);border-radius:6px;
@@ -51,7 +61,7 @@
   box-shadow:var(--shadow-btn);transform:rotate(-1.4deg);
   transition:transform .09s ease, box-shadow .09s ease;}
 .btn:hover{transform:rotate(0)}
-.btn:active{transform:translate(5px,5px) rotate(0);box-shadow:0 0 0 0 var(--ink)}  // press INTO the shadow
+.btn:active{transform:translate(5px,5px) rotate(0);box-shadow:var(--sh-contact)}  // pressed object hugging the desk (tinted contact, not a flat zero-blur ink slab)
 .btn:focus-visible{outline:3px solid var(--lazuli);outline-offset:3px}
 .btn.ink{--bg:var(--paper);--fg:var(--ink)}
 .btn .arr{font-family:var(--f-mono)}
@@ -96,7 +106,7 @@
 .polaroid .cap b{display:block;font-weight:400;font-size:1.4rem;color:var(--ink)}
 .polaroid .cap span{font-family:var(--f-hand);font-size:1.02rem;color:rgba(65,77,87,.92)}
 .polaroid:hover{transform:rotate(0) translateY(-7px);z-index:6}
-.polaroid:hover::before{box-shadow:11px 12px 0 0 var(--ink)}
+.polaroid:hover::before{box-shadow:var(--sh-hover)}  // warm umber layered lift (one soft tinted light), not a hard ink offset
 
 // ---------- scrap (a small torn paper chip; e.g. numbered patterns) ----------
 // New general util for the blog (the landing used per-section ad-hoc scraps).
@@ -114,7 +124,7 @@
   padding:.5em .8em;transform:rotate(-3deg);filter:url(#roughsm);
   animation:boil-roughsm var(--boil-stamp) step-end infinite}
 .stamp.ink{color:var(--ink);border-color:var(--ink)}
-.stamp.g{color:var(--grass-deep);border-color:var(--grass-deep)}
+.stamp.g{color:var(--grass);border-color:var(--grass)}
 
 // ---------- cutline (scissors "cut here" section seam) ----------
 // New general util: a dashed rule with a torn ink line + scissors glyph + label,
@@ -153,20 +163,10 @@
 body[data-motion="full"] .reveal{opacity:0;translate:0 16px;
   transition:opacity .24s ease, translate .52s cubic-bezier(.2,.85,.3,1.12)}
 body[data-motion="full"] .reveal.in{opacity:1;translate:0 0}
-// SLAM-IN: cards drop from above and SMACK onto the page (translate/scale are
-// individual props so they compose with each piece's resting tilt).
-body[data-motion="full"] .slam{opacity:0;translate:0 -96px;scale:1.04}
-body[data-motion="full"] .slam.in{animation:slamin .44s cubic-bezier(.5,0,.8,.45) both}  // ease-IN = accelerates down (gravity)
-@keyframes slamin{
-  0%  {opacity:0; translate:0 -96px; scale:1.04}
-  58% {opacity:1; translate:0 0;     scale:1.04}        // it reaches the page...
-  70% {translate:0 1px; scale:1.09 .86}                 // ...and SMACKS flat (squash)
-  84% {translate:0 0;   scale:.98 1.05}                 // rebound
-  100%{translate:0 0;   scale:1}}
-// the washi tape then SWINGS down and slaps on to stick it
-body[data-motion="full"] .slam .tape{opacity:0;translate:0 -18px;rotate:16deg}
-body[data-motion="full"] .slam.in .tape{animation:tapeslap .32s cubic-bezier(.34,1.4,.5,1) .4s both}
-@keyframes tapeslap{0%{opacity:0;translate:0 -18px;rotate:16deg}55%{opacity:1}100%{opacity:1;translate:0 0;rotate:0}}
+// NOTE: the SLAM-IN (.slam / .slam.in / slamin / tapeslap) lived here too, but it
+// conflicted with _realism.scss's canonical, fail-open drex-slam definition —
+// two definitions across files are what made the hidden state stick. _realism.scss
+// (rank 1) now solely owns .slam + .slam .tape. This file keeps only .reveal.
 // highlighter band: swipe left→right (composes with its skew)
 body[data-motion="full"] .hl.draw::before{scale:0 1;transform-origin:left center;
   transition:scale .55s cubic-bezier(.2,.7,.2,1)}

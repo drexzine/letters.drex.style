@@ -3,77 +3,144 @@ layout: default
 ---
 <article class="post">
 
-  {%- comment -%} Post header — broadsheet style: scrawl eyebrow, big italic title, dek, mono meta. {%- endcomment -%}
-  <header class="post-header">
+  {%- comment -%}
+    COLLAGE MASTHEAD — the post opens as hand-arranged clippings on the desk,
+    deliberately OFF-GRID (a type-collage hero, not a centered stack):
+      - the eyebrow kicker on a small Oats scrap OVERLAPS the banner's top-left
+        corner at its own angle (.is-corner) so it reads as a clipping tucked
+        UNDER the headline, not a label stacked above it;
+      - the big Pitch-italic title rides a GRASS torn banner pinned with a
+        thumbtack — a heavy taped/pinned scrap, so it SLAMS in;
+      - the Bitter-italic dek sits on a DIFFERENT, narrower measure and is
+        offset/indented off the title's left edge (.is-offset), reveals up;
+      - a DM-Mono date stamp.
+    Then the reading SHEET (.prose) below — the sacred legible Bitter column on
+    real cream paper. ENTRANCE PHYSICS: the heavy pinned banner gets `slam`;
+    the lighter eyebrow scrap, dek and meta get `reveal`; all are inert at rest
+    and settle to final visible state under reduced motion (engine fail-safe).
+    (styles: _post.scss + _grounds.scss; motion: _realism.scss/_whimsy.scss)
+  {%- endcomment -%}
+  <header class="post-head">
     <div class="wrap">
-      {% if page.eyebrow %}<span class="eyebrow">{{ page.eyebrow }}</span>{% endif %}
-      <h1 class="post-title slab">{{ page.title }}</h1>
-      {% if page.dek %}<p class="dek">{{ page.dek }}</p>{% endif %}
-      <div class="post-meta">
-        <time class="label" datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%B %-d, %Y" }}</time>
+
+      {% if page.eyebrow %}
+      <span class="post-eyebrow is-corner scrap-kicker piece reveal" data-mat="oats" data-edge="cut">
+        <span class="eyebrow">{{ page.eyebrow }}</span>
+      </span>
+      {% endif %}
+
+      {%- comment -%} the title on a Grass torn banner, pinned — a heavy scrap: SLAM in. {%- endcomment -%}
+      <div class="post-banner piece slam" data-mat="grass" data-edge="torn">
+        <span class="pin" data-pin="red" aria-hidden="true"></span>
+        <h1 class="post-title slab">{{ page.title }}</h1>
+      </div>
+
+      {% if page.dek %}<p class="post-dek is-offset reveal">{{ page.dek }}</p>{% endif %}
+
+      <div class="post-meta reveal">
+        <span class="post-datestamp"><time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%B %-d, %Y" }}</time></span>
         {% assign words = content | strip_html | number_of_words %}
-        {% comment %} 240 wpm (not 200): furniture pacing — pull-quotes, definitions,
-           call-outs, pattern blocks — lets the eye rest, so raw word count overstates
-           effort. Higher divisor better matches actual essay reading time. {% endcomment %}
+        {% comment %} 240 wpm: furniture (pull-quotes, definitions, call-outs) lets the
+           eye rest, so raw word count overstates effort. {% endcomment %}
         {% assign rt = words | divided_by: 240 | plus: 1 %}
-        <span class="label dot-sep">&middot;</span>
-        <span class="label">{{ rt }} min read</span>
+        <span class="sep" aria-hidden="true">&middot;</span>
+        <span>{{ rt }} min read</span>
         {% if page.author or site.author %}
-        <span class="label dot-sep">&middot;</span>
-        <span class="label">{{ page.author | default: site.author }}</span>
+        <span class="sep" aria-hidden="true">&middot;</span>
+        <span>{{ page.author | default: site.author }}</span>
         {% endif %}
       </div>
     </div>
   </header>
 
-  {%- comment -%} The reading stage: whimsy frame wrapping the legible Bitter column. {%- endcomment -%}
-  <div class="post-stage">
-    <div class="wrap">
-      <div class="prose">
-        {{ content }}
+  {%- comment -%}
+    THE READING STAGE — a CONTINUOUS warm Oats desk holding the sacred cream
+    reading sheet(s). v6 round-3 FIX: kill the monolithic ~5000px sheet (the
+    single biggest post-page tell: a flat Medium document, the opposite of v6's
+    short dense overlapping desk). TWO moves, both done here in the layout:
+
+      1. .post-stage is now a bare CONTINUOUS DESK (no rounded panel, no inner
+         padding) so the baked Oats desk tooth + scene light read end-to-end and
+         BLEED well past the reading column on both sides — bare warm desk shows
+         around every sheet, exactly like v6.
+
+      2. The essay body is SPLIT at its <h2> section breaks into a stack of
+         SHORTER torn paper sheets. Each section sheet tears its own deckle (the
+         per-:nth-of-type variants in _post.scss), settles at its own seeded
+         tilt, and a strip of bare desk shows between sheets — so no single
+         sheet is a 5000px tile and the border-image tear never visibly repeats
+         down one giant edge. Splitting on <h2 is SAFE: furniture (callouts,
+         definitions, pull-quotes, figures) never contains an <h2>, so no scrap
+         is ever cut across two sheets — only whole top-level sections move.
+
+      Robust + content-agnostic: a post with no <h2> sections simply renders as
+      ONE sheet on the continuous desk (the short posts are not 5000px monoliths
+      anyway); the long, deeply-sectioned essay — the real offender — becomes a
+      stack of ~8 short overlapping sheets. Reading legibility is SACRED: the
+      running Bitter text inside each .prose stays clean, upright, comfortable.
+    {%- endcomment -%}
+  <div class="post-stage post-stage--desk">
+    {%- comment -%} split on the section rule; the leading "" chunk before the
+        first heading is the intro sheet, each following chunk re-grows its <h2 {%- endcomment -%}
+    {% assign sections = content | split: '<h2' %}
+    {% for section in sections %}
+      {%- if forloop.first -%}
+        {%- assign chunk = section -%}
+      {%- else -%}
+        {%- assign chunk = section | prepend: '<h2' -%}
+      {%- endif -%}
+      {%- comment -%} skip an empty leading chunk (post that opens straight on a heading) {%- endcomment -%}
+      {%- assign trimmed = chunk | strip -%}
+      {%- if trimmed != '' -%}
+      <div class="prose sheet-leaf">
+        {{ chunk }}
       </div>
-    </div>
+      {%- endif -%}
+    {% endfor %}
   </div>
 
-  {%- comment -%} Footer of the post: tags, subscribe CTA stub, prev/next. {%- endcomment -%}
+  {%- comment -%} Post foot: tags, the stamped subscribe key, prev/next paper tabs. {%- endcomment -%}
   <div class="post-foot">
     <div class="wrap">
 
       {% if page.tags.size > 0 %}
-      <div class="post-tags">
-        <span class="label">Filed under</span>
-        {% for tag in page.tags %}<span class="scrap">{{ tag }}</span>{% endfor %}
+      <div class="post-tags reveal">
+        <span class="post-tags-label">Filed under</span>
+        {% for tag in page.tags %}<span class="post-tag">{{ tag }}</span>{% endfor %}
       </div>
       {% endif %}
 
-      <aside class="subscribe paper" style="transform:rotate(-0.8deg)">
-        <span class="sheet"></span>
-        <span class="tape b" style="left:50%;margin-left:-59px;top:-15px"></span>
-        <div class="inner">
-          <span class="eyebrow">the list is the home</span>
-          <h2 class="slab subscribe-title">Get the next letter.</h2>
-          <p>The correspondence is a list-first practice. Join the Circle and the next
-            essay arrives where you actually read.</p>
-          <a class="btn" href="https://letters.drex.style/">Join the list <span class="arr">&rarr;</span></a>
+      {%- comment -%} subscribe CTA = a stamped key on a Lazuli washi-taped slip —
+        a heavy taped scrap, so it SLAMS down (its tape slaps on after). {%- endcomment -%}
+      <aside class="subscribe clip clip--lazuli piece slam" data-mat="lazuli" data-edge="torn">
+        <span class="tape" data-tape="oats" aria-hidden="true"></span>
+        <div class="subscribe-body">
+          <span class="clip-kicker">the list is the home</span>
+          <h2 class="subscribe-title slab">Get the <span class="hl draw g">next letter</span>.</h2>
+          <p class="subscribe-dek">The correspondence is a list-first practice. Join the
+            Circle and the next essay arrives where you actually read.</p>
+          <a class="subscribe-key" href="https://letters.drex.style/">
+            Join the list <span class="arr" aria-hidden="true">&rarr;</span>
+          </a>
         </div>
       </aside>
 
-      <nav class="post-nav" aria-label="More essays">
+      <nav class="post-nav reveal" aria-label="More essays">
         {% if page.previous %}
         <a class="post-nav-link prev" href="{{ page.previous.url | relative_url }}">
-          <span class="label">&larr; Previous</span>
+          <span class="post-nav-dir">&larr; Previous</span>
           <span class="post-nav-title">{{ page.previous.title }}</span>
         </a>
         {% endif %}
         {% if page.next %}
         <a class="post-nav-link next" href="{{ page.next.url | relative_url }}">
-          <span class="label">Next &rarr;</span>
+          <span class="post-nav-dir">Next &rarr;</span>
           <span class="post-nav-title">{{ page.next.title }}</span>
         </a>
         {% endif %}
       </nav>
 
-      <p class="back-line"><a class="back-link" href="{{ '/' | relative_url }}">&larr; back to the newsstand</a></p>
+      <p class="back-line reveal"><a class="back-link" href="{{ '/' | relative_url }}">&larr; back to <span class="ul draw">the notebook</span></a></p>
 
     </div>
   </div>
