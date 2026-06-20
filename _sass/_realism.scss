@@ -22,17 +22,17 @@
 // baked scene-light wash. Only when baked; otherwise _grounds.scss bg stands.
 html.baked body{
   background-color:var(--oats);
-  // scene light (fixed, doesn't tile) over the repeating baked desk tooth.
+  // ONE non-tiling desk: the baked desk + scene-light are both FIXED COVER, so the
+  // warm tooth fills the viewport once and never reveals a repeated tile/quilt seam
+  // down a long essay (displaying --bk-desk at 560px tiled was the "weird pattern").
   background-image:
     var(--bk-light),
-    var(--bk-grain, none),
     var(--bk-desk, none);
-  background-repeat:no-repeat, repeat, repeat;
-  background-size:cover, 360px 360px, 560px 560px;
-  background-attachment:fixed, scroll, scroll;
-  // grain WAS soft-light, which washed the tooth to a dead pale fill; normal lets
-  // the baked desk tooth visibly read as warm paper at 100% zoom (REFS density).
-  background-blend-mode:normal, normal, normal;
+  background-repeat:no-repeat, no-repeat;
+  background-size:cover, cover;
+  background-position:center, center;
+  background-attachment:fixed, fixed;
+  background-blend-mode:normal, normal;
 }
 
 // ===================================================================

@@ -199,8 +199,11 @@ html.baked .post-stage { background-color: transparent; }
     radial-gradient(circle at 73% 86%, rgba(65,77,87,0.07) 0 0.6px, transparent 1.4px),
     radial-gradient(circle at 9% 54%,  rgba(65,77,87,0.06) 0 0.5px, transparent 1.2px),
     repeating-linear-gradient(0deg, transparent 0 27px, rgba(65, 77, 87, 0.045) 27px 28px),
-    repeating-linear-gradient(46deg, rgba(120, 96, 58, 0.022) 0 2px, transparent 2px 5px),
-    repeating-linear-gradient(-44deg, rgba(120, 96, 58, 0.018) 0 2px, transparent 2px 6px);
+    /* the two crossed diagonal fibers read as a faint QUILT/cross-hatch on the big
+       reading surface — zeroed so the prose sheet stays calm warm cream (organic
+       toner specks + the soft horizontal rule carry the paper character). */
+    repeating-linear-gradient(46deg, rgba(120, 96, 58, 0) 0 2px, transparent 2px 5px),
+    repeating-linear-gradient(-44deg, rgba(120, 96, 58, 0) 0 2px, transparent 2px 6px);
   background-repeat:
     no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, no-repeat,
     repeat, repeat, repeat;
