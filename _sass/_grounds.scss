@@ -518,6 +518,10 @@ html.baked .board-head{
 // accents — exactly the compose-v6 read (cream dominates, a FEW colored scraps on it).
 .clip--leaf  {background-color:var(--oats)}
 html.baked .clip{background-size:cover;background-position:center;
+  // ROBUSTNESS: default to the cream Oats face/rim so a clip with an unrecognised
+  // (typo'd or not-yet-styled) `stock:` still renders as paper, never a faceless box.
+  // The .clip--<stock> rules below override for the known stocks.
+  background-image:var(--bk-piece-oats);border-image-source:var(--bk-edge-oats);
   clip-path:none;                  // baked torn rim supplies the silhouette
   border-style:solid;border-color:transparent;
   // align to the _realism scrap mixin: slice w/ fill + RING repeat (no tile clone)
@@ -572,6 +576,10 @@ html.baked .clip--ledger{
   background-position:left top, left top, center;
   background-repeat:repeat, repeat-y, no-repeat;
 }
+// text begins to the RIGHT of the red margin rule (real ledger/notebook paper) —
+// the rule is at ~28-31px, so clear it with a left inset on the body + banner title.
+.clip--ledger .clip-body{padding-left:clamp(2.4rem, 5vw, 2.8rem)}
+.post-banner--ledger .post-title{padding-left:clamp(1.4rem, 4vw, 2rem)}
 
 // seeded edge-PROFILE variation: shift the slice + width per position so the same
 // sprite never tiles identically on two adjacent clips (REFS 12/30 — no clones).
