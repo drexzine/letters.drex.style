@@ -273,6 +273,32 @@ html.baked body[data-motion="full"] .board-pile>.clip.tilt-6{ --rest-rot:3.2deg;
   html.baked body[data-motion="full"] .prose .callout:nth-of-type(4n+4){ --rest-rot:0.7deg; }
 }
 
+// ---------- TOUCH-FRIENDLY PRESS on the in-prose scraps (FEEL principle 1) ----------
+// The hover-lift + :active press above live behind @media (hover:hover), so a TOUCH
+// reader (phone/tablet) tapping a .callout / .pullquote got foley + pin haptics but
+// NO visible reply on the colored scrap in the reading column. Restate the :active
+// press OUTSIDE the hover block so it fires on touch too. Transform/shadow ONLY
+// (translateY 1px into the desk + the tighter contact cast) — never opacity/contrast,
+// so long-form legibility stays sacred. The .pullquote press composes through --lift-y
+// (its transform is owned above); the .callout gets its own composed transform here.
+// Seeded --rest-rot is mirrored so the press lands at the authored tilt, not flat.
+html.baked body[data-motion="full"] .callout:active{
+  transform:translateY(1px) rotate(var(--rest-rot,0deg));
+  box-shadow:var(--sh-contact);
+  transition:transform var(--t-micro) var(--ease-settle),
+             box-shadow var(--t-micro) ease;
+}
+html.baked body[data-motion="full"] .pullquote:active{
+  --lift-y:1px; box-shadow:var(--sh-contact);
+  transition:transform var(--t-micro) var(--ease-settle),
+             box-shadow var(--t-micro) ease;
+}
+// mirror the callout's authored seeded resting angles so the touch press keeps the tilt.
+html.baked body[data-motion="full"] .prose .callout:nth-of-type(4n+1){ --rest-rot:-0.9deg; }
+html.baked body[data-motion="full"] .prose .callout:nth-of-type(4n+2){ --rest-rot:1.2deg; }
+html.baked body[data-motion="full"] .prose .callout:nth-of-type(4n+3){ --rest-rot:-1.6deg; }
+html.baked body[data-motion="full"] .prose .callout:nth-of-type(4n+4){ --rest-rot:0.7deg; }
+
 // ===================================================================
 // @KEYFRAMES MOTION LIBRARY — paper physics, FEEL.md §C numbers.
 //   settle      ±2–3° wobble, two decaying cycles ~250ms
@@ -308,9 +334,18 @@ html.baked body[data-motion="full"] .board-pile>.clip.tilt-6{ --rest-rot:3.2deg;
   82% {translate:0 0;   scale:.98 1.05}              // rebound (one oscillation)
   100%{translate:0 0;   scale:1}
 }
-@keyframes drex-reveal{
-  0%{opacity:0; translate:0 16px}
-  100%{opacity:1; translate:0 0}
+// REVEAL-LAND — paper physics for the scroll-reveal (replaces the flat webslop
+// fade). A hand setting a scrap down: it drops the last 12px, gives ONE small
+// decaying ~2deg rotate cycle (composed OVER the seeded --rest-rot so each scrap
+// still lands at its authored tilt), and un-stretches 1.01→1.0. REGRESSION GUARD:
+// opacity is deliberately NOT touched here — visibility is owned by the plain
+// transition on .reveal.in below, so a scrap can never be stranded invisible if
+// this multi-keyframe run never reaches its fill frame (headless/throttled paint).
+@keyframes drex-reveal-land{
+  0%  {translate:0 12px; scale:1.01; rotate:calc(var(--rest-rot,0deg) + 1.8deg)}
+  52% {translate:0 -1px; scale:1.004; rotate:calc(var(--rest-rot,0deg) - 0.9deg)}
+  78% {translate:0 0;    scale:1;     rotate:calc(var(--rest-rot,0deg) + 0.35deg)}
+  100%{translate:0 0;    scale:1;     rotate:var(--rest-rot,0deg)}
 }
 @keyframes drex-tapeslap{
   0%{opacity:0; translate:0 -16px; rotate:14deg}
@@ -343,9 +378,24 @@ html.js-anim body[data-motion="full"] .slam.in{opacity:1;animation:drex-slam .46
 html.js-anim body[data-motion="full"] .slam .tape{opacity:0}
 html.js-anim body[data-motion="full"] .slam.in .tape{opacity:1;animation:drex-tapeslap .32s cubic-bezier(.34,1.4,.5,1) .4s both}
 
-html.js-anim body[data-motion="full"] .reveal{opacity:0;translate:0 16px;
-  transition:opacity .24s ease, translate .5s var(--ease-settle)}
-html.js-anim body[data-motion="full"] .reveal.in{opacity:1;translate:0 0}
+// HIDE state: opacity owned by a plain transition (robust fail-open). The
+// translate seed stays for the no-keyframe path; .reveal.in plays the physics
+// keyframe ON TOP. MUST carry html.js-anim so .reveal.in out-specifies this hide.
+html.js-anim body[data-motion="full"] .reveal{opacity:0;translate:0 12px;
+  transition:opacity .28s ease, translate .5s var(--ease-settle)}
+// LAND: opacity restored by the transition above (never inside the keyframe);
+// the paper-physics drop+rotate+settle runs over the seeded --rest-rot. Keeping
+// the html.js-anim prefix guarantees computed opacity:1 at rest (REGRESSION GUARD).
+html.js-anim body[data-motion="full"] .reveal.in{opacity:1;translate:0 0;
+  animation:drex-reveal-land .42s var(--ease-settle) both}
+
+// ENTRANCE STAGGER — clusters land in sequence like a hand placing them, not a
+// simultaneous hailstorm. Pure CSS animation-delay on the .in keyframe (the
+// opacity transition is NOT delayed, so a scrap is fully opaque the instant it
+// gains .in — only its physical land is staggered; nothing can stay invisible).
+html.js-anim body[data-motion="full"] .reveal.in:nth-of-type(4n+2){animation-delay:.06s}
+html.js-anim body[data-motion="full"] .reveal.in:nth-of-type(4n+3){animation-delay:.12s}
+html.js-anim body[data-motion="full"] .reveal.in:nth-of-type(4n+4){animation-delay:.18s}
 
 // FAIL-OPEN v2 (full motion): the hidden pre-entrance state is armed by html.js-anim,
 // but if the IntersectionObserver ever misses a scrap (off-screen seed, late layout,

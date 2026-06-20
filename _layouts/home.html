@@ -101,9 +101,13 @@ layout: default
               stroke-linejoin="round" opacity="0.55"/>
       </svg>
 
-      {%- comment -%} a torn admission ticket — small School-Bus FILLED tab, Sambas
-        ink (never yellow text), staying inside the 5% accent budget. {%- endcomment -%}
-      <div class="litter litter--ticket scrap piece slam" data-mat="schoolbus" data-edge="torn">
+      {%- comment -%} BUDGET — a torn admission-ticket stub. School-Bus is a 5%
+        dark-ink-only accent, and the kraft byline strip above is already the ONE
+        saffron piece on the desk (v6 has a single kraft byline), so this ticket
+        is demoted to an OATS torn stub: cream paper, with only the small "№ 001"
+        set in School-Bus INK (never a saffron fill). Keeps a single saffron
+        accent on the board, inside budget, and adds cream breathing room. {%- endcomment -%}
+      <div class="litter litter--ticket scrap piece slam" data-mat="oats" data-edge="torn">
         <span class="ticket-no">№ 001</span>
         <span class="ticket-lbl">admit one &middot; the studio</span>
       </div>
@@ -122,17 +126,23 @@ layout: default
       {%- assign epoch = post.date | date: '%s' | plus: 0 -%}
       {%- assign slugn = post.slug | size | times: 7 -%}
       {%- assign seed = epoch | plus: slugn | plus: forloop.index0 -%}
-      {%- assign s5 = seed | modulo: 5 -%}
-      {%- comment -%} stagger the START offset per render-neighbour so two posts
-        sharing s5 still differ: rotate the stock list by (forloop.index0). {%- endcomment -%}
-      {%- assign pick = s5 | plus: forloop.index0 | modulo: 5 -%}
-      {%- case pick -%}
-        {%- when 0 -%}{%- assign stock = 'grass'  -%}{%- assign mat = 'grass'    -%}{%- assign fasten = 'pin' -%}
-        {%- when 1 -%}{%- assign stock = 'note'   -%}{%- assign mat = 'sambas'   -%}{%- assign fasten = 'tape-lazuli' -%}
-        {%- when 2 -%}{%- assign stock = 'coral'  -%}{%- assign mat = 'colorado' -%}{%- assign fasten = 'tape-happy' -%}
-        {%- when 3 -%}{%- assign stock = 'lazuli' -%}{%- assign mat = 'lazuli'   -%}{%- assign fasten = 'tape-oats' -%}
-        {%- else    -%}{%- assign stock = 'kraft'  -%}{%- assign mat = 'schoolbus' -%}{%- assign fasten = 'pin' -%}
-      {%- endcase -%}
+      {%- comment -%} FEW-POSTS RULE (compose-v6): a blog of a handful of posts is
+        NOT a 30-card quilt — each clipping is its OWN DISTINCT VIVID stock (v6: a
+        dark Sambas note, a Lazuli slip, a Colorado quote, a Grass banner, a kraft
+        byline) and the Oats desk breathes through the GRID GAPS, not through cream
+        clip faces. Cycle the supported vivid (stock,mat,fasten) tuples by post
+        index so adjacent clips never share a colour, and the budget stays balanced
+        (Sambas 20 / Lazuli 10 / Colorado 10 / Grass 25 / School-Bus 5). The hero
+        board banner already owns one Grass field, so Grass sits 4th in the cycle —
+        the first three posts land Sambas → Lazuli → Colorado, exactly v6's trio. {%- endcomment -%}
+      {%- assign stocks  = 'note,lazuli,coral,grass,kraft' | split: ',' -%}
+      {%- assign mats    = 'sambas,lazuli,colorado,grass,schoolbus' | split: ',' -%}
+      {%- assign fastens = 'pin,tape-oats,tape-happy,tape-lazuli,pin' | split: ',' -%}
+      {%- assign si = forloop.index0 | modulo: 5 -%}
+      {%- assign stock  = stocks[si] -%}
+      {%- assign mat    = mats[si] -%}
+      {%- assign fasten = fastens[si] -%}
+      {%- comment -%} seeded never-square tilt below; cream now lives in the gaps. {%- endcomment -%}
       {%- comment -%} seeded never-square tilt: >5 distinct angles chosen off the
         seed so the resting rake varies independently of the stock. {%- endcomment -%}
       {%- assign t = seed | modulo: 7 -%}

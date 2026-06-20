@@ -80,6 +80,37 @@ layout: default
       running Bitter text inside each .prose stays clean, upright, comfortable.
     {%- endcomment -%}
   <div class="post-stage post-stage--desk">
+
+    {%- comment -%}
+      INTERACTIVITY PARITY (round 2) — the home board has one genuinely
+      draggable 'pick-it-up' object (blog.js initDrag binds the FIRST
+      `.board-litter .litter--photo` in the document). The long essay had none.
+      So we drop a SINGLE decorative loose polaroid onto the post desk, in the
+      `.board-litter--post` overlay. It is:
+        - aria-hidden + NOT a link (purely a craft toy; assistive tech skips it);
+        - pinned into the BARE DESK MARGIN beside the reading column (positioned
+          in _post.scss so it can never sit over `.prose` — content is never on
+          the drag path, so a drag can never strand a word of the essay);
+        - desktop-only as a drag affordance: on phones the litter overlay collapses
+          out of the way (no absolute splay), so it never crowds the 360px measure.
+      initDrag grabs the first match document-wide; the post has exactly one, so
+      no JS change is needed and the home page is untouched. REVEAL (not slam): it
+      fades in once and LANDS at translate:0 0 — the same home position initDrag
+      settles to (tgtX/tgtY=0) — so the entrance engine and the drag never fight
+      over the `translate` longhand, and the scrap computes opacity:1 at rest.
+    {%- endcomment -%}
+    <div class="board-litter board-litter--post" aria-hidden="true">
+      <figure class="litter litter--photo figure polaroid piece reveal" data-mat="oats" data-edge="cut">
+        <span class="tape" data-tape="lazuli"></span>
+        <div class="ph">
+          <img src="{{ '/assets/img/studio.jpg' | relative_url }}" alt=""
+               loading="lazy" decoding="async"
+               onerror="this.closest('.ph').classList.add('ph--empty');this.remove()">
+        </div>
+        <figcaption class="cap">drag me &#10047;</figcaption>
+      </figure>
+    </div>
+
     {%- comment -%} split on the section rule; the leading "" chunk before the
         first heading is the intro sheet, each following chunk re-grows its <h2 {%- endcomment -%}
     {% assign sections = content | split: '<h2' %}

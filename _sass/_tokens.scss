@@ -51,10 +51,12 @@
   --sh-warm:58,49,38;        // warm umber-grey ambient (v6 SH)
   --sh-seam:44,36,26;        // warm dark occlusion / crease (v6 SEAM)
 
-  // REFS 2 — contact core: 1–3px offset, 1–2px blur, 25–40% — hugs the silhouette
+  // REFS 2 — contact core: tight 1px offset/blur, higher first-layer opacity so
+  // each scrap reads as SEATED on the desk (was too faint to seat). Tinted umber
+  // (--sh-seam), never neutral black, + a short ambient kiss.
   --sh-contact:
-    0 1px 1.5px rgba(var(--sh-seam),.34),
-    0 2px 2px   rgba(var(--sh-warm),.20);
+    0 1px 1px   rgba(var(--sh-seam),.40),
+    0 2px 3px   rgba(var(--sh-warm),.18);
 
   // REFS 3 — layered ambient falloff: 2–3 stacked ≤10% layers (nonlinear penumbra)
   --sh-ambient:

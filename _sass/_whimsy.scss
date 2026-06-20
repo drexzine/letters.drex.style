@@ -36,7 +36,19 @@
 .eyebrow:nth-of-type(4n+2){transform:rotate( 1.1deg);font-size:calc(var(--t-eyebrow) * .97)}
 .eyebrow:nth-of-type(4n+3){transform:rotate(-0.6deg);font-size:calc(var(--t-eyebrow) * 1.02)}
 .eyebrow:nth-of-type(4n+4){transform:rotate( 2deg);  font-size:calc(var(--t-eyebrow) * .99)}
-.label{font-family:var(--f-mono);font-weight:500;text-transform:uppercase;letter-spacing:.14em;font-size:var(--t-label)}
+// DM Mono label — the ONLY type that read laser-printed (display + body both get
+// baked ink). Give it a VERY subtle pressed-in seam: a single faint bleed-gain at
+// the stroke root, LIGHTER than the display rule (.20 vs its .42 + warm halo) so
+// the small caps stay crisp + AA. Hand-pinned labels (cut-here, eyebrow-style
+// chips) also get a <=0.3deg seeded tilt — imperceptible to legibility, but it
+// kills the grid-true clone tell. NEVER applied to running meta rows
+// (.post-meta / .clip-meta own their own rules and stay upright + un-shadowed).
+.label{font-family:var(--f-mono);font-weight:500;text-transform:uppercase;letter-spacing:.14em;font-size:var(--t-label);
+  text-shadow:0 .4px 0 rgba(var(--sh-seam),.20)}   // faint seam bleed-gain — ink kissed into the tooth, no warm halo (labels stay crisp)
+// seeded hand-pinned tilt — <=0.3deg, sub-perceptual, no two labels parallel
+.label:nth-of-type(3n+1){transform:rotate(-0.3deg);display:inline-block}
+.label:nth-of-type(3n+2){transform:rotate( 0.2deg);display:inline-block}
+.label:nth-of-type(3n+3){transform:rotate(-0.15deg);display:inline-block}
 .dot{color:var(--grass);font-weight:700}
 .slab{font-family:var(--f-slab);font-style:italic;font-weight:700;line-height:.98;letter-spacing:-.02em}
 

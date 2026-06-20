@@ -321,8 +321,53 @@ html.baked .prose::before { content:none; } /* the baked torn edge owns the lip 
   background-image: none;          /* the baked html.baked body desk shows through */
   border-radius: 0;
   overflow-x: clip;
+  position: relative;              /* anchor the draggable post litter to the desk */
 }
 html.baked .post-stage--desk { background-color: transparent; }
+
+/* ---------------------------------------------------------------------------
+   2c. THE DRAGGABLE POST POLAROID (interactivity parity with the home board)
+   The long essay gets ONE genuinely 'pick-it-up' object — a loose studio
+   polaroid dropped onto the desk. blog.js initDrag binds the first
+   `.board-litter .litter--photo` document-wide; the post has exactly one, so
+   no JS change is needed. It lives in the BARE DESK MARGIN beside the centred
+   reading column (sheet measure is 880px) so it can NEVER sit over `.prose` —
+   content is never on the drag path, so a drag can never strand a word.
+   Decorative + aria-hidden + not a link. Below the column width it collapses
+   out of the splay (handled in _mobile.scss) so it never crowds the measure.
+   ------------------------------------------------------------------------- */
+.board-litter--post {
+  position: absolute;
+  inset: 0;
+  z-index: 0;                      /* tucks BEHIND the reading sheets (sheets z>0) */
+  margin: 0; padding: 0;
+  display: block;
+  pointer-events: none;            /* the layer never steals clicks from the text */
+}
+/* hidden by default — only splayed onto the desk once there is bare margin wide
+   enough that the polaroid sits clear of the 880px reading sheet (see below). */
+.board-litter--post .litter--photo { display: none; }
+
+/* only when the desk is meaningfully wider than the reading sheet do we have a
+   bare-desk gutter to drop the polaroid into. ~880px sheet + a ~190px polaroid +
+   breathing room => arm it at 1180px up. It pins to the RIGHT gutter, low on the
+   desk (past the masthead/intro), clear of the centred column. */
+@media (min-width: 1180px) {
+  .board-litter--post .litter--photo {
+    display: block;
+    position: absolute;
+    /* right gutter: (100% - 880px sheet) / 2 is the bare margin; sit inside it */
+    right: clamp(0.5rem, calc((100% - 880px) / 2 - 11rem), 4rem);
+    top: clamp(16rem, 30vw, 32rem);
+    width: min(11rem, 16vw);
+    transform: rotate(3.4deg);
+    pointer-events: auto;          /* the ONE scrap that accepts the drag */
+    cursor: grab;
+    touch-action: none;
+    z-index: 2;                    /* the toy rides above the desk, beside the text */
+  }
+  .board-litter--post .litter--photo.is-dragging { cursor: grabbing; z-index: 30; }
+}
 
 /* the split section sheets: a stack with bare desk between them. Slight overlap
    + alternating seeded tilt so they read as hand-stacked clippings, never a tidy
@@ -573,19 +618,21 @@ html.baked .post-stage--desk { background-color: transparent; }
    .kicker is Birdie/Happy on a dark ground; on the Oats sheet the brand §4.3
    eyebrow runs Colorado). Primitive lives in _whimsy.scss; nothing to add. ---- */
 
-/* ---- pullquote.html : the v6 COLORADO TORN QUOTE-SCRAP (.b-quote) ----
-   Ported literally: a Colorado torn cardstock scrap, a big knocked-out opening
-   quote-mark, the line set in Pitch-italic, tilted, pinned with a red thumbtack.
-   v6 set the quote body in crisp Sambas ink on the red ground (the lowest-
-   contrast text on the page fixed) — kept here for AA. */
+/* ---- pullquote.html : a CREAM TORN QUOTE-SLIP with a Colorado tape accent ----
+   BUDGET (v6 cream-breathing-room): the default pull-quote is now a torn OATS/cream
+   slip in crisp Sambas ink — so a long essay's quotes read as cream clippings on the
+   desk, not a metronomic ladder of full-saturation Colorado blocks. The colour signal
+   is carried by a SMALL Colorado accent: the knocked-IN opening quote-mark + the red
+   thumbtack that pins it. The rarer fully-saturated red note is the .pullquote--shout
+   variant only (below). Pitch-italic line, tilted, pinned. */
 .pullquote {
   position: relative;
   margin: clamp(2.2rem, 5.5vw, 3.4rem) auto clamp(1.8rem, 4vw, 2.6rem);
   width: min(30ch, 100%);
   max-width: none;
   padding: clamp(1.5rem, 4vw, 2rem) clamp(1.6rem, 4vw, 2rem) clamp(1.6rem, 4vw, 2.1rem);
-  /* Colorado torn cardstock (v6 .b-quote) — flat red base + soft tinted cast. */
-  background-color: var(--colorado);
+  /* cream torn cardstock — flat Oats base + soft tinted cast (cream dominates). */
+  background-color: var(--paper);
   border-radius: 9px 5px 11px 6px / 6px 11px 5px 9px; /* torn deckle fallback */
   box-shadow: var(--sh-contact), var(--sh-ambient);
   transform: rotate(2.2deg); /* v6 .b-quote rot — varied per-instance by seed below */
@@ -597,11 +644,10 @@ html.baked .post-stage--desk { background-color: transparent; }
 .prose .pullquote:nth-of-type(3n+1) { transform: rotate(2.2deg);  --rest-rot: 2.2deg;  width: min(31ch, 100%); }
 .prose .pullquote:nth-of-type(3n+2) { transform: rotate(-2.6deg); --rest-rot: -2.6deg; width: min(27ch, 100%); }
 .prose .pullquote:nth-of-type(3n+3) { transform: rotate(1.5deg);  --rest-rot: 1.5deg;  width: min(33ch, 100%); }
-/* baked: the real torn Colorado paper face + edge (the flattest scrap in v6 got
-   the coarsest tooth + biggest tear). */
+/* baked: the real torn Oats/cream paper face + edge. */
 html.baked .pullquote {
-  @include scrap-face(--bk-piece-coral, --bk-edge-coral, var(--bk-edge-coral-slice, 38));
-  background-color: var(--colorado);
+  @include scrap-face(--bk-piece-oats, --bk-edge-oats, var(--bk-edge-oats-slice, 38));
+  background-color: var(--paper);
 }
 /* pq-text is a <blockquote>; neutralize the bare-markdown .prose blockquote
    styling (grass border-left, italic, padding) so the scrap owns its look. */
@@ -611,7 +657,8 @@ html.baked .pullquote {
   border-left: 0;
   font-style: italic;
 }
-/* knocked-out opening quote-mark, ink-pressed into the fibered red stock (v6) */
+/* big opening quote-mark in COLORADO — the small deliberate colour accent that
+   carries the red signal on the cream slip (ink pressed into the Oats tooth). */
 .pullquote .pq-text::before {
   content: "\201C";
   display: block;
@@ -621,10 +668,9 @@ html.baked .pullquote {
   font-size: 2.9rem;
   line-height: 0.5;
   height: 0.5em;
-  color: #fff8ec;
+  color: var(--colorado);
   opacity: 0.92;
-  text-shadow: 0 0 1.4px rgba(255, 248, 236, 0.5),
-               0.4px 0.5px 0.6px rgba(120, 30, 32, 0.4);
+  text-shadow: 0 0.5px 0 rgba(var(--sh-seam), 0.3);
 }
 .pullquote .pq-text {
   font-family: var(--f-slab);
@@ -633,8 +679,8 @@ html.baked .pullquote {
   line-height: 1.18;
   letter-spacing: -0.005em;
   font-size: clamp(1.25rem, 3.6vw, 1.55rem);
-  color: #2c343b;                 /* crisp Sambas ink on red — AA (v6 fix) */
-  text-shadow: 0 0.6px 0 rgba(255, 240, 232, 0.32);
+  color: var(--ink);              /* crisp Sambas ink on the cream slip — AA */
+  text-shadow: 0 0.6px 0 rgba(254, 246, 228, 0.32);
   margin: 0.3rem 0 0;
   display: block;
 }
@@ -642,8 +688,7 @@ html.baked .pullquote {
 .pullquote .pq-attrib {
   font-family: var(--f-hand);
   font-size: 1.05rem;
-  color: #fffdf3;                 /* Birdie caption on red — light ink */
-  text-shadow: 0 1px 1px rgba(120, 30, 32, 0.35);
+  color: var(--ink);                  /* Birdie attribution in Sambas ink on cream */
   margin-top: 0.9rem;
   transform: rotate(-1deg);
   display: block;
@@ -658,48 +703,81 @@ html.baked .pullquote {
   width: 17px; height: 17px;
   border-radius: 50%;
   background:
-    radial-gradient(circle at 34% 30%, #ffd9da 0%, #f17a7d 30%, #d8383b 70%, #a82a2d 100%);
+    radial-gradient(circle at 34% 30%,
+      color-mix(in srgb, var(--colorado) 26%, #fff) 0%,   /* glossy specular tint (≈#ffd9da) */
+      color-mix(in srgb, var(--colorado) 78%, #fff) 30%,  /* lit face (≈#f17a7d) */
+      color-mix(in srgb, var(--colorado) 85%, #000) 70%,  /* body shade (≈#d8383b) */
+      color-mix(in srgb, var(--colorado) 62%, #000) 100%); /* occluded rim (≈#a82a2d) — all derived from --colorado */
   box-shadow: 0 0 0 1px rgba(120, 30, 32, 0.3),
               1px 2px 3px rgba(44, 36, 26, 0.4),
               inset 1px 1px 2px rgba(255, 255, 255, 0.6);
 }
 
-/* ---- callout.html : the v6 DARK ANSWER-NOTE (.b-answer) / kraft slip ----
-   The "For Drex" note IS the v6 answer-note ported literally: a Sambas dark
-   torn cardstock note, Bitter body in light ink, a Happy mono label, and the
-   faint warm "ink-well" veil under the reading column so Bitter strokes stay
-   sharp on the tooth. Taped on at a tilt. */
+/* RARER full-saturation Colorado note — the v6 .b-quote red scrap, reserved for a
+   deliberate "shout" quote (markdown opts in via .pullquote--shout). Keeps the
+   saturated red OFF the default cadence so most quotes stay cream (budget). */
+.pullquote--shout {
+  background-color: var(--colorado);
+}
+html.baked .pullquote--shout {
+  @include scrap-face(--bk-piece-coral, --bk-edge-coral, var(--bk-edge-coral-slice, 38));
+  background-color: var(--colorado);
+}
+.pullquote--shout .pq-text::before { color: var(--oats); }
+.pullquote--shout .pq-text { color: color-mix(in srgb, var(--sambas) 68%, #000); }  /* a darker Sambas ink (≈#2c343b) derived from the token — crisp on red, AA (v6 fix) */
+.pullquote--shout .pq-attrib {
+  color: var(--oats);
+  text-shadow: 0 1px 1px rgba(120, 30, 32, 0.35);
+}
+
+/* ---- callout.html : a CREAM/KRAFT TAPED SLIP (default) ----
+   BUDGET (v6 cream-breathing-room): the everyday callout is now a torn OATS/cream
+   slip in Sambas ink, taped on at a tilt — so the column reads as cream clippings,
+   not a metronomic ladder of full-saturation dark Sambas blocks. The colour signal
+   is a SMALL Sambas tape accent. The full-saturation dark Sambas "answer-note" (the
+   v6 .b-answer port) is reserved for the rarer .callout--answer variant (below);
+   the bright Grass aside stays .callout--note. */
 .callout {
   position: relative;
   margin: clamp(1.8rem, 4vw, 2.6rem) 0;
   padding: clamp(1.2rem, 3vw, 1.6rem) clamp(1.2rem, 3vw, 1.7rem) clamp(1.1rem, 3vw, 1.5rem);
-  /* Sambas dark torn note (v6 .b-answer) — flat dark base + soft tinted cast. */
-  background-color: var(--sambas);
-  color: #fffdf4;
-  border-radius: 7px 4px 9px 5px / 5px 9px 4px 7px;
+  /* cream torn slip — flat Oats base + soft tinted cast (cream dominates). */
+  background-color: var(--paper);
+  color: var(--ink);
+  /* TORN DECKLE fallback (REFS 9 + 29 never-square). The old tiny 4–9px radius
+     left every callout — and the saturated GRASS .callout--note worst of all —
+     reading as a flat web block with hard right/bottom edges + square corners.
+     A heavy ASYMMETRIC deckle (the same idiom .prose/.pullquote/.cite use) tears
+     all four rims so the slip reads as a real clipping even pre-bake / on a
+     partial bake — and, unlike clip-path, it never crops the overhanging washi
+     tape or pin. The baked two-zone border-image rim overrides this to 0 below. */
+  border-radius: 78px 14px 92px 18px / 18px 88px 14px 74px;
   box-shadow: var(--sh-contact), var(--sh-ambient);
   transform: rotate(-0.9deg);     /* a note torn off + taped on at a tilt (seeded below) */
 }
-/* SEEDED non-repeating tilt AND width per instance (no fixed single angle/size →
-   not a band). The 601px float block alternates which margin each breaks into. */
-.prose .callout:nth-of-type(4n+1) { transform: rotate(-0.9deg); --rest-rot: -0.9deg; }
-.prose .callout:nth-of-type(4n+2) { transform: rotate(1.2deg);  --rest-rot: 1.2deg; }
-.prose .callout:nth-of-type(4n+3) { transform: rotate(-1.6deg); --rest-rot: -1.6deg; }
-.prose .callout:nth-of-type(4n+4) { transform: rotate(0.7deg);  --rest-rot: 0.7deg; }
+/* SEEDED non-repeating tilt, deckle AND width per instance (no fixed single
+   angle/size/tear → not a band; the saturated Grass note never clones a
+   neighbour's rim). The 601px float block alternates which margin each breaks into. */
+.prose .callout:nth-of-type(4n+1) { transform: rotate(-0.9deg); --rest-rot: -0.9deg; border-radius: 78px 14px 92px 18px / 18px 88px 14px 74px; }
+.prose .callout:nth-of-type(4n+2) { transform: rotate(1.2deg);  --rest-rot: 1.2deg;  border-radius: 16px 84px 20px 96px / 90px 14px 80px 18px; }
+.prose .callout:nth-of-type(4n+3) { transform: rotate(-1.6deg); --rest-rot: -1.6deg; border-radius: 90px 16px 74px 22px / 14px 82px 20px 92px; }
+.prose .callout:nth-of-type(4n+4) { transform: rotate(0.7deg);  --rest-rot: 0.7deg;  border-radius: 20px 96px 16px 80px / 86px 18px 92px 14px; }
 @media (min-width: 601px) {
   .prose .callout:nth-of-type(4n+1) { width: min(54%, 29ch); }
   .prose .callout:nth-of-type(4n+2) { width: min(58%, 31ch); }
   .prose .callout:nth-of-type(4n+3) { width: min(52%, 27ch); }
   .prose .callout:nth-of-type(4n+4) { width: min(57%, 32ch); }
 }
-/* baked: the real torn Sambas paper face + edge. */
+/* baked: the real torn Oats/cream slip face + edge (the baked two-zone border-image
+   rim supplies the silhouette, so the deckle radius resets to 0). */
 html.baked .callout {
-  @include scrap-face(--bk-piece-sambas, --bk-edge-sambas, var(--bk-edge-sambas-slice, 38));
-  background-color: var(--sambas);
-  color: #fffdf4;
+  @include scrap-face(--bk-piece-oats, --bk-edge-oats, var(--bk-edge-oats-slice, 38));
+  background-color: var(--paper);
+  color: var(--ink);
 }
-/* v6's local "ink-well" veil: a faint dark radial under the reading column so
-   the body serif's strokes don't get chewed by the tooth. */
+/* the local ink-well veil under the reading column. On the default cream slip it
+   is a faint WARM cream wash (lifts the serif off the Oats tooth); the saturated
+   variants override the tint to a dark/colored wash below. */
 .callout::before {
   content: "";
   position: absolute;
@@ -708,17 +786,19 @@ html.baked .callout {
   z-index: 0;
   border-radius: 10px;
   background: radial-gradient(125% 100% at 42% 32%,
-    rgba(58, 69, 79, 0.55) 0%, rgba(58, 69, 79, 0.32) 58%, rgba(58, 69, 79, 0) 100%);
+    rgba(255, 250, 236, 0.55) 0%, rgba(255, 250, 236, 0.3) 58%, rgba(255, 250, 236, 0) 100%);
   filter: blur(3px);
   pointer-events: none;
 }
 .callout > * { position: relative; z-index: 1; }
+/* default tape accent = a small Sambas washi strip (the colour signal on cream). */
 .callout > .tape {
   position: absolute;
   z-index: 4;
   left: 1.4rem;
   top: -14px;
   transform: rotate(-5deg);
+  background: linear-gradient(94deg, rgba(65,77,87,.34), rgba(65,77,87,.2) 55%, rgba(65,77,87,.32));
 }
 .callout-label {
   font-family: var(--f-mono);
@@ -726,27 +806,58 @@ html.baked .callout {
   text-transform: uppercase;
   letter-spacing: 0.16em;
   font-size: 0.72rem;
-  color: var(--oats);             /* §4.3 dark-bg: light Oats label (Happy/School Bus reserved for chip FILLS, dark ink only) */
-  text-shadow: 0 1px 1px rgba(var(--sh-seam), 0.42); /* warm seam, not neutral black */
+  color: var(--colorado);         /* Colorado mono kicker — §4.3 Oats-bg eyebrow accent */
   display: block;
   margin-bottom: 0.6rem;
 }
 .callout-body {
   font-family: var(--f-body);
-  font-weight: 400;               /* v6 b-answer p weight 500; 400 reads cleaner at column width */
+  font-weight: 400;
   font-size: 1rem;
   line-height: 1.55;
-  color: #fffdf4;
-  text-shadow: 0 0.6px 0 rgba(var(--sh-seam), 0.5); /* warm seam lifts serif off the dark tooth */
+  color: var(--ink);              /* Sambas body on the cream slip — AA */
 }
 .callout-body :last-child { margin-bottom: 0; }
 .callout-body p { margin: 0 0 0.7em; }
-.callout-body strong { color: var(--paper); font-weight: 600; }
-.callout-body em { font-style: italic; color: var(--oats); font-weight: 600; } /* §4.3 dark-bg emphasis = light Oats, not Happy */
+.callout-body strong { color: var(--ink); font-weight: 600; }
+.callout-body em { font-style: italic; color: var(--ink); font-weight: 600; }
 .callout-body a {
-  color: var(--grass);            /* §4.3 dark-bg link = Grass (Happy/School Bus reserved for chip fills) */
+  color: var(--ink);              /* Sambas link w/ Grass underline — AA on cream */
   background: none;
-  border-bottom: 1px solid rgba(28, 171, 91, 0.55);
+  border-bottom: 1px solid var(--grass);
+}
+
+/* RARER full-saturation DARK SAMBAS answer-note — the v6 .b-answer port, reserved
+   for the occasional "answer" beat (markdown opts in via .callout--answer). Keeps
+   the saturated dark block OFF the default cadence so the column stays cream. */
+.callout--answer {
+  background-color: var(--sambas);
+  color: var(--oats);
+}
+html.baked .callout--answer {
+  @include scrap-face(--bk-piece-sambas, --bk-edge-sambas, var(--bk-edge-sambas-slice, 38));
+  background-color: var(--sambas);
+  color: var(--oats);
+}
+/* dark ink-well veil so the serif strokes stay sharp on the dark tooth (v6). */
+.callout--answer::before {
+  background: radial-gradient(125% 100% at 42% 32%,
+    rgba(58, 69, 79, 0.55) 0%, rgba(58, 69, 79, 0.32) 58%, rgba(58, 69, 79, 0) 100%);
+}
+.callout--answer > .tape { background: linear-gradient(94deg, rgba(28,171,91,.44), rgba(28,171,91,.26) 55%, rgba(28,171,91,.4)); }
+.callout--answer .callout-label {
+  color: var(--oats);             /* §4.3 dark-bg: light Oats label */
+  text-shadow: 0 1px 1px rgba(var(--sh-seam), 0.42);
+}
+.callout--answer .callout-body {
+  color: var(--oats);
+  text-shadow: 0 0.6px 0 rgba(var(--sh-seam), 0.5); /* warm seam lifts serif off the dark tooth */
+}
+.callout--answer .callout-body strong { color: var(--paper); }
+.callout--answer .callout-body em { color: var(--oats); }
+.callout--answer .callout-body a {
+  color: var(--grass);            /* §4.3 dark-bg link = Grass */
+  border-bottom-color: rgba(28, 171, 91, 0.55);
 }
 
 /* "note" kind = a GRASS taped slip (the brighter aside; brief: callout = Grass
@@ -754,13 +865,13 @@ html.baked .callout {
    washi tape, a faint light ink-well veil so the serif strokes stay sharp. */
 .callout--note {
   background-color: var(--grass);
-  color: #fffdf4;
+  color: var(--oats);
   transform: rotate(0.7deg);
 }
 html.baked .callout--note {
   @include scrap-face(--bk-piece-grass, --bk-edge-grass, var(--bk-edge-grass-slice, 38));
   background-color: var(--grass);
-  color: #fffdf4;
+  color: var(--oats);
 }
 /* light ink-well veil (Grass is bright) so the Bitter strokes don't get chewed
    by the tooth — a faint warm-white radial under the reading column. */
@@ -769,7 +880,7 @@ html.baked .callout--note {
     rgba(20, 120, 64, 0.5) 0%, rgba(20, 120, 64, 0.28) 58%, rgba(20, 120, 64, 0) 100%);
 }
 .callout--note .callout-label { color: var(--oats); text-shadow: 0 1px 1px rgba(var(--sh-seam), 0.4); }
-.callout--note .callout-body { color: #fffdf4; text-shadow: 0 0.5px 0 rgba(var(--sh-seam), 0.4); }
+.callout--note .callout-body { color: var(--oats); text-shadow: 0 0.5px 0 rgba(var(--sh-seam), 0.4); }
 .callout--note .callout-body strong { color: var(--paper); }
 .callout--note .callout-body em { color: var(--oats); font-weight: 600; }
 .callout--note .callout-body a { color: var(--oats); border-bottom-color: rgba(255,246,228,.6); }
@@ -778,25 +889,26 @@ html.baked .callout--note {
 .callout--warning .callout-label { color: var(--colorado); }
 .callout--warning > .tape { background: linear-gradient(94deg, rgba(247,84,88,.44), rgba(247,84,88,.26) 55%, rgba(247,84,88,.4)); }
 
-/* ---- definition.html : a LAZULI RULED FILE-CARD (a colored torn scrap) ----
-   BRAND/BRIEF: no pale near-#fff card fills. The canon's definition block is a
-   LAZULI torn cardstock scrap (a printed blue index card dyed through), carrying
-   a printed white top margin-rule + faint white body rules over the blue stock,
-   a School-Bus filed edge-tab, a two-zone torn edge, soft tinted cast. Light ink
-   on the blue ground keeps it AA (§4.3 Lazuli-bg: Oats text / white rules). */
+/* ---- definition.html : a CREAM RULED FILE-CARD (default) ----
+   BUDGET (v6 cream-breathing-room): the everyday definition is now a torn OATS/cream
+   index card in Sambas ink, carrying faint printed Sambas rulings, with a small
+   LAZULI filed edge-tab as the colour accent — so a long essay's definitions read as
+   cream cards on the desk, not a metronomic ladder of full-saturation Lazuli blocks.
+   The full-saturation dyed-blue index card (the original) is reserved for the rarer
+   .definition--filed variant (below). */
 .definition {
   position: relative;
   margin: clamp(2rem, 4.5vw, 2.8rem) 0;
   padding: clamp(1.5rem, 4vw, 2.1rem) clamp(1.4rem, 4vw, 2.1rem) clamp(1.4rem, 4vw, 2rem);
-  /* LAZULI file-card stock: a printed light top margin-rule + faint white body
-     rules over the Lazuli, lifted by the soft tinted cast. */
-  background-color: var(--lazuli);
+  /* cream file-card stock: a printed Sambas top margin-rule + faint body rules over
+     the Oats, lifted by the soft tinted cast (cream dominates). */
+  background-color: var(--paper);
   background-image:
-    linear-gradient(rgba(255,253,244,0.7), rgba(255,253,244,0.7)) no-repeat 0 2.6rem / 100% 1.4px,
-    repeating-linear-gradient(0deg, transparent 0 26px, rgba(255, 253, 244, 0.14) 26px 27px);
-  color: #fffdf4;
+    linear-gradient(rgba(65, 77, 87, 0.5), rgba(65, 77, 87, 0.5)) no-repeat 0 2.6rem / 100% 1.4px,
+    repeating-linear-gradient(0deg, transparent 0 26px, rgba(65, 77, 87, 0.08) 26px 27px);
+  color: var(--ink);
   border-radius: 9px 5px 11px 6px / 6px 11px 5px 9px; /* torn deckle fallback */
-  border-left: 6px solid var(--schoolbus);  /* the filed School-Bus edge tab (accent fill, ok) */
+  border-left: 6px solid var(--lazuli);    /* the filed Lazuli edge tab (small colour accent) */
   box-shadow: var(--sh-contact), var(--sh-ambient);
   transform: rotate(-0.6deg);              /* seeded per instance below */
 }
@@ -811,17 +923,17 @@ html.baked .callout--note {
   .prose .definition:nth-of-type(3n+3) { width: min(55%, 26ch); }
 }
 .definition > * { position: relative; z-index: 1; }
-/* baked: the real torn LAZULI paper face + edge, with the printed file-card
-   rulings laid OVER the real Lazuli tooth. */
+/* baked: the real torn Oats/cream card face + edge, with the printed file-card
+   rulings laid OVER the real Oats tooth. */
 html.baked .definition {
-  @include scrap-face(--bk-piece-lazuli, --bk-edge-lazuli, var(--bk-edge-lazuli-slice, 38));
-  background-color: var(--lazuli);
+  @include scrap-face(--bk-piece-oats, --bk-edge-oats, var(--bk-edge-oats-slice, 38));
+  background-color: var(--paper);
   background-image:
-    linear-gradient(rgba(255,253,244,0.7), rgba(255,253,244,0.7)) no-repeat 0 2.6rem / 100% 1.4px,
-    repeating-linear-gradient(0deg, transparent 0 26px, rgba(255, 253, 244, 0.14) 26px 27px),
-    var(--bk-piece-lazuli);
-  background-size: 100% 1.4px, auto, 160px 160px;
-  color: #fffdf4;
+    linear-gradient(rgba(65, 77, 87, 0.5), rgba(65, 77, 87, 0.5)) no-repeat 0 2.6rem / 100% 1.4px,
+    repeating-linear-gradient(0deg, transparent 0 26px, rgba(65, 77, 87, 0.08) 26px 27px),
+    var(--bk-piece-oats);
+  background-size: 100% 1.4px, auto, 200px 200px;
+  color: var(--ink);
 }
 .definition-label {
   font-family: var(--f-mono);
@@ -829,8 +941,7 @@ html.baked .definition {
   text-transform: uppercase;
   letter-spacing: 0.18em;
   font-size: 0.7rem;
-  color: var(--schoolbus);        /* School-Bus mono tab label on the blue card (dark-ink accent) */
-  text-shadow: 0 1px 1px rgba(var(--sh-seam), 0.4);
+  color: var(--lazuli);           /* Lazuli mono tab label on the cream card (matches the filed tab) */
   display: block;
   margin-bottom: 1.1rem;          /* clears the printed top ruling */
 }
@@ -841,27 +952,65 @@ html.baked .definition {
   line-height: 1.12;
   letter-spacing: -0.01em;
   font-size: clamp(1.4rem, 3.6vw, 1.8rem);
-  color: #fffdf4;                 /* light ink on the Lazuli ground — AA */
-  text-shadow: 0 0.6px 0 rgba(var(--sh-seam), 0.42);
+  color: var(--ink);                  /* Sambas ink on the cream card — AA */
   margin: 0 0 0.6rem;
 }
 .definition-term::after { content: none; }
 .definition-body {
   font-family: var(--f-body);
-  font-weight: 400;               /* 400 (not 300) keeps serif strokes sharp on the dyed tooth */
+  font-weight: 400;
   font-size: 1rem;
   line-height: 1.62;
-  color: #fffdf4;
-  text-shadow: 0 0.5px 0 rgba(var(--sh-seam), 0.4);
+  color: var(--ink);
 }
 .definition-body :last-child { margin-bottom: 0; }
 .definition-body p { margin: 0 0 0.7em; }
-.definition-body strong { color: var(--paper); font-weight: 600; }
-.definition-body em { font-style: italic; color: var(--oats); font-weight: 600; } /* §4.3 colored-bg emphasis = light Oats */
+.definition-body strong { color: var(--ink); font-weight: 600; }
+.definition-body em { font-style: italic; color: var(--ink); font-weight: 600; }
 .definition-body a {
-  color: var(--oats);             /* §4.3 Lazuli-bg link = light Oats (underlined) */
+  color: var(--ink);              /* Sambas link w/ Lazuli underline — AA on cream */
   background: none;
-  border-bottom: 1px solid rgba(255, 246, 228, 0.6);
+  border-bottom: 1px solid var(--lazuli);
+}
+
+/* RARER full-saturation LAZULI dyed index-card — the original, reserved for the
+   occasional headline definition (markdown opts in via .definition--filed). Keeps
+   the saturated blue block OFF the default cadence so the column stays cream. */
+.definition--filed {
+  background-color: var(--lazuli);
+  background-image:
+    linear-gradient(rgba(254, 246, 228, 0.7), rgba(254, 246, 228, 0.7)) no-repeat 0 2.6rem / 100% 1.4px,
+    repeating-linear-gradient(0deg, transparent 0 26px, rgba(254, 246, 228, 0.14) 26px 27px);
+  border-left-color: var(--schoolbus);  /* the filed School-Bus edge tab */
+  color: var(--oats);
+}
+html.baked .definition--filed {
+  @include scrap-face(--bk-piece-lazuli, --bk-edge-lazuli, var(--bk-edge-lazuli-slice, 38));
+  background-color: var(--lazuli);
+  background-image:
+    linear-gradient(rgba(254, 246, 228, 0.7), rgba(254, 246, 228, 0.7)) no-repeat 0 2.6rem / 100% 1.4px,
+    repeating-linear-gradient(0deg, transparent 0 26px, rgba(254, 246, 228, 0.14) 26px 27px),
+    var(--bk-piece-lazuli);
+  background-size: 100% 1.4px, auto, 160px 160px;
+  color: var(--oats);
+}
+.definition--filed .definition-label {
+  color: var(--schoolbus);        /* School-Bus mono tab label on the blue card */
+  text-shadow: 0 1px 1px rgba(var(--sh-seam), 0.4);
+}
+.definition--filed .definition-term {
+  color: var(--oats);
+  text-shadow: 0 0.6px 0 rgba(var(--sh-seam), 0.42);
+}
+.definition--filed .definition-body {
+  color: var(--oats);
+  text-shadow: 0 0.5px 0 rgba(var(--sh-seam), 0.4);
+}
+.definition--filed .definition-body strong { color: var(--paper); }
+.definition--filed .definition-body em { color: var(--oats); }
+.definition--filed .definition-body a {
+  color: var(--oats);
+  border-bottom-color: rgba(254, 246, 228, 0.6);
 }
 
 /* ---------------------------------------------------------------------------
@@ -1011,26 +1160,28 @@ body[data-motion="full"] .prose .scrap:nth-of-type(5n+5) { transition-delay: 22m
 /* keep the splay hover (straighten + lift) working despite the higher-specificity
    seeded resting tilts above — the scrap lifts off the desk on hover. */
 .patterns-splay .pattern:hover { transform: rotate(0) translateY(-7px); box-shadow: var(--sh-hover); z-index: 6; }
-/* cycle the brand §4.3 Oats-background scrap colors + pale ink for legibility:
-   Grass note, Lazuli note, Colorado note — light ink on each (never-square). */
-.patterns-splay .pattern:nth-child(3n+1) { background-color: var(--grass); color: #fffdf4; }
-.patterns-splay .pattern:nth-child(3n+2) { background-color: var(--lazuli); color: #fffdf4; }
-.patterns-splay .pattern:nth-child(3n+3) { background-color: var(--colorado); color: #fffdf4; }
-/* baked: the real torn colored paper faces + edges. */
-html.baked .patterns-splay .pattern:nth-child(3n+1) {
+/* BUDGET (v6 cream-breathing-room): the DEFAULT pattern tiles are OATS/cream cards
+   in Sambas ink with torn Oats edges — so the splay reads as a row of cream
+   clippings on the desk, not three full-saturation Grass/Lazuli/Colorado blocks in
+   a row. Only ONE tile (the first) carries a saturated GRASS accent for the colour
+   beat (§4.3 Oats-bg ground). */
+.patterns-splay .pattern { background-color: var(--paper); color: var(--ink); }
+html.baked .patterns-splay .pattern {
+  @include scrap-face(--bk-piece-oats, --bk-edge-oats, var(--bk-edge-oats-slice, 38));
+  background-color: var(--paper); color: var(--ink);
+}
+/* the single saturated GRASS accent tile (light Oats ink for AA). */
+.patterns-splay .pattern:first-child { background-color: var(--grass); color: var(--oats); }
+html.baked .patterns-splay .pattern:first-child {
   @include scrap-face(--bk-piece-grass, --bk-edge-grass, var(--bk-edge-grass-slice, 38));
-  background-color: var(--grass); color: #fffdf4;
-}
-html.baked .patterns-splay .pattern:nth-child(3n+2) {
-  @include scrap-face(--bk-piece-lazuli, --bk-edge-lazuli, var(--bk-edge-lazuli-slice, 38));
-  background-color: var(--lazuli); color: #fffdf4;
-}
-html.baked .patterns-splay .pattern:nth-child(3n+3) {
-  @include scrap-face(--bk-piece-coral, --bk-edge-coral, var(--bk-edge-coral-slice, 38));
-  background-color: var(--colorado); color: #fffdf4;
+  background-color: var(--grass); color: var(--oats);
 }
 .patterns-splay .pattern > * { position: relative; z-index: 1; }
-/* the pin holding each scrap (small steel-orb pin, alternating tints) */
+/* the pin holding each scrap (small steel-orb pin, alternating tints).
+   PALETTE NOTE: these four WARM-STEEL specular stops are a deliberate material
+   literal, not a brand colour — a faithful warm-metal ladder can't be derived from
+   the cool Sambas without losing its warm character, so (per the brand audit's own
+   "defensible as material shading") this 14px specular orb keeps hand-tuned tints. */
 .patterns-splay .pattern::after {
   content: "";
   position: absolute;
@@ -1041,14 +1192,14 @@ html.baked .patterns-splay .pattern:nth-child(3n+3) {
   background: radial-gradient(circle at 34% 30%, #FEFCF5 0%, #e7e0d2 35%, #b9b0a0 75%, #8b8270 100%);
   box-shadow: 1px 2px 3px rgba(44, 36, 26, 0.4), inset 1px 1px 1.5px rgba(255,255,255,0.7);
 }
+/* DEFAULT cream tile: Sambas ink + a Colorado mono number accent. */
 .pattern-n {
   font-family: var(--f-mono);
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.14em;
   font-size: 0.72rem;
-  color: var(--oats);             /* §4.3 dark-bg: light Oats number (Happy/School Bus reserved for chip fills, dark ink only) */
-  text-shadow: 0 1px 1px rgba(var(--sh-seam), 0.4);
+  color: var(--colorado);         /* Colorado mono number — §4.3 Oats-bg accent */
   display: block;
   margin-bottom: 0.5rem;
 }
@@ -1058,8 +1209,7 @@ html.baked .patterns-splay .pattern:nth-child(3n+3) {
   font-weight: 700;
   line-height: 1.14;
   font-size: 1.15rem;
-  color: #fffdf4;
-  text-shadow: 0 0.6px 0 rgba(var(--sh-seam), 0.42);
+  color: var(--ink);              /* Sambas ink on the cream tile — AA */
   display: block;
   margin-bottom: 0.5rem;
 }
@@ -1068,9 +1218,21 @@ html.baked .patterns-splay .pattern:nth-child(3n+3) {
   font-weight: 400;
   font-size: 0.92rem;
   line-height: 1.55;
-  color: #fffdf4;
-  text-shadow: 0 0.5px 0 rgba(var(--sh-seam), 0.4);
+  color: var(--ink);
   display: block;
+}
+/* the single saturated GRASS accent tile: light Oats ink + warm seam shadow. */
+.patterns-splay .pattern:first-child .pattern-n {
+  color: var(--oats);
+  text-shadow: 0 1px 1px rgba(var(--sh-seam), 0.4);
+}
+.patterns-splay .pattern:first-child .pattern-head {
+  color: var(--oats);
+  text-shadow: 0 0.6px 0 rgba(var(--sh-seam), 0.42);
+}
+.patterns-splay .pattern:first-child .pattern-body {
+  color: var(--oats);
+  text-shadow: 0 0.5px 0 rgba(var(--sh-seam), 0.4);
 }
 
 /* ---- figure.html : a real POLAROID (v6 .b-photo + .cap) ----
@@ -1148,7 +1310,11 @@ html.baked .patterns-splay .pattern:nth-child(3n+3) {
   width: 16px; height: 16px;
   border-radius: 50%;
   background:
-    radial-gradient(circle at 34% 30%, #ffd9da 0%, #f17a7d 30%, #d8383b 70%, #a82a2d 100%);
+    radial-gradient(circle at 34% 30%,
+      color-mix(in srgb, var(--colorado) 26%, #fff) 0%,   /* glossy specular tint (≈#ffd9da) */
+      color-mix(in srgb, var(--colorado) 78%, #fff) 30%,  /* lit face (≈#f17a7d) */
+      color-mix(in srgb, var(--colorado) 85%, #000) 70%,  /* body shade (≈#d8383b) */
+      color-mix(in srgb, var(--colorado) 62%, #000) 100%); /* occluded rim (≈#a82a2d) — all derived from --colorado */
   box-shadow: 0 0 0 1px rgba(120, 30, 32, 0.3),
               1px 2px 3px rgba(44, 36, 26, 0.4),
               inset 1px 1px 2px rgba(255, 255, 255, 0.6);
@@ -1196,8 +1362,10 @@ html.baked .cite {
 .cite-attrib {
   margin-top: 1rem;
   padding: 0.5em 0.8em;
-  /* kraft byline strip (v6 .b-credit / bakeKraft base [214,196,160]) */
-  background-color: #d6c4a0;
+  /* kraft byline strip (v6 .b-credit / bakeKraft base [214,196,160]) — a warm tan
+     derived from the palette (School-Bus dulled into an Oats/Sambas ground) so the
+     7-hex constitution holds and a palette change propagates. */
+  background-color: color-mix(in srgb, var(--schoolbus) 26%, color-mix(in srgb, var(--oats) 64%, var(--sambas) 36%));
   border-radius: 4px 6px 3px 5px / 5px 3px 6px 4px;
   box-shadow: var(--sh-contact);
   font-family: var(--f-mono);
@@ -1229,7 +1397,7 @@ html.baked .cite {
 /* baked: the byline strip gets the real torn kraft face + edge. */
 html.baked .cite-attrib {
   @include scrap-face(--bk-piece-kraft, --bk-edge-kraft, var(--bk-edge-kraft-slice, 38));
-  background-color: #d6c4a0;
+  background-color: color-mix(in srgb, var(--schoolbus) 26%, color-mix(in srgb, var(--oats) 64%, var(--sambas) 36%));
   box-shadow: var(--sh-contact);
 }
 

@@ -166,10 +166,21 @@
       var macroF = 0.6 + rng() * 1.6;
       var macroPh = rng() * Math.PI * 2;
       var macroA = type === 'torn' ? amp * (0.9 + rng() * 0.9) : amp * 0.7;
+      // SECOND, SLOWER macro wave (its own freq/phase/amp) so the torn baseline is
+      // a beat of two incommensurate low-freq waves, not one clean periodic sine —
+      // the silhouette wanders irregularly per side (REFS 9/12/30). Sub-1 freq so it
+      // bows across the whole edge; amplitude comparable to the fast wave.
+      var macroF2 = 0.25 + rng() * 0.7;
+      var macroPh2 = rng() * Math.PI * 2;
+      var macroA2 = (type === 'torn' ? amp * (0.7 + rng() * 1.0) : 0);
+      // a faint sub-low drift so even the wave *envelope* isn't constant.
+      var driftPh = rng() * Math.PI * 2;
       for (var i = 0; i < n; i++) {
         var t = i / n, off;
         if (type === 'torn') {
-          var macro = Math.sin(t * Math.PI * 2 * macroF + macroPh) * macroA;
+          var drift = 0.78 + 0.30 * Math.sin(t * Math.PI * (0.5 + rng() * 0.4) + driftPh);
+          var macro = Math.sin(t * Math.PI * 2 * macroF + macroPh) * macroA * drift +
+                      Math.sin(t * Math.PI * 2 * macroF2 + macroPh2) * macroA2;
           var micro = (rng() - 0.5) * 2 * amp;
           var raw = macro * 0.5 + micro;
           off = outset + Math.abs(raw) * 0.78 + raw * 0.10;
@@ -303,99 +314,156 @@
     set(name, uri(cv));
   }
 
-  /* (4) TWO-ZONE TORN EDGE border sprite (REFS 9–14). Ports the v6 bakePiece
-     rim construction — dye core/skin, dye bleed, cottony pale CORE band, soft
-     fiber lip, the outside self-shadow, and the sparse pale pulp whiskers — but
-     onto a square frame whose centre is transparent, so it serves as a CSS
-     border-image around any scrap. The torn baseline sits BLEED in from the
-     sprite edge; pulp/whiskers fan OUTWARD into the bleed (never inward over
-     content), exactly as v6. */
+  /* (4) TWO-ZONE TORN EDGE border sprite (REFS 8/9). REBUILT round 2.
+     The previous version STROKED soft/blurred rim bands onto a transparent
+     canvas and then punched out the centre. That produced exactly the two
+     forbidden failures: (REFS 8) a SYMMETRIC BLUR HALO around all four sides
+     (the soft strokes feathered alpha OUTSIDE the silhouette in every
+     direction), and (REFS 9) NO revealed white fiber core — the colored face
+     was never drawn under the rim, so the tear had nothing to bare.
+
+     The fix is a FACE-FIRST silhouette carve, ported from v6 bakePiece's
+     clip-then-bake logic:
+       (1) DRAW the colored cardstock FACE across the whole canvas.
+       (2) CARVE a hand-jittered torn silhouette path (per-row x-jitter via the
+           pooled seed) and CLIP to it.
+       (3) Inside that clip, stroke a 1–4px near-Oats WHITE FIBER band hugging
+           the silhouette, its width swelling/pinching along the tear.
+       (4) HARD-clear everything OUTSIDE the silhouette to rgba(0,0,0,0) with a
+           crisp even-odd punch — NO blur, NO feather — so the abrupt cutline is
+           the only thing under the box-shadow contact cast (no outward glow).
+     A 100×100 crop now shows: colored face -> white fiber core -> abrupt
+     transparent cutline, never an outward symmetric glow. */
+  // bake (and cache) ONE colored cardstock face per stock, sized to the edge
+  // sprite. Shared across that stock's variant rims so the 30 edge bakes don't
+  // each re-run the costly per-pixel tooth loop (the torn SILHOUETTE differs per
+  // variant; the face stock is the same dyed paper, so reuse is correct + fast).
+  var _edgeFaceCache = {};
+  function edgeFaceFor(key, colored, W, H) {
+    if (_edgeFaceCache[key]) return _edgeFaceCache[key];
+    var fc = makeCanvas(W, H);
+    bakeCardstock(fc.getContext('2d'), W, H, PAL[key], {
+      colored: colored, fiber: colored ? 1.15 : 1, scale: 0.9,
+      rot: hashStr(key) % 7 * 0.18, density: colored ? (key === 'colorado' ? 1.3 : 1.1) : .95,
+      rng: mulberry32(hashStr('edgeface' + key))
+    });
+    _edgeFaceCache[key] = fc;
+    return fc;
+  }
   function bakeTornEdge(set, name, key, colored, variant) {
     var S = 200, BLEED = 16;                 // css units; *DPR below
     var W = (S + BLEED * 2) * DPR, H = (S + BLEED * 2) * DPR;
     var cv = makeCanvas(W, H);
     var ctx = cv.getContext('2d');
-    // keep chroma on the colored dye core (ds 0.04) so the torn rim reads as a
-    // saturated dye-soaked edge, matching the richly-dyed face; Oats stays calm.
     var rgb = constructionTone(PAL[key], colored ? 0.04 : 0.10);
-    // seed varies per variant so a POOL of 1..3 edges per stock never clones a
-    // neighbour (REFS no-clones / never-square density rule).
-    var rng = mulberry32(hashStr('edge' + name + (variant || '')));
+    // seed varies per variant so a POOL of edges per stock never clones a
+    // neighbour (REFS 12/30 no-clones rule). Multiply the variant into the hash
+    // so variant rims are well-separated in seed space, not near-duplicates.
+    var rng = mulberry32(hashStr('edge' + name + '~') ^ ((variant || 1) * 0x9E3779B1 >>> 0));
     var pad = BLEED * DPR;
     var outset = 4.5 * DPR;
     var ep = edgePath(W, H, 'torn', pad, rng, 1.05, outset);
     var pts = ep.pts, norms = ep.norms;
+    var nP = pts.length;
 
-    // (a) DYE CORE/SKIN — saturated dye-soaked rim (richer on colored stock)
-    var dyeAlpha = colored ? 0.38 : 0.16;
+    // ---- (1) DRAW THE COLORED FACE across the whole canvas (so the tear has
+    // real dyed stock to bare). Cached per stock (see edgeFaceFor). ----
+    var faceCv = edgeFaceFor(key, colored, W, H);
+
+    // ---- (2) CLIP to the torn silhouette, paint the face inside it ----
+    ctx.save();
+    tracePath(ctx, pts); ctx.clip();
+    ctx.drawImage(faceCv, 0, 0);
+
+    // (a) DYE CORE/SKIN — saturated dye-soaked very rim (inside the clip, so it
+    // never bleeds past the silhouette).
+    var dyeAlpha = colored ? 0.30 : 0.14;
     ctx.save(); ctx.lineJoin = 'round'; ctx.lineCap = 'round';
     ctx.strokeStyle = 'rgba(' + (rgb[0] * 0.72 | 0) + ',' + (rgb[1] * 0.72 | 0) + ',' +
       (rgb[2] * 0.72 | 0) + ',' + dyeAlpha + ')';
-    ctx.lineWidth = 3.4 * DPR; tracePath(ctx, pts); ctx.stroke(); ctx.restore();
-    // (b) dye BLEED — soft faint darker wash hugging the rim
-    ctx.save(); ctx.filter = 'blur(' + (2.6 * DPR) + 'px)';
-    ctx.strokeStyle = 'rgba(' + (rgb[0] * 0.84 | 0) + ',' + (rgb[1] * 0.84 | 0) + ',' +
-      (rgb[2] * 0.84 | 0) + ',0.20)';
-    ctx.lineWidth = 6 * DPR; tracePath(ctx, pts); ctx.stroke(); ctx.restore();
-    // (c) COTTONY CORE — the revealed pale fiber innards (the WHITE core zone).
-    // This 1–4px fiber zone is the make-or-break two-zone tell (REFS 9–14), but the
-    // sprite is consumed at a ~14px border slice and DOWNSCALED on-screen, which
-    // eats a thin core to nothing — leaving a flat cut color. Lay it as a wider,
-    // higher-alpha band (and a soft outer pass for bleed gain) so it SURVIVES the
-    // downscale and still reads as cottony fiber at real scrap sizes.
-    var coreR = clamp(rgb[0] + (245 - rgb[0]) * 0.62, 0, 255);
-    var coreG = clamp(rgb[1] + (240 - rgb[1]) * 0.62, 0, 255);
-    var coreB = clamp(rgb[2] + (232 - rgb[2]) * 0.62, 0, 255);
+    ctx.lineWidth = 3.0 * DPR; tracePath(ctx, pts); ctx.stroke(); ctx.restore();
+
+    // (b) WHITE FIBER CORE — the revealed cottony pulp band immediately INSIDE
+    // the silhouette (REFS 9). Near-Oats #FEF6E4-or-lighter, 1–4px, width
+    // VARYING along the tear via two beaten low-freq waves so it swells to a
+    // thick downy band in spots and nearly vanishes in others (never machine
+    // ric-rac). Drawn as short per-segment strokes so each segment taps its own
+    // local width. All inside the clip -> the band lives just within the cut,
+    // no feathered alpha outside it.
+    var coreR = clamp(rgb[0] + (255 - rgb[0]) * 0.80, 0, 255); // toward #FEF6E4+
+    var coreG = clamp(rgb[1] + (246 - rgb[1]) * 0.80, 0, 255);
+    var coreB = clamp(rgb[2] + (228 - rgb[2]) * 0.80, 0, 255);
+    var coreRGB = (coreR | 0) + ',' + (coreG | 0) + ',' + (coreB | 0);
+    var wF1 = 1.4 + rng() * 2.2, wP1 = rng() * Math.PI * 2;
+    var wF2 = 0.4 + rng() * 1.1, wP2 = rng() * Math.PI * 2;
+    function coreWidthAt(idx) {
+      var u = idx / nP;
+      var m = 0.5 + 0.5 * Math.sin(u * Math.PI * 2 * wF1 + wP1);
+      m *= 0.55 + 0.45 * Math.sin(u * Math.PI * 2 * wF2 + wP2) * 0.5 + 0.225;
+      m = clamp(m * 1.18 - 0.12, 0, 1);   // push troughs to ~0 (bare patches)
+      return m;
+    }
     ctx.save(); ctx.lineJoin = 'round'; ctx.lineCap = 'round';
-    // soft outer halo of the core (survives downscale as a pale fiber haze)
-    ctx.filter = 'blur(' + (1.2 * DPR) + 'px)';
-    ctx.strokeStyle = 'rgba(' + (coreR | 0) + ',' + (coreG | 0) + ',' + (coreB | 0) + ',0.34)';
-    ctx.lineWidth = 6.5 * DPR; tracePath(ctx, pts); ctx.stroke();
-    // the solid cottony core band — wide + opaque enough to read at small sizes
-    ctx.filter = 'blur(' + (0.6 * DPR) + 'px)';
-    ctx.strokeStyle = 'rgba(' + (coreR | 0) + ',' + (coreG | 0) + ',' + (coreB | 0) + ',0.65)';
-    ctx.lineWidth = 4.5 * DPR; tracePath(ctx, pts); ctx.stroke(); ctx.restore();
-    // (d) pale FIBER LIP — soft, low-alpha (no sticker halo)
-    ctx.save(); ctx.lineJoin = 'round';
-    ctx.strokeStyle = 'rgba(252,248,240,0.36)'; ctx.lineWidth = 1.1 * DPR; tracePath(ctx, pts); ctx.stroke();
-    ctx.strokeStyle = 'rgba(252,248,240,0.15)'; ctx.lineWidth = 2.2 * DPR; tracePath(ctx, pts); ctx.stroke();
-    ctx.restore();
-    // (e) outside SELF-SHADOW onto the page (down-right, agrees with the sun)
-    ctx.save(); ctx.lineJoin = 'round'; ctx.lineCap = 'round'; ctx.filter = 'blur(' + (1.3 * DPR) + 'px)';
-    ctx.translate(0.8 * DPR, 1.2 * DPR);
-    ctx.strokeStyle = 'rgba(34,36,30,0.16)'; ctx.lineWidth = 2.0 * DPR; tracePath(ctx, pts); ctx.stroke();
-    ctx.restore();
-    // (f) sparse pale PULP whiskers fanning outward (v6 verbatim character)
-    ctx.save(); ctx.lineCap = 'round';
-    var sprout = 0.18 + rng() * 0.12, lenMul = 0.8 + rng() * 0.6;
-    for (var i = 0; i < pts.length; i++) {
-      if (rng() > sprout) continue;
-      var p = pts[i], nrm = norms[i];
-      var ja = (rng() - 0.5) * 0.7, ca = Math.cos(ja), sa = Math.sin(ja);
-      var ox = nrm[0] * ca - nrm[1] * sa, oy = nrm[0] * sa + nrm[1] * ca;
-      var tendrils = 1 + (rng() < 0.16 ? 1 : 0);
-      for (var t = 0; t < tendrils; t++) {
-        var len = (rng() < 0.08 ? (3.0 + rng() * 3.0) : (0.9 + rng() * 2.2)) * lenMul * DPR;
-        var wob = (rng() - 0.5) * 0.9 * DPR;
-        var pale = rng() < 0.92;
-        ctx.strokeStyle = pale
-          ? 'rgba(253,249,242,' + (0.20 + rng() * 0.24).toFixed(2) + ')'
-          : 'rgba(' + (rgb[0] * 0.84 | 0) + ',' + (rgb[1] * 0.84 | 0) + ',' +
-            (rgb[2] * 0.84 | 0) + ',' + (0.09 + rng() * 0.10).toFixed(2) + ')';
-        ctx.lineWidth = (0.4 + rng() * 0.45) * DPR;
-        ctx.beginPath(); ctx.moveTo(p[0], p[1]);
-        ctx.lineTo(p[0] + ox * len + wob * oy, p[1] + oy * len - wob * ox); ctx.stroke();
-      }
+    // (i) soft underlay: ONE blurred whole-path stroke (a single filter pass —
+    // not a blur per segment, which dominated bake time) gives the band a faint
+    // cottony haze without the per-segment cost.
+    ctx.filter = 'blur(' + (0.7 * DPR) + 'px)';
+    ctx.strokeStyle = 'rgba(' + coreRGB + ',0.26)';
+    ctx.lineWidth = 2.4 * DPR; tracePath(ctx, pts); ctx.stroke();
+    ctx.filter = 'none';
+    // (ii) the crisp cottony core band — width SWELLS/PINCHES along the tear via
+    // the modulator, drawn as short per-segment strokes so each segment carries
+    // its own local width (the irregular two-zone tell). No blur => cheap.
+    for (var s = 0; s < nP; s++) {
+      var ca = pts[s], cb = pts[(s + 1) % nP];
+      var m = coreWidthAt(s);
+      if (m <= 0.05) continue;             // a bare spot — flat dye shows through
+      ctx.strokeStyle = 'rgba(' + coreRGB + ',' + (0.78 * (0.40 + 0.60 * m)).toFixed(3) + ')';
+      ctx.lineWidth = (1.0 + 3.0 * m) * DPR;   // 1–4px
+      ctx.beginPath(); ctx.moveTo(ca[0], ca[1]); ctx.lineTo(cb[0], cb[1]); ctx.stroke();
     }
     ctx.restore();
 
-    // Punch the interior transparent so this works as a border-image frame.
-    // Erase everything well inside the torn baseline (leave a generous edge band).
+    // (c) pale top-left fiber GLINT on the lit side of the cut (very low alpha)
+    ctx.save(); ctx.lineJoin = 'round';
+    ctx.strokeStyle = 'rgba(254,250,238,0.30)'; ctx.lineWidth = 1.0 * DPR;
+    ctx.translate(-0.5 * DPR, -0.5 * DPR); tracePath(ctx, pts); ctx.stroke();
+    ctx.restore();
+
+    ctx.restore();   // end silhouette clip
+
+    // ---- (4) HARD CUTLINE — clear everything OUTSIDE the silhouette to fully
+    // transparent with an even-odd punch (NO blur, NO feather). The torn face is
+    // already clipped to the path; this guarantees a crisp alpha cliff so the
+    // CSS box-shadow contact cast is the only thing under the rim (REFS 8). ----
     ctx.save();
     ctx.globalCompositeOperation = 'destination-out';
-    var band = 22 * DPR;                       // edge band kept opaque (the tear)
+    ctx.beginPath();
+    ctx.rect(0, 0, W, H);                   // outer rect
+    ctx.moveTo(pts[0][0], pts[0][1]);       // inner silhouette (reverse winding
+    for (var q = pts.length - 1; q >= 0; q--) ctx.lineTo(pts[q][0], pts[q][1]);
+    ctx.closePath();
     ctx.fillStyle = 'rgba(0,0,0,1)';
-    ctx.fillRect(pad + band, pad + band, W - 2 * (pad + band), H - 2 * (pad + band));
+    ctx.fill('evenodd');                    // erase the ring OUTSIDE the tear
+    ctx.restore();
+
+    // ---- sparse pale PULP WHISKERS poking just past the cut (v6 character).
+    // Drawn AFTER the punch but kept SHORT (≤~3px) and pale, with their own tiny
+    // contact darkening, so they read as a few stray fibers — not a glow ring.
+    ctx.save(); ctx.lineCap = 'round';
+    var sprout = 0.14 + rng() * 0.10, lenMul = 0.7 + rng() * 0.5;
+    for (var i = 0; i < pts.length; i++) {
+      if (rng() > sprout) continue;
+      var p = pts[i], nrm = norms[i];
+      var ja = (rng() - 0.5) * 0.6, ca = Math.cos(ja), sa = Math.sin(ja);
+      var ox = nrm[0] * ca - nrm[1] * sa, oy = nrm[0] * sa + nrm[1] * ca;
+      var len = (rng() < 0.10 ? (2.2 + rng() * 1.6) : (0.7 + rng() * 1.5)) * lenMul * DPR;
+      var wob = (rng() - 0.5) * 0.7 * DPR;
+      ctx.strokeStyle = 'rgba(254,250,240,' + (0.22 + rng() * 0.22).toFixed(2) + ')';
+      ctx.lineWidth = (0.4 + rng() * 0.4) * DPR;
+      ctx.beginPath(); ctx.moveTo(p[0], p[1]);
+      ctx.lineTo(p[0] + ox * len + wob * oy, p[1] + oy * len - wob * ox); ctx.stroke();
+    }
     ctx.restore();
 
     // slice = BLEED + the tear band; the SCSS border-image slice matches.
@@ -414,13 +482,27 @@
     var cv = makeCanvas(w * DPR, h * DPR);
     var ctx = cv.getContext('2d');
     var W = cv.width, H = cv.height;
-    var teeth = 7;
+    // ASYMMETRIC MICRO-SERRATED TORN ENDS (REFS 17): the two ends must DIFFER —
+    // different tooth count, different mean lean (3–10° off square), different
+    // micro-serration. Each end gets its own seeded profile and a fine high-freq
+    // serration superimposed on the coarse tear so the boundary nibbles like a
+    // hand-torn cello/washi end, not a clean zig-zag.
     function endX(side) {
       var arr = [], base = side === 'left' ? 0 : W;
+      var dir = side === 'left' ? 1 : -1;
+      var teeth = 6 + (rng() * 4 | 0);          // 6..9, differs per end
+      var leanDeg = (3 + rng() * 7) * (rng() < 0.5 ? -1 : 1);   // 3–10° off square
+      var lean = Math.tan(leanDeg * Math.PI / 180);
+      var serF = 2.2 + rng() * 1.8, serP = rng() * Math.PI * 2; // fine serration
       for (var i = 0; i <= teeth; i++) {
-        var y = H * i / teeth;
-        var j = (rng() * 2 - 1) * 4 * DPR + (side === 'left' ? 1 : -1) * rng() * 3.5 * DPR;
-        arr.push([base + (side === 'left' ? Math.abs(j) : -Math.abs(j)), y]);
+        var t = i / teeth, y = H * t;
+        var coarse = Math.abs(rng() * 2 - 1) * 4 * DPR;          // big nibble (inward)
+        var ser = Math.abs(Math.sin(t * Math.PI * 2 * serF + serP)) * 1.4 * DPR; // micro serration
+        var leanOff = (t - 0.5) * H * lean;              // slanted end (off-square)
+        // inset = how far the torn boundary sits IN from the strip edge.
+        var inset = coarse + ser + rng() * 2.0 * DPR + leanOff;
+        inset = Math.max(0, inset);
+        arr.push([base + dir * inset, y]);
       }
       return arr;
     }
@@ -432,7 +514,12 @@
       ctx.closePath();
     }
     ctx.save(); clipStrip(); ctx.clip();
-    ctx.fillStyle = 'rgba(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ',0.50)';
+    // RAISE translucency (REFS 15/16): real washi/cello tape lets the underlying
+    // ground read THROUGH the body, not just at the edges. Drop the body fill from
+    // 0.50 to ~0.30 so 20-35% of whatever the strip crosses shows through the whole
+    // span (multiply-composited in CSS), and bias the very centre even thinner so
+    // the most-lit middle is the most see-through — a tape highlight, not a slab.
+    ctx.fillStyle = 'rgba(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ',0.30)';
     ctx.fillRect(0, 0, W, H);
     for (var k = 0; k < H * 0.6; k++) {
       var y = rng() * H;
@@ -442,6 +529,44 @@
       ctx.beginPath();
       var x0 = rng() * W * 0.4, x1 = x0 + W * 0.3 + rng() * W * 0.5;
       ctx.moveTo(x0, y); ctx.lineTo(Math.min(W, x1), y + (rng() * 2 - 1)); ctx.stroke();
+    }
+    // LENGTHWISE WRINKLE / AIR BUBBLE (REFS 18): ≥1 tonal event per ~80px so the
+    // strip reads as PRESSED, not a flat slab. A wrinkle = a thin lengthwise
+    // crease (dark trough + bright lit lip a hair above it); a bubble = a soft
+    // round lens of trapped air (bright dome, dark contact rim below). Both run
+    // WITH the tape length (REFS 18 lengthwise). Count scales with strip length.
+    var events = Math.max(1, Math.round((w / 80)) + 1);
+    for (var e = 0; e < events; e++) {
+      if (rng() < 0.6) {
+        // --- WRINKLE: a wandering lengthwise crease ---
+        var wy = H * (0.25 + rng() * 0.5);
+        var x0w = rng() * W * 0.2, x1w = W * (0.55 + rng() * 0.4);
+        var amp = (0.6 + rng() * 1.0) * DPR, ph = rng() * Math.PI * 2, fr = 1 + rng() * 2;
+        var crease = function (dy, color, lw) {
+          ctx.strokeStyle = color; ctx.lineWidth = lw * DPR; ctx.beginPath();
+          for (var xx = x0w; xx <= x1w; xx += 3 * DPR) {
+            var yy = wy + dy * DPR + Math.sin((xx - x0w) / (x1w - x0w) * Math.PI * fr + ph) * amp;
+            (xx === x0w) ? ctx.moveTo(xx, yy) : ctx.lineTo(xx, yy);
+          }
+          ctx.stroke();
+        };
+        crease(0.9, 'rgba(0,0,0,0.10)', 1.3);          // shadow trough
+        crease(-0.8, 'rgba(255,255,255,0.16)', 1.0);   // lit lip above it
+      } else {
+        // --- BUBBLE: a soft round lens of trapped air ---
+        var bx = W * (0.18 + rng() * 0.64), by = H * (0.3 + rng() * 0.4);
+        var br = (3 + rng() * 4) * DPR;
+        var dome = ctx.createRadialGradient(bx - br * 0.3, by - br * 0.3, 0, bx, by, br);
+        dome.addColorStop(0, 'rgba(255,255,255,0.20)');
+        dome.addColorStop(0.7, 'rgba(255,255,255,0.04)');
+        dome.addColorStop(1, 'rgba(255,255,255,0)');
+        ctx.fillStyle = dome;
+        ctx.beginPath(); ctx.ellipse(bx, by, br, br * 0.8, 0, 0, Math.PI * 2); ctx.fill();
+        ctx.save(); ctx.filter = 'blur(' + (0.5 * DPR) + 'px)';
+        ctx.strokeStyle = 'rgba(0,0,0,0.10)'; ctx.lineWidth = 1 * DPR;
+        ctx.beginPath(); ctx.ellipse(bx, by + br * 0.5, br * 0.9, br * 0.4, 0, 0, Math.PI); ctx.stroke();
+        ctx.restore();
+      }
     }
     ctx.restore();
     // translucent long edges + nibbled ends (washi)
@@ -605,7 +730,9 @@
       ['--bk-edge-lazuli', 'lazuli',    true],
       ['--bk-edge-kraft',  'schoolbus', true]
     ].forEach(function (e) {
-      for (var v = 1; v <= 3; v++) {
+      // >=3 distinct seeds per stock so _grounds/_realism can rotate rims across
+      // adjacent .clip nth-children and neighbours never share a profile (REFS 12/30).
+      for (var v = 1; v <= 4; v++) {
         bakeTornEdge(set, e[0] + '-' + v, e[1], e[2], v);
       }
       // alias variant 1 to the bare name (back-compat with current SCSS contract)
