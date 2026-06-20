@@ -46,11 +46,18 @@ body{
 // fixed below) move as ONE — no horizontal band where a scrolling layer slides
 // past a fixed one.
 html.baked body{
-  background-image:var(--bk-desk);
-  background-repeat:no-repeat;
-  background-size:cover;
-  background-position:center;
-  background-attachment:fixed;
+  // COMBINE: the warm scene-light gradient (body::before) over a fine, SEAMLESS
+  // paper-grain TEXTURE (not a flat gradient). High-frequency fractalNoise with
+  // stitchTiles reads as real paper tooth and never reveals a tile/quilt seam. The
+  // baked desk (if present) sits under it; the grain carries the texture either way.
+  background-image:
+    var(--bk-desk, none),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.5'/%3E%3C/svg%3E");
+  background-repeat:no-repeat, repeat;
+  background-size:cover, 300px 300px;
+  background-position:center, center;
+  background-attachment:fixed, fixed;
+  background-blend-mode:normal, multiply;
 }
 
 // ONE soft tinted SCENE LIGHT + a faint edge vignette, laid OVER the desk but
@@ -985,6 +992,33 @@ html.baked .post-banner{
 .post-banner .post-title{color:var(--oats);max-width:none;margin:0;
   text-shadow:0 .5px 0 rgba(var(--sh-seam),.24)}
 .post-banner .post-title .stop{color:var(--oats)}   // period stays Oats on Grass — Happy is not a text color (brand law)
+
+// CONTENT-MATCHED BANNER STOCKS — the post opens in the same material as its home clip.
+html.baked .post-banner--airmail{background-image:var(--bk-piece-oats);  border-image-source:var(--bk-edge-oats)}
+html.baked .post-banner--cloth  {background-image:var(--bk-piece-sambas);border-image-source:var(--bk-edge-sambas)}
+// cream banners (airmail/ledger) need DARK ink title; cloth (dark face) keeps Oats.
+.post-banner--airmail .post-title,.post-banner--ledger .post-title{color:var(--ink);text-shadow:none}
+.post-banner--airmail .post-title .stop,.post-banner--ledger .post-title .stop{color:var(--grass)}
+.post-banner--cloth .post-title,.post-banner--cloth .post-title .stop{color:var(--oats);text-shadow:0 .5px 0 rgba(var(--sh-seam),.3)}
+// airmail banner: a par-avion red/blue dashed frame.
+.post-banner--airmail::before{
+  content:"";position:absolute;inset:9px;z-index:7;pointer-events:none;border-radius:2px;padding:5px;
+  background:repeating-linear-gradient(45deg,var(--colorado) 0 10px,transparent 10px 14px,var(--lazuli) 14px 24px,transparent 24px 28px);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;
+  mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);opacity:.78;
+}
+// ledger banner: blue rules + a double red left margin over the cream face.
+html.baked .post-banner--ledger{
+  background-image:
+    repeating-linear-gradient(0deg,transparent 0 26px,rgba(36,150,201,.13) 26px 27px),
+    linear-gradient(90deg,transparent 24px,var(--colorado) 24px 25px,transparent 25px 27px,rgba(247,84,88,.6) 27px 28px,transparent 28px),
+    var(--bk-piece-oats);
+  background-size:auto,auto,cover;background-position:left top,left top,center;
+  background-repeat:repeat,repeat-y,no-repeat;
+  background-clip:padding-box;border-style:solid;border-color:transparent;border-width:15px;
+  border-image-source:var(--bk-edge-oats);border-image-slice:var(--bk-edge-oats-slice,38);
+  border-image-width:15px;border-image-repeat:round;clip-path:none;
+}
 
 // the date STAMP — a DM-Mono mark on a baked stamp ring
 .post-datestamp{position:relative;isolation:isolate;display:inline-block;

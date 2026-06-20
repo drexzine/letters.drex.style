@@ -29,9 +29,19 @@ layout: default
       </span>
       {% endif %}
 
-      {%- comment -%} the title on a Grass torn banner, pinned — a heavy scrap: SLAM in. {%- endcomment -%}
-      <div class="post-banner piece slam" data-mat="grass" data-edge="torn">
-        <span class="pin" data-pin="red" aria-hidden="true"></span>
+      {%- comment -%} the title banner carries the POST'S OWN MATERIAL (front-matter
+        `stock:`) so the page opens in the same substance as its home clipping:
+        airmail letter · ledger memo · stitched cloth · (default) Grass banner. {%- endcomment -%}
+      {%- assign bstock = page.stock | default: 'grass' -%}
+      {%- case bstock -%}
+        {%- when 'cloth'     -%}{%- assign bmat = 'sambas' -%}{%- assign bpin = 'oats' -%}
+        {%- when 'airmail'   -%}{%- assign bmat = 'oats'   -%}{%- assign bpin = 'red'  -%}
+        {%- when 'ledger'    -%}{%- assign bmat = 'oats'   -%}{%- assign bpin = 'red'  -%}
+        {%- when 'newsprint' -%}{%- assign bmat = 'oats'   -%}{%- assign bpin = 'red'  -%}
+        {%- else -%}{%- assign bmat = 'grass' -%}{%- assign bpin = 'red' -%}
+      {%- endcase -%}
+      <div class="post-banner post-banner--{{ bstock }} piece slam" data-mat="{{ bmat }}" data-edge="torn">
+        <span class="pin" data-pin="{{ bpin }}" aria-hidden="true"></span>
         <h1 class="post-title slab">{{ page.title }}</h1>
       </div>
 
