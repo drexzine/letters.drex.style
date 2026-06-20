@@ -1,5 +1,5 @@
 # ===================================================================
-# Drex blog — blog.drex.style
+# Drex blog — letters.drex.style (Chielo's correspondence, archived)
 # Chielo's visionary / canon / lore essays, in the Drex zine aesthetic.
 # GitHub-Pages-native Jekyll build. Only Pages-whitelisted plugins.
 # ===================================================================
@@ -11,7 +11,7 @@ description: >-
   bringing your gifts into the world together. A place for communion.
 author: "Chielo Mbaezue"
 
-url: "https://blog.drex.style"
+url: "https://letters.drex.style"
 baseurl: ""
 
 lang: en
