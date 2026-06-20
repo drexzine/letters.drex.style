@@ -1,0 +1,30 @@
+{%- comment -%}
+  m-mark.html — a small hand-drawn margin DOODLE pinned beside the line it
+  annotates. Place the include right AFTER the line it marks.
+
+  API:  {% include m-mark.html type="star" color="bus" side="left" %}
+    type  — star | asterisk | arrow | check | exclaim | caret  (default: star)
+    color — grass | coral | lazuli | bus | happy | ink          (default: coral)
+    side  — left | right   (which gutter to pin into; default: left)
+
+  Desktop: pinned into the bare desk margin with a thin leader. Mobile: reflows
+  to a small inline doodle beside the line. Every stroke runs through #roughsm
+  so it wobbles. Purely DECORATIVE → aria-hidden.
+
+  Paths are hand-wobbled SVG strokes; stroke/fill inherit --m-ink via CSS.
+{%- endcomment -%}
+{%- assign type = include.type | default: "star" -%}
+{%- assign color = include.color | default: "coral" -%}
+{%- assign side = include.side | default: "left" -%}
+{%- capture svg -%}
+{%- case type -%}
+{%- when "star" -%}<svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path stroke="currentColor" d="M12 3.4 C13 9 15 11 20.3 11.8 C15 12.8 13 14.8 12.2 20.4 C11.2 14.8 9 12.8 3.6 12 C9 11 11 9 12 3.4 Z"/></svg>
+{%- when "asterisk" -%}<svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path stroke="currentColor" d="M12 3.6 Q12.4 12 12 20.4 M4.2 7.6 Q12 12 19.8 16.4 M19.8 7.6 Q12 12 4.2 16.4"/></svg>
+{%- when "arrow" -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 13 Q12 11 19 12"/><path d="M14 7 L20 12 L14 17"/></svg>
+{%- when "check" -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 12.5 Q8 15.5 9.5 18.5 Q14 9 20 5"/></svg>
+{%- when "exclaim" -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M12 3.6 Q12.8 9.5 12 15"/><path d="M12 19.6 Q12.1 19.7 12 19.8"/></svg>
+{%- when "caret" -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 16 Q12 6.5 19 16"/></svg>
+{%- else -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.4 C13 9 15 11 20.3 11.8 C15 12.8 13 14.8 12.2 20.4 C11.2 14.8 9 12.8 3.6 12 C9 11 11 9 12 3.4 Z"/></svg>
+{%- endcase -%}
+{%- endcapture -%}
+<span class="m-mark m-mark--{{ side }} m-{{ color }}" aria-hidden="true"><span class="m-mark__glyph">{{ svg | strip_newlines }}</span></span>

@@ -1,0 +1,389 @@
+// ===================================================================
+// _marginalia.scss — THE MARGINALIA KIT.
+//
+// Chielo read his own essay with a fistful of markers and scrawled all over
+// it: circled key terms, squiggle-underlined the punchy lines, boxed phrases,
+// struck words out, and pinned hand-written notes + doodles into the desk
+// margin with little leader arrows back to the text.
+//
+// Two material registers, both run through the landing's roughen filters so
+// every stroke WOBBLES (squigglevision), never a clean vector:
+//   MARKER  — translucent, multiply blend, a touch of texture (circles, boxes,
+//             underlines, strikes, notes, doodles).
+//   CRAYON  — grainier, waxy, broken coverage (the .m-scribble loose squiggle
+//             + a waxy grain wash baked into the marker strokes).
+//
+// BRAND LAW: 7 colours only (palette §4), ink = Sambas (NO #000/#fff). The
+// marker inks are the six brand hues; the colour classes pick one. Yellow /
+// School-Bus are HIGHLIGHTER-only (m-hl) or marks — never small text on light.
+//
+// SACRED: these are ACCENTS over the sacred Bitter reading column. They sit in
+// the MARGIN (desktop) or reflow to tiny inline scrawls (mobile) and NEVER hurt
+// legibility, NEVER overlap body text, NEVER cause horizontal overflow at
+// 360–414px. Inline marks are ::before/::after decorations so they never break
+// text selection of the underlying word. Decorative SVG is aria-hidden; m-note
+// text stays real, selectable, AA on the desk.
+//
+// prefers-reduced-motion freezes the optional marker "boil" (static rough is
+// fine). The boil is OPT-IN via body.marker-boil so it never ships shimmer by
+// default.
+// ===================================================================
+
+// ---- ink map: class -> brand hue. Default ink = coral. -------------------
+// (Local so the kit is self-contained; values are the palette §4 constants.)
+$m-inks: (
+  "grass":  #1CAB5B,
+  "coral":  #F75458,
+  "lazuli": #2496C9,
+  "bus":    #ECAF21,
+  "happy":  #F1DD01,
+  "ink":    #414D57,
+);
+
+// every marked element exposes --m-ink (its stroke colour). Default = coral.
+.m-circle, .m-underline, .m-scribble, .m-strike, .m-box, .m-hl,
+.m-note, .m-mark {
+  --m-ink: #{map-get($m-inks, "coral")};
+}
+@each $name, $hex in $m-inks {
+  .m-#{$name} { --m-ink: #{$hex}; }
+}
+
+// ===================================================================
+// WAXY CRAYON GRAIN — a tiny repeating broken-coverage mask reused by the
+// crayon-register marks so the ink reads grainy / waxy, not a solid fill.
+// (A faint diagonal hatch punched out of the stroke => broken pigment.)
+// ===================================================================
+$crayon-grain:
+  repeating-linear-gradient(58deg, transparent 0 1.5px, rgba(0,0,0,.5) 1.5px 2px),
+  repeating-linear-gradient(-52deg, transparent 0 2px, rgba(0,0,0,.35) 2px 2.6px);
+
+// ===================================================================
+// INLINE MARKS — wrap a word / phrase. All are ::before/::after pseudo-paint
+// so SELECTION of the underlying text is never broken, and the running Bitter
+// stays upright + clean. Marker = multiply + slight translucency.
+// ===================================================================
+
+// shared inline scaffold
+.m-circle, .m-underline, .m-scribble, .m-strike, .m-box {
+  position: relative;
+  display: inline;
+  // marks paint with the element's --m-ink, multiplied onto the page so they
+  // read as translucent marker over the cream sheet (never an opaque block).
+  color: inherit;            // text colour is untouched — legibility is sacred
+}
+
+// ---------- m-circle — a hand-drawn marker ELLIPSE around the word ----------
+// A wobbly ring drawn as an SVG ellipse stroke, run through #roughsm, sat
+// behind the text (z-index:-1) so the word reads inside the loop.
+.m-circle {
+  z-index: 0;
+}
+.m-circle::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: -.42em; right: -.42em; top: -.30em; bottom: -.26em;
+  // the ellipse: an SVG stroke painted as a mask isn't needed — we draw the
+  // ring with a transparent-centre radial isn't round enough; instead use a
+  // border on a rotated box softened to an ellipse, roughened into a hand loop.
+  border: .15em solid var(--m-ink);
+  border-radius: 50%;
+  transform: rotate(-3deg);
+  opacity: .9;
+  mix-blend-mode: multiply;
+  filter: url(#roughsm);
+  // a marker loop is never a perfect closed oval — feather one side so it reads
+  // as a single sweeping stroke that doesn't quite meet (the gap is a small wedge
+  // at the top-right, not a fade of the whole ring).
+  -webkit-mask-image: conic-gradient(from 12deg, var(--m-ink) 0 332deg, transparent 338deg 352deg, var(--m-ink) 358deg);
+          mask-image: conic-gradient(from 12deg, var(--m-ink) 0 332deg, transparent 338deg 352deg, var(--m-ink) 358deg);
+  pointer-events: none;
+}
+
+// ---------- m-underline — one wobbly marker / crayon underline stroke -------
+// (the canonical single-stroke marker rule, kit-local sibling of .ul)
+.m-underline::after {
+  content: "";
+  position: absolute;
+  left: -.05em; right: -.07em; bottom: -.10em;
+  height: .17em;
+  background: var(--m-ink);
+  border-radius: 3px;
+  opacity: .88;
+  mix-blend-mode: multiply;
+  filter: url(#rough);
+  // waxy crayon broken coverage punched through the stroke
+  -webkit-mask-image: $crayon-grain;
+          mask-image: $crayon-grain;
+  -webkit-mask-composite: source-over;
+          mask-composite: add;
+  pointer-events: none;
+}
+
+// ---------- m-scribble — loose DOUBLE/TRIPLE squiggle underline (crayon) -----
+// three offset wobbly strokes stacked => a fast scribbled emphasis, grainier
+// and looser than m-underline. Drawn with stacked box-shadows of the after bar
+// then roughened hard so the three lines wander into each other.
+.m-scribble::after {
+  content: "";
+  position: absolute;
+  left: -.06em; right: -.08em; bottom: -.16em;
+  height: .12em;
+  background: var(--m-ink);
+  border-radius: 3px;
+  opacity: .8;
+  mix-blend-mode: multiply;
+  // two more passes stacked below => triple squiggle
+  box-shadow:
+    0 .17em 0 -.01em var(--m-ink),
+    0 .34em 0 -.02em var(--m-ink);
+  filter: url(#rough);       // heavy wobble so the three lines go loose/scribbly
+  -webkit-mask-image: $crayon-grain;
+          mask-image: $crayon-grain;
+  pointer-events: none;
+}
+
+// ---------- m-strike — hand struck-through -----------------------------------
+.m-strike::after {
+  content: "";
+  position: absolute;
+  left: -.05em; right: -.05em; top: .52em;
+  height: .14em;
+  background: var(--m-ink);
+  border-radius: 3px;
+  opacity: .85;
+  mix-blend-mode: multiply;
+  transform: rotate(-1.2deg);   // a struck line is never dead level
+  filter: url(#rough);
+  pointer-events: none;
+}
+
+// ---------- m-box — hand-drawn marker BOX / bracket around a phrase ----------
+.m-box {
+  z-index: 0;
+}
+.m-box::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: -.32em; right: -.32em; top: -.22em; bottom: -.18em;
+  border: .12em solid var(--m-ink);
+  border-radius: 6px / 9px;      // hand boxes have wonky corners
+  transform: rotate(-.7deg);
+  opacity: .82;
+  mix-blend-mode: multiply;
+  filter: url(#roughsm);
+  pointer-events: none;
+}
+
+// ---------- m-hl — translucent HIGHLIGHTER swipe (reuse the landing's .hl) ----
+// a fat multiply band behind the text, skewed like a felt-tip swipe. Default
+// ink for the highlighter is Happy (the highlighter colour); the .m-COLOR class
+// overrides --m-ink, so m-hl m-grass etc. all work.
+.m-hl {
+  --m-ink: #{map-get($m-inks, "happy")};   // highlighter defaults to Happy yellow
+  position: relative;
+  display: inline;
+  z-index: 0;
+}
+.m-hl::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: -.19em; right: -.24em; top: .06em; bottom: -.05em;
+  background: var(--m-ink);
+  mix-blend-mode: multiply;
+  opacity: .92;
+  transform: rotate(-.9deg) skewX(-5deg);
+  border-radius: 2px;
+  filter: url(#rough);
+  pointer-events: none;
+}
+
+// ===================================================================
+// MARGIN NOTES + MARKS — block-level includes placed right AFTER the line they
+// annotate. On the desk margin (desktop) they pin ABSOLUTELY into the bare
+// gutter beside the centred .prose column, tilted, with a thin hand-drawn
+// LEADER pointing back to the text. They are zero-height in flow so they never
+// push the column.
+// ===================================================================
+
+// The annotation is a zero-flow-height anchor dropped right after a line; its
+// child .m-note__slip / .m-mark__glyph is what gets pinned into the gutter.
+.m-note, .m-mark {
+  position: relative;
+  display: block;
+  height: 0;                  // takes no vertical space in the reading column
+  margin: 0;
+  // a marginalia ink colour for the leader + glyph
+  color: var(--m-ink);
+}
+
+// ---- the gutter geometry ------------------------------------------------
+// .prose measure is 64ch but lives inside an 880px sheet centred on a wider
+// desk. The bare desk margin beside the sheet is (100vw - 880px)/2. We pin the
+// slip just OUTSIDE the sheet edge into that bare strip. Below the arm width we
+// reflow inline (mobile block at the bottom of this file).
+$gutter-arm: 1100px;          // desk must be this wide to have a real gutter
+$sheet: 880px;                // reading sheet width (matches _post.scss)
+
+// default (mobile / narrow): slips sit as small inline scrawls UNDER the line
+// (the desktop absolute placement is layered on at >=#{$gutter-arm}).
+.m-note__slip {
+  display: block;
+  font-family: var(--f-hand);
+  font-weight: 400;
+  font-size: clamp(1rem, calc(0.95rem + 0.5vw), 1.28rem);
+  line-height: 1.18;
+  color: var(--m-ink);
+  // inline-mobile look: a tilted scrawl tucked just under the line it annotates
+  max-width: min(34ch, 80%);
+  margin: .15em 0 .55em;
+  transform: rotate(-1.6deg);
+  // a tiny leader dash so even inline it reads as a margin note pointing up
+  &::before {
+    content: "↳ ";
+    opacity: .75;
+  }
+}
+.m-note--right .m-note__slip { transform: rotate(1.4deg); margin-left: auto; text-align: left; }
+
+.m-mark__glyph {
+  display: inline-block;
+  font-family: var(--f-hand);
+  color: var(--m-ink);
+  line-height: 1;
+  // inline-mobile: a small doodle tucked beside the line
+  margin: 0 .25em;
+  filter: url(#roughsm);     // even the SVG doodles wobble
+  mix-blend-mode: multiply;
+}
+.m-mark__glyph svg { display: block; width: 1.4em; height: 1.4em; overflow: visible; }
+.m-mark__glyph svg [stroke] { stroke: var(--m-ink); }
+.m-mark__glyph svg [fill]:not([fill="none"]) { fill: var(--m-ink); }
+
+// ---- DESKTOP: pin into the bare desk margin, with a leader arrow back -------
+@media (min-width: #{$gutter-arm}) {
+  // anchor stays zero-height in flow; we absolutely place the slip relative to
+  // the .post-stage / .prose. The slip rides into the bare gutter OUTSIDE the
+  // sheet so it can NEVER overlap the body text (SACRED).
+  .m-note__slip,
+  .m-mark__glyph {
+    position: absolute;
+    top: -0.2em;             // aligned to the line it follows
+    z-index: 4;              // above the sheet, beside the text
+  }
+
+  // RIGHT gutter: sit just past the right sheet edge. The sheet is centred, so
+  // the right edge is at calc(50% + sheet/2) measured from the .prose box —
+  // but .prose IS the sheet, so 100% is its right edge. Push the slip outboard.
+  .m-note--right .m-note__slip,
+  .m-mark--right .m-mark__glyph {
+    left: calc(100% + 2.2rem);
+    right: auto;
+    text-align: left;
+    transform: rotate(2.2deg);
+  }
+  // LEFT gutter: sit just before the left sheet edge, text right-aligned so it
+  // reads in toward the column.
+  .m-note--left .m-note__slip,
+  .m-mark--left .m-mark__glyph {
+    right: calc(100% + 2.2rem);
+    left: auto;
+    text-align: right;
+    transform: rotate(-2.2deg);
+  }
+  .m-note--left .m-note__slip  { width: max-content; max-width: 15rem; }
+  .m-note--right .m-note__slip { width: max-content; max-width: 15rem; }
+  .m-note__slip::before { content: none; }   // desktop uses a real leader, not ↳
+
+  // the hand-drawn LEADER: a thin wobbly line from the slip back toward the
+  // text. Drawn as a rough-filtered bar bridging the gutter gap.
+  .m-note .m-note__slip::after,
+  .m-mark .m-mark__glyph::after {
+    content: "";
+    position: absolute;
+    top: 0.7em;
+    height: .12em;
+    width: 1.9rem;
+    background: var(--m-ink);
+    border-radius: 3px;
+    opacity: .7;
+    mix-blend-mode: multiply;
+    filter: url(#roughsm);
+    pointer-events: none;
+  }
+  // right slip: leader runs from its LEFT edge back toward the column (with a
+  // little arrowhead nib)
+  .m-note--right .m-note__slip::after,
+  .m-mark--right .m-mark__glyph::after {
+    right: 100%;
+    margin-right: .35rem;
+  }
+  .m-note--left .m-note__slip::after,
+  .m-mark--left .m-mark__glyph::after {
+    left: 100%;
+    margin-left: .35rem;
+  }
+}
+
+// ===================================================================
+// OPTIONAL marker "BOIL" — squigglevision. Opt-in via body.marker-boil so the
+// kit ships calm by default. Reuses the landing boil keyframes (defined in
+// _whimsy.scss). Big translucent fills (hl) boil slower to avoid shimmer.
+// ===================================================================
+@keyframes m-boil-rough  { 0%{filter:url(#rough)}  33%{filter:url(#rough2)}  66%{filter:url(#rough3)} }
+@keyframes m-boil-roughsm{ 0%{filter:url(#roughsm)}33%{filter:url(#roughsm2)}66%{filter:url(#roughsm3)} }
+
+body.marker-boil {
+  .m-underline::after,
+  .m-scribble::after,
+  .m-strike::after        { animation: m-boil-rough   .82s step-end infinite; }
+  .m-circle::before,
+  .m-box::before          { animation: m-boil-roughsm .9s  step-end infinite; }
+  .m-hl::before           { animation: m-boil-rough  1.7s step-end infinite; }
+  .m-mark__glyph,
+  .m-note__slip::after,
+  .m-mark__glyph::after   { animation: m-boil-roughsm 1.1s step-end infinite; }
+}
+
+// ===================================================================
+// REDUCED MOTION — kill any boil/wobble animation. Static rough is fine, but
+// freeze the redraw cycle so nothing shimmers.
+// ===================================================================
+@media (prefers-reduced-motion: reduce) {
+  .m-circle::before, .m-box::before, .m-underline::after, .m-scribble::after,
+  .m-strike::after, .m-hl::before, .m-mark__glyph,
+  .m-note__slip::after, .m-mark__glyph::after {
+    animation: none !important;
+  }
+}
+
+// FPS governor (lite tier) — drop the live filters (the paint cost); the marks
+// fall back to clean strokes but stay on-brand and legible.
+html[data-tier="lite"] {
+  .m-circle::before, .m-box::before, .m-underline::after, .m-scribble::after,
+  .m-strike::after, .m-hl::before, .m-mark__glyph,
+  .m-note__slip::after, .m-mark__glyph::after {
+    filter: none !important;
+    animation: none !important;
+  }
+}
+
+// ===================================================================
+// MOBILE (<=900px) — there is NO gutter. Margin notes/marks reflow to small
+// inline scrawls between the lines (handled by the default un-prefixed rules
+// above, which the desktop @media only overrides at >=#{$gutter-arm}). Here we
+// just HARD-GUARANTEE no horizontal overflow at 360–414px and trim sizes.
+// ===================================================================
+@media (max-width: 900px) {
+  .m-note__slip {
+    max-width: 100%;
+    transform: rotate(-1.1deg);
+    overflow-wrap: anywhere;     // never let a long note push a scrollbar
+  }
+  .m-note--right .m-note__slip { transform: rotate(1deg); }
+  // inline marks: keep wobble subtle on small screens, no overflow risk
+  .m-circle::before, .m-box::before { filter: url(#roughsm); }
+}
