@@ -5,3 +5,11 @@ vendor/
 .bundle/
 Gemfile.lock
 .gstack/
+
+# internal build/orchestration scripts (not part of the site)
+.build-workflow.js
+.overhaul-workflow.js
+.polish-workflow.js
+.qa-workflow.js
+.marginalia-workflow.js
+PLAN.md
