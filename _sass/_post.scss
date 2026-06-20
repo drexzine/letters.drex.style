@@ -863,6 +863,25 @@ html.baked .callout--answer {
   border-bottom-color: rgba(28, 171, 91, 0.55);
 }
 
+/* for-drex (the DEFAULT callout kind) had NO skin, so every "For Drex" aside fell
+   through to plain CREAM — cream paper on the cream sheet, where only the torn rim +
+   shadow separated it (the "fucked border" look). PRINCIPLE: paper layered on paper
+   changes colour. So for-drex is now its own dark Sambas margin-note (distinct from
+   the cream sheet, distinct from the Grass `note` kind), School-Bus label. */
+.callout--for-drex { background-color: var(--sambas); color: var(--oats); }
+html.baked .callout--for-drex {
+  @include scrap-face(--bk-piece-sambas, --bk-edge-sambas, var(--bk-edge-sambas-slice, 38));
+  background-color: var(--sambas); color: var(--oats);
+}
+.callout--for-drex::before { background: radial-gradient(125% 100% at 42% 32%,
+  rgba(58,69,79,.55) 0%, rgba(58,69,79,.32) 58%, rgba(58,69,79,0) 100%); }
+.callout--for-drex .callout-label { color: var(--schoolbus); text-shadow: 0 1px 1px rgba(var(--sh-seam),.42); }
+.callout--for-drex .callout-body { color: var(--oats); text-shadow: 0 .6px 0 rgba(var(--sh-seam),.5); }
+.callout--for-drex .callout-body strong { color: var(--paper); }
+.callout--for-drex .callout-body em { color: var(--oats); }
+.callout--for-drex .callout-body a { color: var(--grass); border-bottom-color: rgba(28,171,91,.55); }
+.callout--for-drex > .tape { background: linear-gradient(94deg, rgba(236,175,33,.44), rgba(236,175,33,.26) 55%, rgba(236,175,33,.4)); }
+
 /* "note" kind = a GRASS taped slip (the brighter aside; brief: callout = Grass
    or Lazuli, never a pale fill). Grass torn cardstock, light Oats ink, Lazuli
    washi tape, a faint light ink-well veil so the serif strokes stay sharp. */
