@@ -142,6 +142,20 @@ layout: default
       {%- assign stock  = stocks[si] -%}
       {%- assign mat    = mats[si] -%}
       {%- assign fasten = fastens[si] -%}
+      {%- comment -%} CONTENT-MATCHED OVERRIDE: a post may name its own material via
+        front-matter `stock:` so the clipping's substance tells you what it's about
+        (correspondence → airmail; mending → cloth; vision memo → ledger; lore →
+        newsprint). The mat (face colour/dye) follows the stock. {%- endcomment -%}
+      {%- if post.stock -%}
+        {%- assign stock = post.stock -%}
+        {%- case post.stock -%}
+          {%- when 'cloth'     -%}{%- assign mat = 'sambas' -%}{%- assign fasten = 'pin' -%}
+          {%- when 'airmail'   -%}{%- assign mat = 'oats'   -%}{%- assign fasten = 'tape-c' -%}
+          {%- when 'ledger'    -%}{%- assign mat = 'oats'   -%}{%- assign fasten = 'pin' -%}
+          {%- when 'newsprint' -%}{%- assign mat = 'oats'   -%}{%- assign fasten = 'tape-oats' -%}
+          {%- else -%}{%- assign mat = post.mat | default: post.stock -%}
+        {%- endcase -%}
+      {%- endif -%}
       {%- comment -%} seeded never-square tilt below; cream now lives in the gaps. {%- endcomment -%}
       {%- comment -%} seeded never-square tilt: >5 distinct angles chosen off the
         seed so the resting rake varies independently of the stock. {%- endcomment -%}

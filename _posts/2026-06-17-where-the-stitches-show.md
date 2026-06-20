@@ -5,6 +5,7 @@ eyebrow: "Lore"
 date: 2026-06-17
 dek: "Sashiko was never decoration. It was a record — proof that a piece of cloth had been kept inside the practice of a life. That is the lineage Drex descends from, and the reason we never hide the seam."
 tags: [lore, lineage]
+stock: cloth          # content-matched: a mending post on hand-stitched indigo cloth
 reading_time: auto
 ---
 

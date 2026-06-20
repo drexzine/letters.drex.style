@@ -5,6 +5,7 @@ eyebrow: "Vision"
 date: 2026-06-03
 dek: "We are not building an app that has community features. We are building a community of practice that happens to need software. The distinction decides everything."
 tags: [vision, manifesto]
+stock: ledger         # content-matched: a vision memo on ruled ledger paper
 reading_time: auto
 ---
 

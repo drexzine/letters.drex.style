@@ -5,6 +5,7 @@ eyebrow: "Canon"
 date: 2026-05-12
 dek: "Email, Instagram, and one quieter third surface. Three structural functions for one community of practice — grounded in the deeper canon of how communities of practice have *actually* been held across distance for two thousand years."
 tags: [canon, strategy, lore]
+stock: airmail        # content-matched material: this post IS correspondence → an airmail letter
 reading_time: auto
 ---
 

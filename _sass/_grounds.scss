@@ -527,6 +527,45 @@ html.baked .clip--kraft {background-image:var(--bk-piece-kraft); border-image-so
 // the cream clip reuses the OATS bakes (already emitted by bakery.js for the
 // polaroid / litter / footer / tabs) — baked Oats tooth face + Oats torn rim.
 html.baked .clip--leaf  {background-image:var(--bk-piece-oats);  border-image-source:var(--bk-edge-oats)}
+
+// ===================================================================
+// CONTENT-MATCHED STOCKS — the clipping's MATERIAL tells you what the post is about:
+// airmail (the correspondence IS a letter) · ledger (a vision memo) · cloth (mending,
+// already gets sashiko via [data-mat=sambas]). All reuse oats/sambas baked faces;
+// the overlay supplies the metaphor.
+// ===================================================================
+.clip--airmail{background-color:var(--oats)}
+.clip--ledger {background-color:var(--oats)}
+.clip--cloth  {background-color:var(--sambas);color:var(--oats)}
+.clip--cloth .clip-title,.clip--cloth .clip-dek,.clip--cloth .clip-kicker,.clip--cloth .clip-meta{color:var(--oats)}
+html.baked .clip--airmail{background-image:var(--bk-piece-oats);  border-image-source:var(--bk-edge-oats)}
+html.baked .clip--ledger {background-image:var(--bk-piece-oats);  border-image-source:var(--bk-edge-oats)}
+html.baked .clip--cloth  {background-image:var(--bk-piece-sambas);border-image-source:var(--bk-edge-sambas)}
+
+// AIRMAIL — a par-avion red/blue dashed border framing the cream onionskin letter.
+.clip--airmail .clip-link{position:relative}
+.clip--airmail .clip-link::before{
+  content:"";position:absolute;inset:7px;z-index:3;pointer-events:none;border-radius:2px;padding:5px;
+  background:repeating-linear-gradient(45deg,
+    var(--colorado) 0 9px, transparent 9px 13px, var(--lazuli) 13px 22px, transparent 22px 26px);
+  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;
+  mask:linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  opacity:.8;
+}
+
+// LEDGER — account-book paper: faint blue horizontal rules + a double red margin
+// rule down the left, over the warm Oats face.
+html.baked .clip--ledger{
+  background-image:
+    repeating-linear-gradient(0deg, transparent 0 25px, rgba(36,150,201,.12) 25px 26px),
+    linear-gradient(90deg, transparent 27px, var(--colorado) 27px 28px, transparent 28px 30px, rgba(247,84,88,.65) 30px 31px, transparent 31px),
+    var(--bk-piece-oats);
+  background-size:auto, auto, cover;
+  background-position:left top, left top, center;
+  background-repeat:repeat, repeat-y, no-repeat;
+}
+
 // seeded edge-PROFILE variation: shift the slice + width per position so the same
 // sprite never tiles identically on two adjacent clips (REFS 12/30 — no clones).
 html.baked .board-pile>.clip:nth-child(5n+1){border-image-width:13px;border-image-outset:1px 0}
