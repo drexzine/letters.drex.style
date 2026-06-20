@@ -146,7 +146,7 @@ html.baked .mast>.wrap>nav a{
   // repeat (no tile clone). Padding compensates the border so the label fits.
   border-style:solid;border-color:transparent;
   border-width:11px;border-image-source:var(--bk-edge-oats);
-  border-image-slice:var(--bk-edge-oats-slice,var(--bk-edge-grass-slice,38)) fill;
+  border-image-slice:var(--bk-edge-oats-slice,var(--bk-edge-grass-slice,38));
   border-image-width:11px;border-image-repeat:round;
   padding:.2em .55em;
 }
@@ -217,7 +217,7 @@ html.baked footer{
   clip-path:none;                  // the baked torn rim supplies the silhouette
   border-style:solid;border-color:transparent;
   border-width:16px;border-image-source:var(--bk-edge-oats);
-  border-image-slice:var(--bk-edge-oats-slice,var(--bk-edge-grass-slice,38)) fill;
+  border-image-slice:var(--bk-edge-oats-slice,var(--bk-edge-grass-slice,38));
   border-image-width:16px;border-image-repeat:round;
 }
 // a thumbtack pinning the colophon scrap to the desk (top-left), like the board.
@@ -254,7 +254,7 @@ footer .links a:nth-child(even){background-color:var(--colorado);color:var(--sam
 html.baked footer .links a{
   background-color:transparent;background-size:cover;background-position:center;background-clip:padding-box;
   border-style:solid;border-color:transparent;
-  border-width:9px;border-image-slice:var(--bk-edge-grass-slice,38) fill;
+  border-width:9px;border-image-slice:var(--bk-edge-grass-slice,38);
   border-image-width:9px;border-image-repeat:round;padding:.18em .5em}
 html.baked footer .links a{background-image:var(--bk-piece-lazuli);border-image-source:var(--bk-edge-lazuli)}
 html.baked footer .links a:nth-child(even){background-image:var(--bk-piece-coral);border-image-source:var(--bk-edge-coral)}
@@ -318,7 +318,7 @@ html.baked .board-head{
   border-style:solid;border-color:transparent;
   // align to the _realism scrap mixin: two-zone slice w/ fill, RING repeat (no tile clone)
   border-width:15px;border-image-source:var(--bk-edge-grass);
-  border-image-slice:var(--bk-edge-grass-slice,38) fill;
+  border-image-slice:var(--bk-edge-grass-slice,38);
   border-image-width:15px;border-image-repeat:round;
 }
 // Grass ground has NO §4.3 combo for a Happy headline color (Happy + School Bus
@@ -514,7 +514,7 @@ html.baked .clip{background-size:cover;background-position:center;
   clip-path:none;                  // baked torn rim supplies the silhouette
   border-style:solid;border-color:transparent;
   // align to the _realism scrap mixin: slice w/ fill + RING repeat (no tile clone)
-  border-width:14px;border-image-slice:var(--bk-edge-grass-slice,38) fill;
+  border-width:14px;border-image-slice:var(--bk-edge-grass-slice,38);
   border-image-width:14px;border-image-repeat:round;
   background-clip:padding-box}
 // each colored stock uses its OWN baked edge sprite; the per-nth tilt + the
@@ -829,7 +829,7 @@ html.baked .board-litter .litter--slip{
   background-color:transparent;background-image:var(--bk-piece-lazuli);background-size:cover;
   background-clip:padding-box;border-style:solid;border-color:transparent;border-radius:0;
   border-width:13px;border-image-source:var(--bk-edge-lazuli);
-  border-image-slice:var(--bk-edge-grass-slice,38) fill;border-image-width:13px;border-image-repeat:round;
+  border-image-slice:var(--bk-edge-grass-slice,38);border-image-width:13px;border-image-repeat:round;
 }
 .litter--slip .slip-line{font-family:var(--f-mono);font-size:.74rem;letter-spacing:.04em;line-height:1.25}
 .litter--slip .slip-line em{font-style:italic;color:var(--oats)}   // Oats emphasis on dark Lazuli clears AA (Happy is not a text color)
@@ -845,7 +845,7 @@ html.baked .litter--byline{
   background-color:transparent;background-image:var(--bk-piece-kraft);background-size:cover;
   background-clip:padding-box;border-style:solid;border-color:transparent;border-radius:0;
   border-width:13px;border-image-source:var(--bk-edge-kraft);
-  border-image-slice:var(--bk-edge-grass-slice,38) fill;border-image-width:13px;border-image-repeat:round;
+  border-image-slice:var(--bk-edge-grass-slice,38);border-image-width:13px;border-image-repeat:round;
 }
 .litter--byline .stamp{flex:0 0 auto;transform:rotate(-7deg)}
 .litter--byline .byline-who{line-height:1.05}
@@ -887,7 +887,7 @@ html.baked .litter--ticket{
   background-color:transparent;background-image:var(--bk-piece-oats);background-size:cover;
   background-clip:padding-box;border-style:solid;border-color:transparent;border-radius:0;
   border-width:12px;border-image-source:var(--bk-edge-oats);
-  border-image-slice:var(--bk-edge-oats-slice,var(--bk-edge-grass-slice,38)) fill;
+  border-image-slice:var(--bk-edge-oats-slice,var(--bk-edge-grass-slice,38));
   border-image-width:12px;border-image-repeat:round;
 }
 .litter--ticket .ticket-no{font-family:var(--f-mono);font-weight:700;font-size:.92rem;
@@ -936,7 +936,7 @@ html.baked .post-banner{
   clip-path:none;                  // baked torn edge supplies the silhouette
   border-style:solid;border-color:transparent;
   border-width:15px;border-image-source:var(--bk-edge-grass);
-  border-image-slice:var(--bk-edge-grass-slice,38) fill;
+  border-image-slice:var(--bk-edge-grass-slice,38);
   border-image-width:15px;border-image-repeat:round;
 }
 .post-banner>.pin{position:absolute;z-index:8;left:auto;right:18%;top:-15px;

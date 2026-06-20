@@ -42,16 +42,22 @@ html.baked body{
 // seeded tilt comes from _whimsy/_post; here we own the MATERIAL + the cast.
 // ===================================================================
 @mixin scrap-face($face, $edge, $slice){
+  // FACE: one baked cardstock image scaled to COVER — never tiled. The old
+  // `background-size:160px` + `border-image …fill round` tiled the face slice an
+  // integer number of times, and a non-seamless paper tile repeated like that read
+  // as a regular checkerboard/"weird pattern". cover = one continuous organic face.
   background-image:var(#{$face});
-  background-size:160px 160px;
+  background-size:cover;
+  background-repeat:no-repeat;
+  background-position:center;
   border-style:solid;
   border-width:14px;
   border-color:transparent;        // the torn fiber lives in the image, not a line
   border-image-source:var(#{$edge});
-  border-image-slice:#{$slice} fill;
-  border-image-repeat:round;
+  border-image-slice:#{$slice};    // NO `fill` — the rim only; the cover face above fills the centre
+  border-image-repeat:round;       // only the thin 14px torn rim tiles now (varied, not a grid)
   border-image-width:14px;
-  border-radius:0;                 // torn edge supplies the silhouette
+  border-radius:0;                 // torn rim supplies the silhouette
   filter:none;                     // kill the old SVG #torn boil — sprite owns the edge
   box-shadow:var(--sh-contact), var(--sh-ambient);
 }
@@ -71,11 +77,11 @@ html.baked .scrap.kraft { @include scrap-face(--bk-piece-kraft,  --bk-edge-kraft
 // The big reading sheet keeps Oats tooth + the two-zone torn edge, but a calmer
 // ambient cast (it's a big, flat, heavy sheet, not a little chip).
 html.baked .paper>.sheet{
-  background:var(--paper) var(--bk-piece-oats);
-  background-size:200px 200px;
+  // big reading sheet: one organic Oats face (cover, no tile) + torn rim (no fill).
+  background:var(--paper) var(--bk-grain) center/600px 600px;
   border-style:solid; border-width:16px; border-color:transparent;
   border-image-source:var(--bk-edge-oats);
-  border-image-slice:var(--bk-edge-oats-slice,38) fill;
+  border-image-slice:var(--bk-edge-oats-slice,38);
   border-image-repeat:round; border-image-width:16px;
   border-radius:0;
   filter:none;                                   // sprite edge replaces #torn
@@ -83,9 +89,9 @@ html.baked .paper>.sheet{
   animation:none;                                // no boil; baked edge is the truth
 }
 html.baked .paper>.sheet.ruled{
-  background:var(--paper) var(--bk-piece-oats),
+  background:var(--paper) var(--bk-grain) center/600px 600px,
     repeating-linear-gradient(0deg, transparent 0 27px, rgba(65,77,87,.07) 27px 28px);
-  background-size:200px 200px, auto;
+  background-size:600px 600px, auto;
 }
 
 // ===================================================================

@@ -456,7 +456,7 @@ pre {
     border-style: solid;
     border-width: 8px;
     border-image-source: var(--bk-edge-oats);
-    border-image-slice: var(--bk-edge-oats-slice, 38) fill;
+    border-image-slice: var(--bk-edge-oats-slice, 38);
     border-image-repeat: round;
     border-image-width: 9px;
   }

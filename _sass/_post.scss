@@ -256,7 +256,7 @@ html.baked .prose {
     auto, 200px 200px;
   border-style:solid; border-width:16px; border-color:transparent;
   border-image-source:var(--bk-edge-oats);
-  border-image-slice:var(--bk-edge-oats-slice,38) fill;
+  border-image-slice:var(--bk-edge-oats-slice,38);
   border-image-repeat:round; border-image-width:16px;
   border-radius:0;
 }
