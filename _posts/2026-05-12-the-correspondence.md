@@ -58,7 +58,7 @@ The cadence is the right shape too. Annual is not arbitrary; it's *when there is
 
 {% include callout.html kind="for-drex" title="For Drex" body="The unit of correspondence can be the room. A 'Reflection' is structurally close to a Quaker yearly meeting epistle in miniature — what this room has come to, written to other rooms and to whoever is in the practice. The cadence is the room's, not the calendar's." %}
 
-{% include pullquote.html text="Most learning does not take place with the master. It takes place among the apprentices. And most circulation of the practice does not take place in a single room. It takes place in correspondence." attrib="Lave & Wenger, extended" %}
+{% include pullquote.html text="Most learning does not take place with the master. It takes place among the apprentices. And most circulation of the practice does not take place in a single room. It takes place in correspondence." attrib="after Lave & Wenger" %}
 
 ### Three structural patterns the traditions share
 
@@ -86,7 +86,7 @@ Every platform tested against one question: does it support the hub-corresponden
 
 *Historical analog: the letter itself. Pauline epistles, Mersenne's relays, Quaker yearly meeting epistles.*
 
-Email is the correspondence. One-to-one in voice, one-to-many in circulation. **The only channel where the reader, not the platform, controls whether you reach them.** The inbox is a private space subscribers actively opted into — algorithm-free, export-able, durable across platforms. This is not preference. It is the structural reason email-as-home holds; every other platform is mediated by an algorithm that decides who sees your work. Email is the medium where espoused access and felt access converge.
+Email is the correspondence. One-to-one in voice, one-to-many in circulation. **The only channel where the reader, not the platform, controls whether you reach them.** The inbox is a private space subscribers actively opted into — algorithm-free, exportable, durable across platforms. This is not preference. It is the structural reason email-as-home holds; every other platform is mediated by an algorithm that decides who sees your work. Email is the medium where espoused access and felt access converge.
 
 For Drex specifically, email's job is *extension of the practice* across the gap between rooms — and outward to whoever is at any radius of participation in the broader craft. Not a content channel. Not a newsletter. *Correspondence.*
 
@@ -114,7 +114,7 @@ Three platforms, three structural roles, three historical ancestors. The narrowi
 
 {% include eyebrow.html text="Email · the technical canon" %}
 
-## Nine voices who built the modern email canon.
+## Nine voices on the modern email canon.
 
 The deeper canon tells you what email *is*. This thinker canon tells you how to write it well in the current medium. Nine voices, each with a specific contribution.
 
@@ -238,7 +238,7 @@ Pauline epistles were occasional. The Republic of Letters ran on discoveries and
 
 *What it isn't:* a re-engagement campaign, an automated drip, a "we miss you" form letter.
 
-**08 · The Artifact.** *Trigger: the practice has produced something publishable.* A beautifully-rendered session zine, postcard, or photo set that attendees can post themselves — because it represents what they were part of, and represents them well. The ownership move: people share what they feel ownership of. *Not* an advertisement or a Drex-branded promotional asset; the work itself should be the loudest thing.
+**08 · The Artifact.** *Trigger: the practice has produced something publishable.* A beautifully rendered session zine, postcard, or photo set that attendees can post themselves — because it represents what they were part of, and represents them well. The ownership move: people share what they feel ownership of. *Not* an advertisement or a Drex-branded promotional asset; the work itself should be the loudest thing.
 
 {% include definition.html term="The Lineage — new form" body="Trigger: the practice's tradition needs placing. Naming what the Drex practice descends from — the Visible Menders' mending circles back through Japanese sashiko, through women's quilt circles; the studio session back through the Renaissance bottega, the Iowa Writers' Workshop, the Quaker meeting for worship. The Lineage email places newcomers in a tradition before they're asked to participate in it. Closest to the Quaker founding epistles. One paragraph is usually enough. It is not an academic survey or a history lesson." %}
 
