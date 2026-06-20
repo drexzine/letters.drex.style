@@ -107,8 +107,10 @@ html.baked .patterns-splay .pattern{
 // The big reading sheet keeps Oats tooth + the two-zone torn edge, but a calmer
 // ambient cast (it's a big, flat, heavy sheet, not a little chip).
 html.baked .paper>.sheet{
-  // big reading sheet: one organic Oats face (cover, no tile) + torn rim (no fill).
-  background:var(--paper) var(--bk-grain) center/600px 600px;
+  // big reading sheet: FLAT warm Oats (no raster grain — a 600px tile repeated down
+  // a 6000px essay showed faint quilt seams). The subtle CSS fiber/ruling from
+  // _post.scss stands; legibility wants this surface calm. Torn rim only.
+  background:var(--paper);
   border-style:solid; border-width:16px; border-color:transparent;
   border-image-source:var(--bk-edge-oats);
   border-image-slice:var(--bk-edge-oats-slice,38);
@@ -119,9 +121,8 @@ html.baked .paper>.sheet{
   animation:none;                                // no boil; baked edge is the truth
 }
 html.baked .paper>.sheet.ruled{
-  background:var(--paper) var(--bk-grain) center/600px 600px,
+  background:var(--paper),
     repeating-linear-gradient(0deg, transparent 0 27px, rgba(65,77,87,.07) 27px 28px);
-  background-size:600px 600px, auto;
 }
 
 // ===================================================================
