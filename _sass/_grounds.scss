@@ -46,18 +46,21 @@ body{
 // fixed below) move as ONE — no horizontal band where a scrolling layer slides
 // past a fixed one.
 html.baked body{
-  // COMBINE: the warm scene-light gradient (body::before) over a fine, SEAMLESS
-  // paper-grain TEXTURE (not a flat gradient). High-frequency fractalNoise with
-  // stitchTiles reads as real paper tooth and never reveals a tile/quilt seam. The
-  // baked desk (if present) sits under it; the grain carries the texture either way.
+  // NOT a flat gradient (antipattern). A real warm DESK = TWO seamless fractalNoise
+  // layers COMBINED with the scene-light gradient (body::before):
+  //   (1) fine high-freq paper TOOTH (340px tile, stitched → no seam), and
+  //   (2) a coarse low-freq MOTTLE (cloudy tonal unevenness, like kraft/desk paper),
+  // both MULTIPLIED over warm Oats so the surface reads as textured paper at 100%.
+  // stitchTiles keeps both seamless so no "weird pattern"/quilt ever shows.
   background-image:
     var(--bk-desk, none),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.5'/%3E%3C/svg%3E");
-  background-repeat:no-repeat, repeat;
-  background-size:cover, 300px 300px;
-  background-position:center, center;
-  background-attachment:fixed, fixed;
-  background-blend-mode:normal, multiply;
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='340' height='340'%3E%3Cfilter id='t'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23t)' opacity='0.62'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='900'%3E%3Cfilter id='m'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.014' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23m)' opacity='0.4'/%3E%3C/svg%3E");
+  background-repeat:no-repeat, repeat, repeat;
+  background-size:cover, 340px 340px, 900px 900px;
+  background-position:center, center, center;
+  background-attachment:fixed, fixed, fixed;
+  background-blend-mode:normal, multiply, multiply;
 }
 
 // ONE soft tinted SCENE LIGHT + a faint edge vignette, laid OVER the desk but
