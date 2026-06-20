@@ -73,6 +73,36 @@ html.baked .scrap.lazuli{ @include scrap-face(--bk-piece-lazuli, --bk-edge-lazul
 html.baked .scrap.ink   { @include scrap-face(--bk-piece-sambas, --bk-edge-sambas, var(--bk-edge-sambas-slice,38)); color:var(--oats); }
 html.baked .scrap.kraft { @include scrap-face(--bk-piece-kraft,  --bk-edge-kraft,  var(--bk-edge-kraft-slice,38)); }
 
+// ---------- STOCK VARIETY: not every surface is torn paper ----------
+// SASHIKO — the indigo (Sambas) stock is dyed CLOTH, hand-stitched: a white Oats
+// running-stitch line insets the cloth (thread, a non-paper metaphor — and the
+// "where the stitches show" mending post lands on this stock). Honours the budget:
+// Sambas is the dark ground, Oats the thread.
+html.baked [data-mat="sambas"]{ position:relative; }
+html.baked [data-mat="sambas"] > .stitch,
+html.baked [data-mat="sambas"]::after{
+  content:""; position:absolute; inset:10px; z-index:1; pointer-events:none; border-radius:2px;
+  background:
+    repeating-linear-gradient(90deg, var(--oats) 0 7px, transparent 7px 13px) top    / 100% 1.6px no-repeat,
+    repeating-linear-gradient(90deg, var(--oats) 0 7px, transparent 7px 13px) bottom / 100% 1.6px no-repeat,
+    repeating-linear-gradient(0deg,  var(--oats) 0 7px, transparent 7px 13px) left   / 1.6px 100% no-repeat,
+    repeating-linear-gradient(0deg,  var(--oats) 0 7px, transparent 7px 13px) right  / 1.6px 100% no-repeat;
+  opacity:.6;
+}
+
+// GRAPH / ENGINEERING PAPER — the structural "patterns" sit on a faint Lazuli grid
+// (graph paper suits a list of structural commitments). Distinct from the ruled
+// index-card stock the definitions use.
+html.baked .patterns-splay .pattern{
+  background-image:
+    repeating-linear-gradient(0deg,  rgba(36,150,201,.11) 0 1px, transparent 1px 15px),
+    repeating-linear-gradient(90deg, rgba(36,150,201,.11) 0 1px, transparent 1px 15px),
+    var(--bk-piece-oats);
+  background-size:15px 15px, 15px 15px, cover;
+  background-position:center;
+  background-repeat:repeat, repeat, no-repeat;
+}
+
 // ---------- the SHEET (post stage + card frames) ----------
 // The big reading sheet keeps Oats tooth + the two-zone torn edge, but a calmer
 // ambient cast (it's a big, flat, heavy sheet, not a little chip).
