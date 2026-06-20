@@ -1,0 +1,81 @@
+---
+layout: default
+---
+<article class="post">
+
+  {%- comment -%} Post header — broadsheet style: scrawl eyebrow, big italic title, dek, mono meta. {%- endcomment -%}
+  <header class="post-header">
+    <div class="wrap">
+      {% if page.eyebrow %}<span class="eyebrow">{{ page.eyebrow }}</span>{% endif %}
+      <h1 class="post-title slab">{{ page.title }}</h1>
+      {% if page.dek %}<p class="dek">{{ page.dek }}</p>{% endif %}
+      <div class="post-meta">
+        <time class="label" datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%B %-d, %Y" }}</time>
+        {% assign words = content | strip_html | number_of_words %}
+        {% comment %} 240 wpm (not 200): furniture pacing — pull-quotes, definitions,
+           call-outs, pattern blocks — lets the eye rest, so raw word count overstates
+           effort. Higher divisor better matches actual essay reading time. {% endcomment %}
+        {% assign rt = words | divided_by: 240 | plus: 1 %}
+        <span class="label dot-sep">&middot;</span>
+        <span class="label">{{ rt }} min read</span>
+        {% if page.author or site.author %}
+        <span class="label dot-sep">&middot;</span>
+        <span class="label">{{ page.author | default: site.author }}</span>
+        {% endif %}
+      </div>
+    </div>
+  </header>
+
+  {%- comment -%} The reading stage: whimsy frame wrapping the legible Bitter column. {%- endcomment -%}
+  <div class="post-stage">
+    <div class="wrap">
+      <div class="prose">
+        {{ content }}
+      </div>
+    </div>
+  </div>
+
+  {%- comment -%} Footer of the post: tags, subscribe CTA stub, prev/next. {%- endcomment -%}
+  <div class="post-foot">
+    <div class="wrap">
+
+      {% if page.tags.size > 0 %}
+      <div class="post-tags">
+        <span class="label">Filed under</span>
+        {% for tag in page.tags %}<span class="scrap">{{ tag }}</span>{% endfor %}
+      </div>
+      {% endif %}
+
+      <aside class="subscribe paper" style="transform:rotate(-0.8deg)">
+        <span class="sheet"></span>
+        <span class="tape b" style="left:50%;margin-left:-59px;top:-15px"></span>
+        <div class="inner">
+          <span class="eyebrow">the list is the home</span>
+          <h2 class="slab subscribe-title">Get the next letter.</h2>
+          <p>The correspondence is a list-first practice. Join the Circle and the next
+            essay arrives where you actually read.</p>
+          <a class="btn" href="https://letters.drex.style/">Join the list <span class="arr">&rarr;</span></a>
+        </div>
+      </aside>
+
+      <nav class="post-nav" aria-label="More essays">
+        {% if page.previous %}
+        <a class="post-nav-link prev" href="{{ page.previous.url | relative_url }}">
+          <span class="label">&larr; Previous</span>
+          <span class="post-nav-title">{{ page.previous.title }}</span>
+        </a>
+        {% endif %}
+        {% if page.next %}
+        <a class="post-nav-link next" href="{{ page.next.url | relative_url }}">
+          <span class="label">Next &rarr;</span>
+          <span class="post-nav-title">{{ page.next.title }}</span>
+        </a>
+        {% endif %}
+      </nav>
+
+      <p class="back-line"><a class="back-link" href="{{ '/' | relative_url }}">&larr; back to the newsstand</a></p>
+
+    </div>
+  </div>
+
+</article>

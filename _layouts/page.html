@@ -1,0 +1,28 @@
+---
+layout: default
+---
+<article class="post page-doc">
+
+  <header class="post-header">
+    <div class="wrap">
+      {% if page.eyebrow %}<span class="eyebrow">{{ page.eyebrow }}</span>{% endif %}
+      <h1 class="post-title slab">{{ page.title }}</h1>
+      {% if page.dek %}<p class="dek">{{ page.dek }}</p>{% endif %}
+    </div>
+  </header>
+
+  <div class="post-stage">
+    <div class="wrap">
+      <div class="prose">
+        {{ content }}
+      </div>
+    </div>
+  </div>
+
+  <div class="post-foot">
+    <div class="wrap">
+      <p class="back-line"><a class="back-link" href="{{ '/' | relative_url }}">&larr; back to the newsstand</a></p>
+    </div>
+  </div>
+
+</article>

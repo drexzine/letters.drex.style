@@ -1,0 +1,14 @@
+{%- comment -%}
+  cutline.html — a scissors "cut here" section seam (dashed + torn ink rule with
+  scissors riding the line). A paper section break, never a plain <hr>.
+  Markup matches the .cutline util styled in _whimsy.scss (engine-owned).
+  API:  {% include cutline.html %}
+{%- endcomment -%}
+<div class="cutline" role="separator" aria-hidden="true">
+  <span class="cut-rule"></span>
+  <span class="cut-torn"></span>
+  <span class="cut-scissors">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2.6"/><circle cx="6" cy="18" r="2.6"/><path d="M8 7.5 20 16M8 16.5 20 8"/></svg>
+  </span>
+  <span class="label">cut here</span>
+</div>

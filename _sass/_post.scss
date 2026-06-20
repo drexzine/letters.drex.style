@@ -1,0 +1,780 @@
+/* =============================================================================
+   _post.scss — the reading stage + the Markdown-callable furniture kit.
+
+   Two jobs:
+     1. .post-stage  — the WHIMSY FRAME: a torn-paper, taped stage the essay sits
+        on (the zine the reader was mailed).
+     2. .prose       — the SACRED reading column: Bitter on Oats, upright,
+        ~62–66ch on desktop, generous leading, AA contrast. Whimsy lives in the
+        FURNITURE and the FRAME, never in the running text.
+
+   Mobile-first base lives here; the responsive override layer is _mobile.scss
+   (@imported last). Tokens, contract class names, and filter ids only.
+   All shadows are flat solid ink offsets — no blur, no gradients, anywhere.
+   ========================================================================== */
+
+/* ---------------------------------------------------------------------------
+   1. POST STAGE — the whimsy frame
+   The masthead/eyebrow/title/dek live above the prose, on the textured ground.
+   ------------------------------------------------------------------------- */
+.post-stage {
+  position: relative;
+  width: 100%;
+  max-width: 880px;
+  margin: clamp(1.6rem, 5vw, 3.4rem) auto;
+  padding: 0 clamp(1rem, 4vw, 1.6rem);
+  overflow-x: clip; /* tape / tilts never push a horizontal scrollbar */
+}
+
+/* the post header: eyebrow scrawl, slab-italic title, dek standfirst, meta */
+.post-head {
+  position: relative;
+  margin-bottom: clamp(1.6rem, 4vw, 2.6rem);
+}
+
+.post-head .eyebrow {
+  margin-bottom: 0.7rem;
+}
+
+.post-title {
+  font-family: var(--f-slab);
+  font-style: italic;
+  font-weight: 700;
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  text-wrap: balance;
+  font-size: clamp(2.1rem, 7.5vw, var(--t-hero, 3.4rem));
+  margin: 0.2rem 0 0;
+  max-width: 18ch; /* tight on small phones (<=414px) — keeps title under 2 lines */
+}
+.post-title .stop { color: var(--grass-deep); }
+
+/* tablet/desktop: relax the measure so dense essay titles get breathing room
+   instead of stacking into 3-line wraps. Home newsstand cards stay a touch
+   tighter (22ch) to preserve card legibility. Small-phone base stays 18ch. */
+@media (min-width: 768px) {
+  .post-title { max-width: 24ch; }
+  .card-title { max-width: 22ch; }
+}
+
+/* dek / standfirst — the lede under the title. Bitter italic, larger. */
+.post-dek,
+.prose > .dek {
+  font-family: var(--f-body);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(1.15rem, 2.4vw, var(--t-lede, 1.45rem));
+  line-height: 1.45;
+  color: var(--ink);
+  max-width: 40ch;
+  margin: clamp(1rem, 2.6vw, 1.5rem) 0 0;
+}
+.post-dek em,
+.prose > .dek em { font-style: normal; font-weight: 600; }
+
+/* byline / date / reading-time — mono label row */
+.post-meta {
+  font-family: var(--f-mono);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.74rem;
+  color: var(--ink); /* full Sambas — 5.3:1 on Oats, meets AA (was rgba .72 ≈ 4.0:1) */
+  margin-top: clamp(0.9rem, 2.2vw, 1.3rem);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.55rem;
+}
+.post-meta .sep { color: var(--grass-deep); font-weight: 700; }
+
+/* the reading SHEET: the prose column sits on a torn page with a hard ink
+   offset shadow — the literal sheet Chielo wrote on. */
+.post-sheet {
+  position: relative;
+  background: var(--paper);
+  border: 2.6px solid var(--ink);
+  border-radius: 6px;
+  box-shadow: 8px 8px 0 0 var(--ink); /* flat solid registration shadow */
+  padding: clamp(1.4rem, 5vw, 3.2rem) clamp(1.1rem, 5vw, 3rem);
+}
+/* faint ruled-paper texture behind the page, drawn on a torn ::before */
+.post-sheet::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: 6px;
+  background: var(--paper)
+    repeating-linear-gradient(0deg, transparent 0 27px, rgba(65, 77, 87, 0.06) 27px 28px);
+  filter: url(#torn);
+}
+.post-sheet > * { position: relative; z-index: 1; }
+
+/* ---------------------------------------------------------------------------
+   2. PROSE — the SACRED legible reading column
+   Bitter on Oats, upright, comfortable measure, generous leading, AA contrast.
+   ------------------------------------------------------------------------- */
+.prose {
+  font-family: var(--f-body);
+  font-weight: 300;
+  font-size: 1rem;            /* 16px base, mobile-first */
+  line-height: 1.72;
+  color: var(--ink);
+  max-width: 64ch;            /* ~62–66ch measure on desktop */
+  margin: 0 auto;
+  /* the running text is never tilted, never textured */
+}
+
+.prose p {
+  margin: 0 0 1.15em;
+}
+.prose > p:first-of-type { margin-top: 0; }
+
+/* lede paragraph (first paragraph or an explicit .dek) gets a dropcap option */
+.prose .dropcap::first-letter,
+.prose > p.lede::first-letter {
+  font-family: var(--f-slab);
+  font-style: italic;
+  font-weight: 700;
+  font-size: 3.1em;
+  line-height: 0.78;
+  float: left;
+  margin: 0.06em 0.1em 0 0;
+  color: var(--grass-deep);
+}
+
+/* ---- headings: marker-underlined h2, scrawl-accented h3 ---- */
+.prose h2 {
+  font-family: var(--f-slab);
+  font-style: italic;
+  font-weight: 700;
+  line-height: 1.06;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  font-size: clamp(1.5rem, 4vw, var(--t-sub, 2rem));
+  margin: 2.1em 0 0.6em;
+  max-width: 22ch;
+}
+/* wobbly marker underline under the h2 (the brand's h2 squiggle) */
+.prose h2::after {
+  content: "";
+  display: block;
+  width: 2.1em;
+  height: 0.18em;
+  margin-top: 0.28em;
+  background: var(--grass);
+  border-radius: 3px;
+  filter: url(#rough);
+}
+
+.prose h3 {
+  font-family: var(--f-mono);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 1.02rem;
+  color: var(--grass-deep);
+  margin: 1.8em 0 0.5em;
+}
+
+.prose h4 {
+  font-family: var(--f-body);
+  font-weight: 600;
+  font-style: normal;
+  font-size: 1.08rem;
+  letter-spacing: 0;
+  color: var(--ink);
+  margin: 1.5em 0 0.4em;
+}
+
+/* ---- links: marker-underlined inline, grass on hover, Lazuli focus ring ---- */
+.prose a {
+  color: var(--grass-deep);
+  text-decoration: none;
+  background-image: linear-gradient(var(--grass), var(--grass));
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 100% 0.1em;
+  padding-bottom: 0.02em;
+  transition: background-size 0.12s ease, color 0.12s ease;
+}
+.prose a:hover {
+  color: var(--ink);
+  background-size: 100% 0.42em;
+}
+.prose a:focus-visible {
+  outline: 3px solid var(--lazuli);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+/* ---- emphasis ---- */
+.prose strong { font-weight: 600; color: var(--ink); }
+.prose em { font-style: italic; }
+.prose mark,
+.prose .hl-text {
+  background: var(--happy);
+  color: var(--ink);                 /* lock ink colour so text isn't shifted by blend */
+  mix-blend-mode: multiply;
+  padding: 0 0.12em;
+  border-radius: 2px;
+  box-shadow: inset 0 -0.08em 0 0 var(--ink); /* flat ink underline boosts perceived contrast to AA */
+}
+
+/* ---- lists ---- */
+.prose ul,
+.prose ol {
+  margin: 0 0 1.15em;
+  padding-left: 1.5em;
+}
+.prose li { margin-bottom: 0.45em; line-height: 1.65; }
+.prose ul > li::marker { color: var(--colorado); }
+.prose ol > li::marker {
+  color: var(--grass-deep);
+  font-family: var(--f-mono);
+  font-weight: 500;
+}
+
+/* ---- inline code / pre ---- */
+.prose code {
+  font-family: var(--f-mono);
+  font-size: 0.86em;
+  background: rgba(65, 77, 87, 0.08);
+  padding: 0.08em 0.4em;
+  border-radius: 3px;
+  color: var(--grass-deep);
+}
+.prose pre {
+  font-family: var(--f-mono);
+  font-size: 0.86rem;
+  line-height: 1.55;
+  background: var(--sambas);
+  color: var(--paper);
+  border: 2.4px solid var(--ink);
+  border-radius: 6px;
+  box-shadow: 6px 6px 0 0 var(--ink);
+  padding: 1rem 1.1rem;
+  overflow-x: auto;
+  margin: 0 0 1.4em;
+}
+.prose pre code { background: none; color: inherit; padding: 0; }
+
+/* ---- blockquote (bare markdown >) — a quiet highlighter-edged aside ---- */
+.prose blockquote {
+  margin: 1.6em 0;
+  padding: 0.6em 0 0.6em 1.1em;
+  border-left: 0.28em solid var(--grass);
+  font-style: italic;
+  color: var(--ink);
+}
+.prose blockquote p:last-child { margin-bottom: 0; }
+
+/* ---- hr falls back to a marker rule (cutline.html is preferred) ---- */
+.prose hr {
+  border: 0;
+  height: 0.16em;
+  background: var(--ink);
+  border-radius: 3px;
+  filter: url(#roughsm);
+  margin: 2.4em auto;
+  width: 4em;
+}
+
+/* ---- bare markdown images become taped polaroids ---- */
+.prose img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+.prose p > img:only-child {
+  margin: 1.6em auto;
+  padding: 11px 11px 11px;
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 4px;
+  box-shadow: 8px 8px 0 0 var(--ink);
+  transform: rotate(-1deg);
+}
+
+/* tables — torn-edged, mono headers */
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 1.4em;
+  font-size: 0.94rem;
+}
+.prose th {
+  font-family: var(--f-mono);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.78rem;
+  text-align: left;
+  border-bottom: 2.4px solid var(--ink);
+  padding: 0.5em 0.7em;
+}
+.prose td {
+  border-bottom: 1px solid rgba(65, 77, 87, 0.18);
+  padding: 0.5em 0.7em;
+  vertical-align: top;
+}
+
+/* =============================================================================
+   3. FURNITURE COMPONENTS — each a believable paper object.
+   Called from Markdown via the includes. Furniture may tilt and texture; the
+   running prose around it stays calm.
+   ========================================================================== */
+
+/* ---- eyebrow.html : .eyebrow — primitive owned by _whimsy.scss; nothing to
+   add here. (Patrick Hand, sizeable, tilted, colorado.) ---- */
+
+/* ---- pullquote.html : a highlighter-swept line lifted from the column ---- */
+.pullquote {
+  margin: clamp(2rem, 5vw, 3rem) 0;
+  /* guarantee a full beat of rest after the attribution so the pull-quote
+     never leans flush against the next body paragraph */
+  margin-bottom: clamp(1.6rem, 4vw, 2.4rem);
+  text-align: center;
+  max-width: none;
+}
+.pullquote .pq-text {
+  font-family: var(--f-slab);
+  font-style: italic;
+  font-weight: 700;
+  line-height: 1.18;
+  letter-spacing: -0.01em;
+  font-size: clamp(1.4rem, 4.4vw, 2rem);
+  color: var(--ink);
+  margin: 0;
+  position: relative;
+  display: inline;
+  /* hand-swiped highlighter band behind the quote */
+  background: linear-gradient(var(--happy), var(--happy));
+  background-repeat: no-repeat;
+  background-position: 0 0.82em;
+  background-size: 100% 0.5em;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  padding: 0 0.1em;
+}
+.pullquote .pq-text::before { content: "\201C"; color: var(--colorado); }
+.pullquote .pq-text::after { content: "\201D"; color: var(--colorado); }
+.pullquote .pq-attrib {
+  font-family: var(--f-hand);
+  font-size: 1.15rem;
+  color: var(--sambas);
+  margin-top: 1rem;
+  transform: rotate(-1deg);
+  display: block;
+}
+.pullquote .pq-attrib::before { content: "\2014 "; }
+
+/* ---- callout.html : a taped margin slip (the "For Drex" note) ---- */
+.callout {
+  position: relative;
+  margin: clamp(1.6rem, 4vw, 2.4rem) 0;
+  padding: clamp(1.1rem, 3vw, 1.5rem) clamp(1.1rem, 3vw, 1.6rem) clamp(1rem, 3vw, 1.4rem);
+  background: var(--paper);
+  border: 2.4px solid var(--ink);
+  border-radius: 6px;
+  box-shadow: 6px 6px 0 0 var(--ink); /* flat ink offset */
+  transform: rotate(-0.8deg);          /* a slip taped on at a tilt */
+}
+.callout > .tape {
+  position: absolute;
+  z-index: 3;
+  left: 1.4rem;
+  top: -15px;
+  transform: rotate(-5deg);
+}
+.callout-label {
+  font-family: var(--f-mono);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.74rem;
+  color: var(--grass-deep);
+  display: block;
+  margin-bottom: 0.5rem;
+}
+.callout-body {
+  font-family: var(--f-body);
+  font-weight: 300;
+  font-size: 0.98rem;
+  line-height: 1.6;
+  color: var(--ink);
+}
+.callout-body :last-child { margin-bottom: 0; }
+.callout-body p { margin: 0 0 0.7em; }
+
+/* accent variants by kind — only the tape colour + label colour move */
+.callout--for-drex .callout-label { color: var(--grass-deep); }
+.callout--note { transform: rotate(0.7deg); }
+.callout--note .callout-label { color: var(--lazuli); }
+.callout--note > .tape { background: linear-gradient(94deg, rgba(36,150,201,.44), rgba(36,150,201,.26) 55%, rgba(36,150,201,.4)); }
+.callout--warning .callout-label { color: var(--colorado); }
+.callout--warning > .tape { background: linear-gradient(94deg, rgba(247,84,88,.44), rgba(247,84,88,.26) 55%, rgba(247,84,88,.4)); }
+
+/* ---- definition.html : a dark torn index card with a grass edge ---- */
+.definition {
+  position: relative;
+  margin: clamp(1.8rem, 4.5vw, 2.6rem) 0;
+  padding: clamp(1.4rem, 4vw, 2rem) clamp(1.3rem, 4vw, 2.1rem);
+  background: var(--sambas);
+  color: var(--paper);
+  border: 2.6px solid var(--ink);
+  border-radius: 6px;
+  border-left: 6px solid var(--grass);
+  box-shadow: 8px 8px 0 0 var(--ink); /* flat ink offset */
+}
+.definition-label {
+  font-family: var(--f-mono);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.7rem;
+  color: var(--oats); /* light paper on dark Sambas — 7.2:1 AA (was schoolbus ≈ 3.8:1) */
+  display: block;
+  margin-bottom: 0.9rem;
+}
+.definition-term {
+  font-family: var(--f-slab);
+  font-style: italic;
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+  font-size: clamp(1.4rem, 3.6vw, 1.8rem);
+  color: var(--paper);
+  margin: 0 0 0.6rem;
+}
+.definition-term::after { content: none; } /* no h2-style underline here */
+.definition-body {
+  font-family: var(--f-body);
+  font-weight: 300;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: rgba(254, 246, 228, 0.94);
+}
+.definition-body :last-child { margin-bottom: 0; }
+.definition-body p { margin: 0 0 0.7em; }
+.definition-body strong { color: var(--paper); font-weight: 600; }
+.definition-body em { color: var(--paper); }
+.definition-body a {
+  color: var(--schoolbus);
+  background: none;
+  border-bottom: 1px solid rgba(236, 175, 33, 0.5);
+}
+
+/* ---- patterns.html : numbered torn scraps, littered (.splay) ---- */
+.patterns {
+  margin: clamp(1.8rem, 4.5vw, 2.6rem) 0;
+}
+.patterns-title {
+  font-family: var(--f-hand);
+  font-size: 1.2rem;
+  color: var(--sambas);
+  transform: rotate(-1deg);
+  margin: 0 0 1rem;
+}
+.patterns-splay {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: clamp(1.1rem, 3vw, 1.6rem);
+}
+.patterns-splay .pattern {
+  position: relative;
+  flex: 1 1 220px;
+  min-width: 0;
+  background: var(--paper);
+  border: 2.4px solid var(--ink);
+  border-radius: 6px;
+  box-shadow: 6px 6px 0 0 var(--ink); /* flat ink offset */
+  padding: 1.3rem 1.3rem 1.2rem;
+}
+/* faint torn ruled texture on each scrap */
+.patterns-splay .pattern::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: 6px;
+  background: var(--paper);
+  filter: url(#roughsm);
+}
+.patterns-splay .pattern > * { position: relative; z-index: 1; }
+.pattern-n {
+  font-family: var(--f-mono);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.72rem;
+  color: var(--colorado);
+  display: block;
+  margin-bottom: 0.5rem;
+}
+.pattern-head {
+  font-family: var(--f-slab);
+  font-style: italic;
+  font-weight: 700;
+  line-height: 1.12;
+  font-size: 1.15rem;
+  color: var(--ink);
+  display: block;
+  margin-bottom: 0.5rem;
+}
+.pattern-body {
+  font-family: var(--f-body);
+  font-weight: 300;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: var(--ink);
+  display: block;
+}
+
+/* ---- figure.html : a taped polaroid in the column ----
+   .polaroid is the primitive (owned by _whimsy.scss). Scope the natural-aspect
+   override here so essay figures aren't forced to the 5:6 team-photo ratio. */
+.figure.polaroid {
+  width: min(420px, 100%);
+  margin: clamp(1.8rem, 4.5vw, 2.6rem) auto;
+}
+.figure.polaroid .ph { aspect-ratio: auto; }
+.figure.polaroid .ph img {
+  position: static;
+  width: 100%;
+  height: auto;
+}
+.figure.polaroid > .tape {
+  left: 50%;
+  margin-left: -59px;
+  top: -15px;
+}
+.figure.polaroid .cap {
+  font-family: var(--f-hand);
+  text-align: center;
+  font-size: 1.05rem;
+  color: var(--sambas);
+  line-height: 1.2;
+  padding: 0.6rem 0.4rem 0.2rem;
+  display: block;
+}
+
+/* ---- cite.html : sourced quote on a highlighter-edged slip ---- */
+.cite {
+  margin: clamp(1.6rem, 4vw, 2.4rem) 0;
+  padding: 1em 0 1em 1.2em;
+  border-left: 0.3em solid var(--grass);
+  position: relative;
+}
+.cite-text {
+  font-family: var(--f-body);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 1.08rem;
+  line-height: 1.5;
+  color: var(--ink);
+  margin: 0;
+}
+.cite-text::before { content: "\201C"; }
+.cite-text::after { content: "\201D"; }
+.cite-attrib {
+  font-family: var(--f-mono);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.72rem;
+  color: rgba(65, 77, 87, 0.7);
+  margin-top: 0.8rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+.cite-author { color: var(--grass-deep); }
+.cite-sep { color: var(--colorado); font-weight: 700; }
+.cite-work { font-style: italic; text-transform: none; letter-spacing: 0.02em; }
+
+/* ---- cutline.html : the .cutline scissors seam is styled in _whimsy.scss
+   (engine-owned primitive). cutline.html emits the matching markup. ---- */
+
+/* ---- stamp.html : the .stamp rubber-stamp mark is styled in _whimsy.scss
+   (engine-owned primitive). stamp.html emits <span class="stamp">. ---- */
+
+/* =============================================================================
+   4. POST FOOTER — tags, subscribe CTA, prev/next nav, back link.
+   Referenced by post.html. Flat ink offsets only; palette-pure.
+   ========================================================================== */
+.post-foot {
+  padding: clamp(2rem, 6vw, 3rem) 0;
+}
+
+.post-tags {
+  margin: 2rem 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.chip {
+  display: inline-block;
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  padding: 0.4em 0.7em;
+  font-family: var(--f-mono);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.8rem;
+  color: var(--ink);
+  text-decoration: none;
+  border-radius: 4px;
+}
+
+.subscribe {
+  margin: clamp(2.5rem, 6vw, 4rem) 0;
+}
+.subscribe-title {
+  font-family: var(--f-slab);
+  font-style: italic;
+  font-weight: 700;
+  color: var(--ink);
+  font-size: var(--t-sub);
+  margin: 0 0 0.6rem;
+}
+
+.post-nav {
+  display: flex;
+  gap: 1.5rem;
+  margin: 2.5rem 0;
+  flex-wrap: wrap;
+}
+.post-nav-link {
+  flex: 1;
+  min-width: 240px;
+  display: block;
+  padding: 1.5rem;
+  background: var(--paper);
+  border: 2.4px solid var(--ink);
+  border-radius: 6px;
+  box-shadow: var(--shadow-chip); /* flat ink offset */
+  color: var(--ink);
+  text-decoration: none;
+  transition: transform 0.15s ease;
+}
+.post-nav-link:hover { transform: translateY(-4px); }
+.post-nav-link:focus-visible {
+  outline: 3px solid var(--lazuli);
+  outline-offset: 2px;
+}
+.post-nav-title {
+  font-family: var(--f-slab);
+  font-style: italic;
+  font-weight: 700;
+  line-height: 1.12;
+  font-size: 1.1rem;
+  color: var(--ink);
+  margin: 0.3rem 0 0;
+}
+
+.back-link {
+  color: var(--grass-deep);
+  text-decoration: underline;
+}
+.back-link:focus-visible {
+  outline: 3px solid var(--lazuli);
+  outline-offset: 2px;
+}
+.back-line {
+  margin: clamp(2rem, 5vw, 3rem) 0 0;
+  font-family: var(--f-mono);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.78rem;
+  color: var(--ink);
+}
+
+/* =============================================================================
+   5. HOME PAGE POST CARDS — the newsstand index grid.
+   Referenced by home.html (<article class="paper card">). Flat ink offsets only.
+   (.card-title's tablet measure is set in the §1 768px block.)
+   ========================================================================== */
+.news-head {
+  margin-bottom: clamp(2rem, 5vw, 3rem);
+}
+.news-dek {
+  font-family: var(--f-body);
+  font-size: var(--t-lede);
+  line-height: 1.5;
+  max-width: 60ch;
+  color: var(--ink);
+}
+.news-splay {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 280px;
+}
+.card-link {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 2;
+  color: inherit;
+  text-decoration: none;
+  height: 100%;
+}
+.card-link:focus-visible {
+  outline: 3px solid var(--lazuli);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+.card-eyebrow {
+  font-family: var(--f-hand);
+  color: var(--colorado);
+  display: block;
+  margin-bottom: 0.4rem;
+}
+.card-title {
+  font-family: var(--f-slab);
+  font-style: italic;
+  font-weight: 700;
+  font-size: clamp(1.2rem, 3.5vw, 1.6rem);
+  line-height: 1.1;
+  color: var(--ink);
+  margin: 0.5rem 0 0.5rem;
+}
+.card-dek {
+  font-family: var(--f-body);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--ink);
+  margin: 0 0 0.8rem;
+}
+.card-meta {
+  font-family: var(--f-mono);
+  font-weight: 500;
+  font-size: 0.75rem;
+  color: var(--ink); /* full Sambas — AA on Oats (no faded label in the index) */
+  margin: 0;
+}
+.card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0.6rem 0 0;
+}
+.card-go {
+  font-family: var(--f-hand);
+  color: var(--grass-deep);
+  margin-top: auto;
+  font-size: 1rem;
+}

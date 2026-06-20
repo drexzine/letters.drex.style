@@ -1,0 +1,58 @@
+---
+layout: default
+---
+<section class="news">
+  <div class="wrap">
+
+    <header class="news-head">
+      <span class="eyebrow">the correspondence, archived</span>
+      <h1 class="slab">Chielo's <span class="hl">notebook<span class="stop">.</span></span></h1>
+      <p class="news-dek">{{ site.tagline }} Visionary essays, canon, and lore on bringing
+        your gifts into the world &mdash; together.</p>
+    </header>
+
+    {% if site.posts.size > 0 %}
+    <div class="splay news-splay">
+      {% for post in site.posts %}
+      <article class="paper card reveal">
+        <span class="sheet ruled"></span>
+        {%- assign tapeclass = '' -%}
+        {%- assign m = forloop.index0 | modulo: 3 -%}
+        {%- if m == 0 -%}{%- assign tapeclass = 'tape' -%}
+        {%- elsif m == 1 -%}{%- assign tapeclass = 'tape c' -%}
+        {%- else -%}{%- assign tapeclass = 'tape b' -%}{%- endif -%}
+        <span class="{{ tapeclass }}" style="left:50%;margin-left:-59px;top:-15px"></span>
+        <a class="card-link" href="{{ post.url | relative_url }}" aria-label="Read: {{ post.title | strip_html }}">
+          <div class="inner">
+            {% if post.eyebrow %}<span class="cap card-eyebrow">{{ post.eyebrow }}</span>{% endif %}
+            <h2 class="card-title">{{ post.title }}</h2>
+            {% if post.dek %}<p class="card-dek">{{ post.dek | strip_html | truncate: 168 }}</p>{% endif %}
+            <div class="card-meta">
+              <time class="label" datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%b %-d, %Y" }}</time>
+              {% assign words = post.content | strip_html | number_of_words %}
+              {% assign rt = words | divided_by: 200 | plus: 1 %}
+              <span class="label dot-sep">&middot;</span>
+              <span class="label">{{ rt }} min read</span>
+            </div>
+            {% if post.tags.size > 0 %}
+            <div class="card-tags">
+              {% for tag in post.tags %}<span class="scrap">{{ tag }}</span>{% endfor %}
+            </div>
+            {% endif %}
+            <span class="card-go scrawl" aria-hidden="true">read &rarr;</span>
+          </div>
+        </a>
+      </article>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="paper empty">
+      <span class="sheet"></span>
+      <div class="inner">
+        <p class="scrawl empty-scrawl">nothing pinned to the board yet &mdash; soon.</p>
+      </div>
+    </div>
+    {% endif %}
+
+  </div>
+</section>

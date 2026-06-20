@@ -1,0 +1,24 @@
+{%- comment -%}
+  patterns.html — a littered set of numbered torn scraps (the canon's pattern grid).
+  Each item is "Title :: body" (body optional). Items separated by "|".
+  API:  {% include patterns.html items="One-to-one in form :: voice is specific|Hub, not author|Occasional, not scheduled" %}
+        title — optional heading above the splay.
+{%- endcomment -%}
+{%- assign items = include.items | split: "|" -%}
+<div class="patterns">
+  {%- if include.title -%}
+  <p class="patterns-title">{{ include.title }}</p>
+  {%- endif -%}
+  <ol class="patterns-splay splay">
+    {%- for item in items -%}
+      {%- assign parts = item | split: "::" -%}
+      <li class="pattern">
+        <span class="pattern-n">{{ forloop.index | prepend: "0" | slice: -2, 2 }}</span>
+        <span class="pattern-head">{{ parts[0] | strip }}</span>
+        {%- if parts.size > 1 -%}
+        <span class="pattern-body">{{ parts[1] | strip }}</span>
+        {%- endif -%}
+      </li>
+    {%- endfor -%}
+  </ol>
+</div>

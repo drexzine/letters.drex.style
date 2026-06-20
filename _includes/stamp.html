@@ -1,0 +1,5 @@
+{%- comment -%}
+  stamp.html — a rubber stamp pressed onto the page (tilted mono caps, ink frame).
+  API:  {% include stamp.html text="CANON" %}
+{%- endcomment -%}
+<span class="stamp" role="img" aria-label="Stamped: {{ include.text }}">{{ include.text }}</span>

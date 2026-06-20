@@ -1,0 +1,15 @@
+---
+# Empty front-matter (the two `---` fences) makes Jekyll process this file
+# through SCSS → /assets/css/main.css. Partials live in /_sass.
+---
+@charset "utf-8";
+
+// Import order matters: tokens define the variables every later layer uses;
+// mobile is the responsive override layer and MUST come last so its
+// media-query rules win the cascade.
+@import
+  "tokens",   // :root palette, fonts, φ type scale, spacing, shadows
+  "grounds",  // body bg (dots + notebook rules + grain), .paper sheet, masthead, footer
+  "whimsy",   // tape, splay, hl, ul, btn, scrawl, polaroid, scrap, stamp, cutline
+  "post",     // .post-stage, .prose, all furniture component styles
+  "mobile";   // responsive override layer (flatten tilts, fluid type, ≥44px targets)

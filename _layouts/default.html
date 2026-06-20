@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="{{ site.lang | default: 'en' }}">
+<head>
+{% include head.html %}
+</head>
+<body data-motion="full">
+{% include filters.html %}
+{% include masthead.html %}
+
+<main id="top">
+{{ content }}
+</main>
+
+{% include footer.html %}
+
+<script src="{{ '/assets/js/blog.js' | relative_url }}" defer></script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+{%- comment -%}
+  figure.html — a taped polaroid dropped into the column.
+  API:  {% include figure.html src="..." caption="..." alt="..." %}
+        src     — image path (required).
+        caption — optional handwritten caption under the print.
+        alt     — optional alt text; falls back to caption then "".
+{%- endcomment -%}
+{%- assign alt = include.alt | default: include.caption | default: "" -%}
+<figure class="figure polaroid">
+  <span class="tape" aria-hidden="true"></span>
+  <div class="ph"><img src="{{ include.src | relative_url }}" alt="{{ alt | escape }}" loading="lazy" /></div>
+  {%- if include.caption -%}
+  <figcaption class="cap">{{ include.caption }}</figcaption>
+  {%- endif -%}
+</figure>

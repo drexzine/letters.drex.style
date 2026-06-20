@@ -1,0 +1,74 @@
+# ===================================================================
+# Drex blog — blog.drex.style
+# Chielo's visionary / canon / lore essays, in the Drex zine aesthetic.
+# GitHub-Pages-native Jekyll build. Only Pages-whitelisted plugins.
+# ===================================================================
+
+title: "drex."
+tagline: "The correspondence, made public."
+description: >-
+  Chielo's notebook for Drex — visionary essays, canon, and lore on
+  bringing your gifts into the world together. A place for communion.
+author: "Chielo Mbaezue"
+
+url: "https://blog.drex.style"
+baseurl: ""
+
+lang: en
+timezone: America/Los_Angeles
+
+# Pretty permalinks: /2026/05/the-correspondence/
+permalink: /:year/:month/:slug/
+
+# --- markdown / build ---
+markdown: kramdown
+highlighter: rouge
+kramdown:
+  input: GFM
+  hard_wrap: false
+  smart_quotes: ["lsquo", "rsquo", "ldquo", "rdquo"]
+
+# --- collections / defaults ---
+defaults:
+  - scope:
+      path: ""
+      type: posts
+    values:
+      layout: post
+  - scope:
+      path: ""
+    values:
+      layout: default
+
+# --- pagination-free home; posts sorted newest-first by Jekyll ---
+show_excerpts: false
+
+# --- plugins (all GitHub-Pages-whitelisted) ---
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+  - jekyll-sitemap
+
+feed:
+  path: /feed.xml
+
+# --- social / SEO ---
+social:
+  name: "Drex"
+  links:
+    - https://drex.style
+    - https://instagram.com/drexcircles
+
+# --- build hygiene ---
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - vendor
+  - README.md
+  - PLAN.md
+  - .build-workflow.js
+  - .jekyll-cache
+  - node_modules
+
+sass:
+  style: compressed

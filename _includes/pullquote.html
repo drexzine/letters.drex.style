@@ -1,0 +1,11 @@
+{%- comment -%}
+  pullquote.html — a highlighter-swept pull quote lifted out of the column.
+  API:  {% include pullquote.html text="..." attrib="Lave & Wenger" %}
+        attrib is optional.
+{%- endcomment -%}
+<figure class="pullquote">
+  <blockquote class="pq-text">{{ include.text }}</blockquote>
+  {%- if include.attrib -%}
+  <figcaption class="pq-attrib">{{ include.attrib }}</figcaption>
+  {%- endif -%}
+</figure>

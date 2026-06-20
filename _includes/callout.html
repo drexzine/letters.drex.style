@@ -1,0 +1,23 @@
+{%- comment -%}
+  callout.html — a taped margin slip pinned into the column. The "for-drex"
+  kind reads like a note Chielo taped to the page for the team.
+  API:  {% include callout.html kind="for-drex" title="For Drex" body="..." %}
+        kind  — optional: for-drex (default) | note | warning  (sets tape/accent colour)
+        title — optional label; defaults from kind.
+        body  — the slip's text (may contain inline HTML/markdownified text).
+{%- endcomment -%}
+{%- assign kind = include.kind | default: "for-drex" -%}
+{%- if include.title -%}
+  {%- assign label = include.title -%}
+{%- elsif kind == "note" -%}
+  {%- assign label = "Note" -%}
+{%- elsif kind == "warning" -%}
+  {%- assign label = "Watch out" -%}
+{%- else -%}
+  {%- assign label = "For Drex" -%}
+{%- endif -%}
+<aside class="callout callout--{{ kind }}" role="note">
+  <span class="tape c" aria-hidden="true"></span>
+  <span class="callout-label">{{ label }}</span>
+  <div class="callout-body">{{ include.body | markdownify }}</div>
+</aside>

@@ -1,0 +1,106 @@
+// ===================================================================
+// _grounds.scss — the ground, the base material, and the page bands.
+// Body three-layer background (dot grid + blue notebook rules + grain),
+// the .paper/.sheet torn-paper base, the .wrap content column, the
+// masthead broadsheet band (torn bottom) and the footer torn grass band.
+// All values ported VERBATIM from the shipped landing (drex-landing/app.css).
+// ===================================================================
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+
+body{
+  margin:0;color:var(--ink);font-family:var(--f-body);font-weight:300;line-height:1.6;
+  font-size:clamp(1rem, calc(.97rem + .25vw), 1.13rem);overflow-x:hidden;-webkit-font-smoothing:antialiased;
+  // the table: dot grid + faint blue notebook rules + paper grain over Oats
+  background-color:var(--oats);
+  background-image:
+    radial-gradient(rgba(65,77,87,.10) 1.1px, transparent 1.2px),
+    repeating-linear-gradient(0deg, transparent 0 33px, rgba(36,150,201,.09) 33px 34px),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.45'/%3E%3C/svg%3E");
+  background-size:23px 23px, auto, 220px 220px;
+  background-blend-mode:normal, normal, multiply;
+}
+a{color:inherit}
+.wrap{max-width:1150px;margin:0 auto;padding-inline:clamp(1rem,4.5vw,3.5rem)}
+
+// Visually-hidden utility: out of the visual flow but kept in the tab/DOM
+// order and readable by screen readers. Used by the skip-to-main link.
+.sr-only{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+// Skip link becomes a real, on-brand chip when keyboard focus lands on it.
+.sr-skip:focus{
+  position:fixed;left:1rem;top:1rem;width:auto;height:auto;z-index:100;
+  padding:.55rem .9rem;background:var(--oats);color:var(--ink);
+  font-family:var(--f-mono);font-size:.78rem;letter-spacing:.04em;
+  border:2px solid var(--ink);box-shadow:3px 3px 0 var(--grass);text-decoration:none;
+}
+
+// ---------- the cut-paper sheet (base material) ----------
+.paper{position:relative;isolation:isolate}
+.paper>.sheet{
+  content:"";position:absolute;inset:0;z-index:0;
+  background:var(--paper);
+  border:2.6px solid var(--ink);border-radius:6px;
+  filter:url(#torn);                                // torn / hand-cut edge
+  box-shadow:var(--shadow-sheet);                   // hard SOLID registration shadow — one light, equal offset
+}
+.paper>.sheet.ruled{
+  background:var(--paper) repeating-linear-gradient(0deg, transparent 0 27px, rgba(65,77,87,.07) 27px 28px);
+}
+.paper>.inner{position:relative;z-index:2;padding:clamp(1.5rem,4vw,3rem)}
+
+// SQUIGGLE-VISION: sheet edges boil on the slow "paper" dial
+.paper>.sheet{animation:boil-torn var(--boil-paper) step-end infinite}
+
+// ---------- masthead = printed broadsheet w/ torn bottom ----------
+.mast{position:relative;background:var(--oats);border-bottom:0}
+.mast::after{content:"";position:absolute;left:0;right:0;bottom:-15px;height:30px;background:var(--oats);filter:url(#tornbig);z-index:1}
+.mast .wrap{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding-block:1rem;position:relative;z-index:2}
+.mast .brand{display:flex;align-items:center;gap:.6rem;text-decoration:none}
+.mast .lg-icon{width:30px;display:block}
+.mast .lg-word{width:78px;display:block}
+.mast .lg-icon svg,.mast .lg-word svg{display:block;width:100%;height:auto}
+// desktop masthead nav — scoped to the DIRECT nav so these never bleed into a
+// mobile burger panel's own <nav> (which also lives in .mast)
+.mast>.wrap>nav{display:flex;gap:clamp(.5rem,2vw,1.1rem);align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.mast>.wrap>nav a{font-family:var(--f-mono);font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;
+  display:inline-flex;align-items:center;min-height:44px;
+  border:2px solid var(--ink);border-radius:5px;padding:.4em .7em;background:var(--paper);
+  box-shadow:2px 2px 0 0 var(--ink);transition:transform .08s, box-shadow .08s}
+.mast>.wrap>nav a:focus-visible{outline:3px solid var(--lazuli);outline-offset:2px}
+.mast>.wrap>nav a:nth-child(2){transform:rotate(1.4deg)}
+.mast>.wrap>nav a:nth-child(3){transform:rotate(-1.2deg)}
+.mast>.wrap>nav a:hover{transform:rotate(0) translate(-1px,-1px);box-shadow:3px 3px 0 0 var(--grass)}
+
+// ---- RSS = the list-first continuity channel: flagged so it reads as a
+// parallel subscribe path, not a buried 4th tab. grass-deep fill + oats ink
+// keeps it palette-pure AND AA-safe (oats clears 4.5:1 on grass-deep per
+// tokens), and the glyph is one solid ink shape (no blur/gradient). Used by
+// the desktop tab AND the burger row. ----
+.rss-link{gap:.42em}
+.rss-link .rss-glyph{width:1em;height:1em;flex:0 0 auto;display:block}
+// desktop tab: grass-deep filled stamp so the eye lands on it
+.mast>.wrap>nav a.rss-link{background:var(--grass-deep);color:var(--oats);border-color:var(--ink)}
+.mast>.wrap>nav a.rss-link:hover{box-shadow:3px 3px 0 0 var(--ink)}
+
+// ---------- footer = torn grass band ----------
+footer{position:relative;background:var(--grass-deep);margin-top:clamp(2.5rem,6vw,4.5rem);
+  padding:clamp(2.6rem,6vw,4.2rem) 0 clamp(1.8rem,4vw,2.6rem);color:var(--oats)}  // deep grass: oats text clears AA
+footer::before{content:"";position:absolute;left:0;right:0;top:-15px;height:30px;background:var(--grass-deep);filter:url(#tornbig2)}
+footer .top{display:flex;justify-content:space-between;align-items:flex-start;gap:2rem;flex-wrap:wrap}
+footer .ft-word{width:clamp(150px,24vw,240px);display:block}
+footer .ft-word svg{display:block;width:100%;height:auto}
+footer .tagline{font-family:var(--f-slab);font-style:italic;font-weight:700;font-size:clamp(1.5rem,3.4vw,2.3rem);color:var(--oats);max-width:13ch;margin:.8rem 0 0;line-height:1.05}
+footer .links{display:flex;flex-direction:column;gap:.35rem}
+footer .links a{font-family:var(--f-mono);font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--oats);
+  display:inline-flex;align-items:center;min-height:44px;                       // >=44px tap target
+  text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:4px;text-decoration-color:rgba(254,246,228,.55)}
+footer .links a:hover,footer .links a:focus-visible{text-decoration-color:var(--oats)}
+footer .links a:focus-visible{outline:2px solid var(--oats);outline-offset:2px}
+footer .stamp{display:inline-block;margin-top:1.4rem;font-family:var(--f-mono);text-transform:uppercase;letter-spacing:.14em;
+  font-size:.72rem;color:rgba(254,246,228,.85);border:2.4px solid rgba(254,246,228,.7);border-radius:6px;
+  padding:.5em .8em;transform:rotate(-3deg);filter:url(#roughsm)}
+footer .legal{margin-top:2rem;border-top:1.6px solid rgba(254,246,228,.4);padding-top:1.1rem;display:flex;
+  justify-content:space-between;gap:1rem;flex-wrap:wrap;font-family:var(--f-mono);font-size:.72rem;letter-spacing:.05em;color:rgba(254,246,228,.9)}
+// footer rubber stamp — alive ink badge
+footer .stamp{animation:boil-roughsm var(--boil-stamp) step-end infinite}
