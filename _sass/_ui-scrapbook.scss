@@ -64,3 +64,16 @@ html.baked .post-tag{background-image:none!important}   // flat vinyl, not paper
   .post-tag{transform:none}
   .post-tag:nth-of-type(3n+1),.post-tag:nth-of-type(3n+2),.post-tag:nth-of-type(3n+3){transform:none}
 }
+
+// ---- HANDLE-DRAG affordances (blog.js makeDraggable) ----
+// Loose desk toys drag from anywhere; clippings drag only by their pin/tape GRIP so the
+// link + text selection survive. touch-action:none ONLY on the draggable surfaces/grips
+// (so the rest of a card still scrolls on touch). Lifted while dragging; stays where dropped.
+@media (hover:hover){
+  .board-litter .litter{cursor:grab}
+  .board-pile .clip .pin, .board-pile .clip > .tape{cursor:grab}
+}
+.board-litter .litter{touch-action:none}
+.board-pile .clip .pin, .board-pile .clip > .tape{touch-action:none}
+.board-litter .litter.is-dragging, .board-pile .clip.is-dragging{cursor:grabbing; z-index:80!important}
+.board-pile .clip.is-dragging{filter:drop-shadow(3px 8px 10px rgba(20,16,12,.22))}

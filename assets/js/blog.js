@@ -380,55 +380,66 @@ window.__DREX_BLOG_SRC__ = (document.currentScript && document.currentScript.src
      decorative litter polaroid (aria-hidden, off the reading path, never a link),
      so dragging never strands content or breaks keyboard nav. Disabled under
      reduced motion. Pointer events => works for touch (iOS) and mouse alike. */
-  function initDrag() {
-    if (reduceMQ.matches) return;
-    var el = doc.querySelector(".board-litter .litter--photo");
+  /* HANDLE-DRAG model: you can SHUFFLE the desk, but reading + selecting + links stay
+     intact. Loose desk TOYS (.board-litter .litter — decorative, aria-hidden, no text
+     you'd select) drag from anywhere. Home CLIPPINGS (.board-pile .clip — they're LINKS)
+     drag only by their GRIP (the pin / tape / corner) so a tap still follows the link and
+     body text stays selectable. A small move THRESHOLD separates a click from a drag, and
+     a real drag suppresses the link's click. Objects STAY where dropped (no snap-home);
+     nothing is persisted, so a reload restores the designed layout. reduced-motion off. */
+  function makeDraggable(el, handleSel, isLink) {
     if (!el || !el.setPointerCapture) return;
-
-    var dragging = false, raf = 0;
-    var startX = 0, startY = 0;           // pointer origin
-    var curX = 0, curY = 0, tgtX = 0, tgtY = 0; // current vs target translate
-    var settling = false;
-
+    var armed = false, dragging = false, moved = false, raf = 0, pid = null;
+    var startX = 0, startY = 0, originX = 0, originY = 0;
+    var curX = 0, curY = 0, tgtX = 0, tgtY = 0;
     function write() { el.style.translate = curX.toFixed(1) + "px " + curY.toFixed(1) + "px"; }
     function loop() {
       raf = 0;
-      var lerp = 0.30;
-      curX += (tgtX - curX) * lerp;
-      curY += (tgtY - curY) * lerp;
-      write();
-      var done = Math.abs(tgtX - curX) < 0.4 && Math.abs(tgtY - curY) < 0.4;
-      if (!done) { raf = requestAnimationFrame(loop); }
-      else if (settling) { curX = tgtX; curY = tgtY; write(); settling = false; el.classList.remove("is-dragging"); }
+      curX += (tgtX - curX) * 0.30; curY += (tgtY - curY) * 0.30; write();
+      if (Math.abs(tgtX - curX) > 0.4 || Math.abs(tgtY - curY) > 0.4) raf = requestAnimationFrame(loop);
     }
-
     el.addEventListener("pointerdown", function (ev) {
-      // don't fight the press-foley / let the foley arm; primary button / any touch.
       if (ev.button && ev.button !== 0) return;
-      dragging = true; settling = false;
-      el.classList.add("is-dragging");
-      startX = ev.clientX - tgtX; startY = ev.clientY - tgtY;
-      try { el.setPointerCapture(ev.pointerId); } catch (e) {}
-      Foley.pickup();                    // drag-start: "picked up" (20ms buzz inside)
-      if (!raf) raf = requestAnimationFrame(loop);
+      if (handleSel && !(ev.target.closest && ev.target.closest(handleSel))) return; // grip only
+      armed = true; moved = false; pid = ev.pointerId;
+      startX = ev.clientX; startY = ev.clientY; originX = tgtX; originY = tgtY;
     });
     el.addEventListener("pointermove", function (ev) {
-      if (!dragging) return;
-      tgtX = ev.clientX - startX;
-      tgtY = ev.clientY - startY;
+      if (!armed || ev.pointerId !== pid) return;
+      var dx = ev.clientX - startX, dy = ev.clientY - startY;
+      if (!dragging) {
+        if (Math.abs(dx) + Math.abs(dy) < 6) return;     // below threshold = a click, not a drag
+        dragging = true; moved = true; el.classList.add("is-dragging");
+        try { el.setPointerCapture(pid); } catch (e) {}
+        Foley.pickup();
+      }
+      tgtX = originX + dx; tgtY = originY + dy;
       if (!raf) raf = requestAnimationFrame(loop);
+      ev.preventDefault();
     });
     function release(ev) {
-      if (!dragging) return;
-      dragging = false; settling = true;
-      try { el.releasePointerCapture(ev.pointerId); } catch (e) {}
-      // settle back to where it was grabbed (snaps the object home with a wobble).
-      tgtX = 0; tgtY = 0;
-      Foley.drop();                      // soft land on release ([30,60,10] buzz)
-      if (!raf) raf = requestAnimationFrame(loop);
+      if (pid !== null && ev.pointerId !== pid) return;
+      armed = false; pid = null;
+      if (dragging) {                       // STAYS where dropped — no snap-home
+        dragging = false; el.classList.remove("is-dragging");
+        try { el.releasePointerCapture(ev.pointerId); } catch (e) {}
+        Foley.drop();
+      }
     }
     el.addEventListener("pointerup", release);
     el.addEventListener("pointercancel", release);
+    if (isLink) el.addEventListener("click", function (ev) {   // a real drag must not navigate
+      if (moved) { ev.preventDefault(); ev.stopPropagation(); moved = false; }
+    }, true);
+  }
+  function initDrag() {
+    // NOTE: not gated on reduced-motion — dragging is user-initiated DIRECT manipulation
+    // (a11y guidance reserves reduced-motion for decorative/autonomous motion). The only
+    // decorative beat (a settle-wobble) is gone; objects just track the pointer and stay.
+    var toys = doc.querySelectorAll(".board-litter .litter");
+    for (var i = 0; i < toys.length; i++) makeDraggable(toys[i], null, false);   // free drag
+    var clips = doc.querySelectorAll(".board-pile .clip");
+    for (var j = 0; j < clips.length; j++) makeDraggable(clips[j], ".pin, .tape, .clip-grip", true); // grip drag
   }
 
   /* ---- 4. mobile burger nav (unchanged) ----------------------------- */
