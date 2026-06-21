@@ -517,20 +517,28 @@ html.baked .post-stage--desk { background-color: transparent; }
   margin: 1.5em 0 0.4em;
 }
 
-/* ---- links: marker-underlined inline, grass on hover, Lazuli focus ring ---- */
+/* ---- links: ONE wobbly green hand-marker underline on EVERY .prose a (post +
+   page-layout join/about pages alike — the selector is NOT layout-scoped, so it
+   is the single site-wide inline-link treatment). The stroke is a hand-marker mark,
+   not a straight CSS rule: a stacked grass gradient whose thickness breathes (a thin
+   wash + a heavier core band sitting a hair off the baseline) so it reads as a marker
+   swipe with pressure variation, never a uniform 1px system underline. Body-text
+   colour/opacity untouched (legibility sacred); grass-only signal stays AA-safe. ---- */
 .prose a {
   color: var(--ink);   /* Sambas link: AA-safe body-size on the sacred sheet (Grass underline + ink-on-hover keep the green signal) */
   text-decoration: none;
-  background-image: linear-gradient(var(--grass), var(--grass));
-  background-repeat: no-repeat;
-  background-position: 0 100%;
-  background-size: 100% 0.1em;
-  padding-bottom: 0.02em;
+  background-image:
+    linear-gradient(var(--grass), var(--grass)),
+    linear-gradient(rgba(28,171,91,.55), rgba(28,171,91,.55));
+  background-repeat: no-repeat, no-repeat;
+  background-position: 0 100%, 0 92%;
+  background-size: 100% 0.1em, 100% 0.06em;
+  padding-bottom: 0.04em;
   transition: background-size 0.12s ease, color 0.12s ease;
 }
 .prose a:hover {
   color: var(--ink);
-  background-size: 100% 0.42em;
+  background-size: 100% 0.42em, 100% 0.1em;
 }
 .prose a:focus-visible {
   outline: 3px solid var(--lazuli);
@@ -1532,14 +1540,23 @@ html.baked .cite-attrib {
   display: block;
   padding: 1.5rem;
   background: var(--paper);
-  border: 2.4px solid var(--ink);
-  border-radius: 6px;
-  box-shadow: var(--sh-contact), var(--sh-ambient); /* soft tinted cast under the one light */
+  /* a torn-paper index TAB, not a bordered rounded card. The ragged deckle
+     silhouette (P2) reads as a hand-cut tab even before bakery.js; the soft
+     tinted cast seats it on the desk. */
+  border: 0;
+  border-radius: 0;
+  clip-path: polygon(0% 6%,10% 1%,32% 4%,60% 0%,88% 3%,100% 8%,98% 34%,100% 64%,
+                     97% 94%,100% 100%,70% 97%,40% 100%,16% 96%,2% 100%,1% 62%,3% 32%);
+  /* alpha-following cast (P3) that HUGS the torn tab silhouette — a box-shadow here
+     would ghost a rectangular halo around the clip-path, the exact web-slop the
+     desk-reset/sticker grammar avoids elsewhere. */
+  box-shadow: none;
+  filter: var(--df-lift);
   color: var(--ink);
   text-decoration: none;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
 }
-.post-nav-link:hover { transform: translateY(-4px); box-shadow: var(--sh-hover); }
+.post-nav-link:hover { transform: translateY(-4px); box-shadow: none; filter: var(--df-hover); }
 .post-nav-link:focus-visible {
   outline: 3px solid var(--lazuli);
   outline-offset: 2px;

@@ -10,20 +10,43 @@
   position:relative; isolation:isolate; overflow:visible;
   font-family:var(--f-mono); font-size:.72rem; letter-spacing:.06em; text-transform:uppercase;
   color:var(--oats)!important; padding:.45em .85em;
-  border:2.5px solid var(--oats);                 // white die-cut border
-  border-radius:100px;                            // stickers are die-cut, not torn
+  border:2.5px solid var(--oats);                 // cream die-cut keyline (unbaked sticker)
+  border-radius:0;                                // die-cut vinyl, NOT a stadium pill
+  // ragged hand-cut vinyl silhouette (P2 die-cut fallback) — an asymmetric polygon,
+  // not a capsule. The chip reads as a real cut chip even before bakery.js.
+  clip-path:polygon(2% 10%,18% 2%,52% 5%,84% 1%,99% 9%,97% 40%,100% 72%,
+                    96% 96%,70% 99%,40% 96%,14% 100%,1% 90%,3% 58%,0% 30%);
   background:var(--grass);
-  box-shadow:1px 2px 3px rgba(var(--sh-seam),.32), 0 6px 11px rgba(var(--sh-warm),.12);
+  // P3 alpha-following cast hugs the die-cut silhouette (no rectangular halo).
+  box-shadow:none;
+  filter:drop-shadow(1px 2px 2px rgba(var(--sh-seam),.32)) drop-shadow(0 6px 9px rgba(var(--sh-warm),.12));
   transform:rotate(-2deg);
-  transition:transform .15s ease, box-shadow .15s ease;
+  transition:transform .15s ease, filter .15s ease;
 }
-html.baked .post-tag{background-image:none!important}   // flat vinyl, not paper tooth
+// baked: a real torn-rim vinyl chip per stock (P1 footer-chip recipe) so the
+// die-cut survives bakery.js — the torn fiber owns the silhouette, not clip-path.
+html.baked .post-tag{
+  background-image:none!important;                // flat vinyl dye, not paper tooth
+  clip-path:none;
+  border:0; border-style:solid; border-color:transparent;
+  border-width:10px; border-image-slice:var(--bk-edge-grass-slice,38) fill;
+  border-image-source:var(--bk-edge-grass); border-image-width:10px; border-image-repeat:round;
+  background-color:var(--grass)!important; background-clip:padding-box;
+  padding:.28em .6em!important;
+}
 .post-tag:nth-of-type(3n+1){background:var(--colorado); transform:rotate(1.6deg)}
 .post-tag:nth-of-type(3n+2){background:var(--lazuli);  transform:rotate(-2.6deg)}
 .post-tag:nth-of-type(3n+3){background:var(--grass);   transform:rotate(1.1deg)}
-// sticker GLOSS (soft top-left sheen)
+// baked per-stock torn rim (match the dyed face to the right edge sprite)
+html.baked .post-tag:nth-of-type(3n+1){background-color:var(--colorado)!important;
+  border-image-source:var(--bk-edge-coral); border-image-slice:var(--bk-edge-coral-slice,38) fill}
+html.baked .post-tag:nth-of-type(3n+2){background-color:var(--lazuli)!important;
+  border-image-source:var(--bk-edge-lazuli); border-image-slice:var(--bk-edge-lazuli-slice,38) fill}
+html.baked .post-tag:nth-of-type(3n+3){background-color:var(--grass)!important;
+  border-image-source:var(--bk-edge-grass); border-image-slice:var(--bk-edge-grass-slice,38) fill}
+// sticker GLOSS (soft top-left sheen) — now clipped to the die-cut, not a stadium
 .post-tag::before{
-  content:""; position:absolute; inset:0; z-index:1; pointer-events:none; border-radius:inherit;
+  content:""; position:absolute; inset:0; z-index:1; pointer-events:none; border-radius:0;
   background:linear-gradient(135deg, rgba(255,255,255,.34), rgba(255,255,255,0) 46%);
   mix-blend-mode:screen;
 }
@@ -35,7 +58,7 @@ html.baked .post-tag{background-image:none!important}   // flat vinyl, not paper
   box-shadow:-1px -1px 2px rgba(var(--sh-seam),.3);
 }
 .post-tag:hover{transform:rotate(0) translateY(-2px);
-  box-shadow:1px 3px 5px rgba(var(--sh-seam),.34), 0 10px 15px rgba(var(--sh-warm),.14)}
+  box-shadow:none; filter:var(--df-hover)}
 .post-tag:focus-visible{outline:3px solid var(--lazuli); outline-offset:3px}
 // the "Filed under" gets a hand-stitched thread underline (a sewn label)
 .post-tags-label{position:relative}
@@ -75,8 +98,20 @@ html.baked .post-tag{background-image:none!important}   // flat vinyl, not paper
 :root{ --grip-band:14px; }   // the torn-rim width — the bare band you can grab from
 
 @media (hover:hover){
-  .board-litter .litter{cursor:grab}
-  .board-pile .clip .pin, .board-pile .clip > .tape{cursor:grab}
+  // draggable desk paper ANNOUNCES itself: grab cursor + a soft warm edge GLOW on
+  // hover so you can see what's pickable. drop-shadow follows the torn alpha
+  // silhouette (never a rectangular halo); the brand-grass kiss reads as "live".
+  .board-litter .litter,
+  .board-pile .clip{cursor:grab}
+  .board-litter .litter--photo:hover,
+  .board-litter .litter--slip:hover,
+  .board-litter .litter--ticket:hover,
+  .board-litter .litter--quote:hover,
+  .board-litter .litter--byline:hover,
+  .board-pile .clip:hover{
+    filter:drop-shadow(0 1px 2px rgba(var(--sh-seam),.30))
+           drop-shadow(0 0 .5rem rgba(28,171,91,.36));
+  }
 }
 .board-litter .litter{touch-action:none}
 .board-pile .clip .pin, .board-pile .clip > .tape{touch-action:none}

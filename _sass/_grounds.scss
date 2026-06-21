@@ -306,7 +306,10 @@ footer .links a{
   padding:.3em .7em;position:relative;isolation:isolate;
   text-decoration:none;                       // NO system underline — chip IS the affordance
   background-color:var(--lazuli);border-radius:0;
-  // pre-bake fallback box-shadow; baked state below swaps to an alpha-following cast.
+  // pre-bake fallback is a P2 die-cut silhouette (NOT a solid rect that reads as a
+  // pill in headless/no-JS shots) — a ragged chip even before bakery.js.
+  clip-path:polygon(2% 12%,20% 2%,55% 6%,90% 2%,99% 34%,98% 70%,100% 92%,72% 99%,
+                    38% 95%,10% 100%,1% 64%,3% 34%);
   box-shadow:var(--sh-contact);
   transition:transform var(--t-micro) ease,box-shadow var(--t-micro) ease,filter var(--t-micro) ease;
 }
@@ -317,8 +320,9 @@ html.baked footer .links a{
   // 12px rim (was 9px — crushed the ~38px-authored torn fiber sub-pixel on a ~30px
   // chip) + `fill` so the dyed face shows the tear. Drop-shadow hugs the torn alpha,
   // killing the rectangular box-shadow ghost that read as a pill at this size.
-  border-width:12px;border-image-slice:var(--bk-edge-grass-slice,38) fill;
-  border-image-width:12px;border-image-repeat:round;padding:.18em .5em;
+  border-width:14px;border-image-slice:var(--bk-edge-grass-slice,38) fill;
+  border-image-width:14px;border-image-repeat:round;padding:.18em .5em;
+  clip-path:none;                               // baked torn rim owns the silhouette
   box-shadow:none;
   filter:drop-shadow(0 1px 1px rgba(var(--sh-seam),.40)) drop-shadow(0 2px 3px rgba(var(--sh-warm),.18));
 }
@@ -729,10 +733,22 @@ html.baked .board-pile>.clip:nth-child(5n+5){border-image-width:13px;border-imag
   letter-spacing:.1em;font-size:.7rem;display:flex;flex-wrap:wrap;align-items:center;gap:.5rem}
 .clip-meta .sep{font-weight:700}
 .clip-tags{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.8rem}
+// category labels are rubber-ink STAMPED impressions (the masthead stamp language),
+// NOT 4px rounded-rect pills: drop the fill box, press the caps into the stock with
+// an ink seam. Per-stock backing (where contrast needs it) lives in the stock blocks
+// below as a P2 die-cut chip, never a 4px rect.
 .clip-tag{font-family:var(--f-mono);font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;
-  padding:.28em .6em;border-radius:4px;background:rgba(254,246,228,.18)}
-.clip-go{display:inline-block;margin-top:.9rem;font-size:1.05rem;transition:transform var(--t-micro) ease}
-.clip:hover .clip-go{transform:translateX(4px)}
+  padding:.28em .35em;border-radius:0;background:transparent;
+  text-shadow:0 .5px .6px rgba(var(--sh-seam),.5);
+  transform:rotate(-1.2deg)}
+.clip-tags>.clip-tag:nth-child(even){transform:rotate(1.4deg)}
+// the "read →" affordance is on-desk scrawl: Patrick Hand + a rubber-ink stamped
+// arrow glyph (not a system text link with a system arrow nudging on hover).
+.clip-go{display:inline-flex;align-items:center;gap:.35em;margin-top:.9rem;
+  font-family:var(--f-hand);font-size:1.18rem;line-height:1;
+  transition:transform var(--t-micro) ease}
+.clip-go::after{content:"\2192";font-family:var(--f-mono);font-size:.9em;font-weight:700}
+.clip:hover .clip-go{transform:translateX(3px) rotate(-1deg)}
 
 // per-stock ink: dark stocks → Oats text (AA); light/saturated stocks → ink.
 // Grass / Sambas / Colorado / Lazuli are dark enough for Oats; kraft (saffron)
@@ -745,7 +761,7 @@ html.baked .board-pile>.clip:nth-child(5n+5){border-image-width:13px;border-imag
 // perceived contrast without recolouring outside the palette.
 .clip--grass .clip-kicker{color:var(--oats);text-shadow:0 1px 1.4px rgba(var(--sh-seam),.55)}
 .clip--grass .clip-title,.clip--grass .clip-dek,.clip--grass .clip-meta,
-.clip--grass .clip-go{color:var(--oats)}
+.clip--grass .clip-go,.clip--grass .clip-tag{color:var(--oats)}
 .clip--grass .clip-dek{text-shadow:0 .6px 0 rgba(var(--sh-seam),.30)}
 // the card headline gets the layered baked-ink seam+halo so it presses INTO the
 // Grass stock (matches .post-title) — the dek stays calm single-layer for reading.
@@ -754,11 +770,22 @@ html.baked .board-pile>.clip:nth-child(5n+5){border-image-width:13px;border-imag
   .35px .7px .5px rgba(var(--sh-seam),.18),
   0 0 1px rgba(var(--sh-warm),.22)}
 .clip--grass .clip-meta .sep{color:var(--oats)}
+// the .66rem tag caps need the AA floor on the dark Grass stock: a small P2 die-cut
+// Oats wash (ink reads as the seam-pressed Oats label), not a 4px rect.
+.clip--grass .clip-tag{color:var(--ink);background:rgba(254,246,228,.82);
+  text-shadow:none;padding:.28em .55em;
+  clip-path:polygon(3% 12%,22% 2%,60% 6%,96% 3%,98% 44%,100% 78%,82% 98%,46% 95%,
+                    10% 99%,1% 64%,4% 32%);
+  box-shadow:none;filter:var(--df-contact)}
 // AA: a faint Oats pill underlay behind the small mono meta so the .7rem caps
 // clear 4.5:1 on the Grass field (small text needs the higher floor). Same chip
 // the .clip-tag already uses, extended to the meta row.
-.clip--grass .clip-meta{background:rgba(254,246,228,.18);border-radius:4px;
-  padding:.2em .5em;width:fit-content}
+// AA underlay kept (legibility sacred) but re-cut from a 4px UI pill to a torn Oats
+// wash — an irregular clip-path silhouette so it reads as a paper slip, not a badge.
+.clip--grass .clip-meta{background:rgba(254,246,228,.18);border-radius:0;
+  clip-path:polygon(1% 14%,16% 3%,52% 7%,88% 2%,99% 30%,98% 70%,100% 92%,68% 99%,
+                    34% 95%,8% 100%,0% 66%,2% 36%);
+  padding:.24em .6em;width:fit-content}
 // AA: deepen the Grass stock a few % under the body text zone so the Oats summary
 // clears 4.5:1 (a soft multiply darkening, NOT a flat block — it reads as the stock
 // in shadow under the print). Sits below the text (clip-body z-index:1).
@@ -767,7 +794,7 @@ html.baked .board-pile>.clip:nth-child(5n+5){border-image-width:13px;border-imag
 
 .clip--note .clip-kicker{color:var(--oats)}
 .clip--note .clip-title,.clip--note .clip-dek,.clip--note .clip-meta,
-.clip--note .clip-go{color:var(--oats)}
+.clip--note .clip-go,.clip--note .clip-tag{color:var(--oats)}
 .clip--note .clip-dek{text-shadow:0 .6px 0 rgba(var(--sh-seam),.45)}
 .clip--note .clip-title{text-shadow:
   0 .5px 0 rgba(var(--sh-seam),.55),
@@ -776,12 +803,14 @@ html.baked .board-pile>.clip:nth-child(5n+5){border-image-width:13px;border-imag
 .clip--note .clip-meta .sep{color:var(--oats)}
 // Sambas is dark enough that Oats meta already clears AA; the faint pill is kept
 // for visual consistency with the other saturated stocks (not a contrast need).
-.clip--note .clip-meta{background:rgba(254,246,228,.16);border-radius:4px;
-  padding:.2em .5em;width:fit-content}
+.clip--note .clip-meta{background:rgba(254,246,228,.16);border-radius:0;
+  clip-path:polygon(1% 14%,16% 3%,52% 7%,88% 2%,99% 30%,98% 70%,100% 92%,68% 99%,
+                    34% 95%,8% 100%,0% 66%,2% 36%);
+  padding:.24em .6em;width:fit-content}
 
 .clip--coral .clip-kicker{color:var(--oats)}
 .clip--coral .clip-title,.clip--coral .clip-dek,.clip--coral .clip-meta,
-.clip--coral .clip-go{color:var(--sambas)}   // Sambas ink on Colorado = high contrast (v6 quote choice)
+.clip--coral .clip-go,.clip--coral .clip-tag{color:var(--sambas)}   // Sambas ink on Colorado = high contrast (v6 quote choice)
 .clip--coral .clip-dek{text-shadow:0 .6px 0 rgba(254,246,228,.32)}
 // Sambas ink on Colorado — the seam darkens INTO the coral, the halo is the pale
 // Oats fiber wicking around the dark ink (so it presses, not floats).
@@ -789,35 +818,55 @@ html.baked .board-pile>.clip:nth-child(5n+5){border-image-width:13px;border-imag
   0 .5px 0 rgba(var(--sh-seam),.34),
   .35px .7px .5px rgba(var(--sh-seam),.18),
   0 0 1px rgba(254,246,228,.30)}
-.clip--coral .clip-tag{background:rgba(var(--sh-seam),.16)}
+// where a backing is needed, it is a small P2 die-cut chip (not a 4px rect): an
+// irregular OATS-paper slip clipped to a ragged silhouette (same torn-paper stock
+// as the grass/lazuli/kraft tags — was a faint shadow-ink wash that read as a tint),
+// cast follows the alpha. Sambas ink stays high-contrast on the pale chip.
+.clip--coral .clip-tag{background:rgba(254,246,228,.20);padding:.28em .55em;
+  clip-path:polygon(3% 12%,22% 2%,60% 6%,96% 3%,98% 44%,100% 78%,82% 98%,46% 95%,
+                    10% 99%,1% 64%,4% 32%);
+  box-shadow:none;filter:var(--df-contact)}
 .clip--coral .clip-meta .sep{color:var(--oats)}
 // AA: Sambas-ink-on-Colorado is 2.63:1 — fails. Oats pill underlay behind the meta
 // (ink reads dark on the pale chip) + deepen the coral under the text so the body
 // ink clears 4.5:1.
-.clip--coral .clip-meta{background:rgba(254,246,228,.22);border-radius:4px;
-  padding:.2em .5em;width:fit-content}
+.clip--coral .clip-meta{background:rgba(254,246,228,.22);border-radius:0;
+  clip-path:polygon(1% 14%,16% 3%,52% 7%,88% 2%,99% 30%,98% 70%,100% 92%,68% 99%,
+                    34% 95%,8% 100%,0% 66%,2% 36%);
+  padding:.24em .6em;width:fit-content}
 .clip--coral .clip-body::before{content:"";position:absolute;inset:0;z-index:-1;
   pointer-events:none;background:rgba(150,30,34,.16);mix-blend-mode:multiply}
 
 .clip--lazuli .clip-kicker{color:var(--oats)}
 .clip--lazuli .clip-title,.clip--lazuli .clip-dek,.clip--lazuli .clip-meta,
-.clip--lazuli .clip-go{color:var(--oats)}
+.clip--lazuli .clip-go,.clip--lazuli .clip-tag{color:var(--oats)}
 .clip--lazuli .clip-dek{text-shadow:0 .6px 0 rgba(var(--sh-seam),.32)}
 .clip--lazuli .clip-title{text-shadow:
   0 .5px 0 rgba(var(--sh-seam),.40),
   .35px .7px .5px rgba(var(--sh-seam),.20),
   0 0 1px rgba(var(--sh-warm),.22)}
 .clip--lazuli .clip-meta .sep{color:var(--oats)}
+// Oats-on-Lazuli at .66rem fails AA — same P2 die-cut Oats-wash chip as Grass.
+.clip--lazuli .clip-tag{color:var(--ink);background:rgba(254,246,228,.82);
+  text-shadow:none;padding:.28em .55em;
+  clip-path:polygon(3% 12%,22% 2%,60% 6%,96% 3%,98% 44%,100% 78%,82% 98%,46% 95%,
+                    10% 99%,1% 64%,4% 32%);
+  box-shadow:none;filter:var(--df-contact)}
 // AA: Oats-on-Lazuli meta was 3.11:1; pill underlay + deepen the blue under text.
-.clip--lazuli .clip-meta{background:rgba(254,246,228,.18);border-radius:4px;
-  padding:.2em .5em;width:fit-content}
+.clip--lazuli .clip-meta{background:rgba(254,246,228,.18);border-radius:0;
+  clip-path:polygon(1% 14%,16% 3%,52% 7%,88% 2%,99% 30%,98% 70%,100% 92%,68% 99%,
+                    34% 95%,8% 100%,0% 66%,2% 36%);
+  padding:.24em .6em;width:fit-content}
 .clip--lazuli .clip-body::before{content:"";position:absolute;inset:0;z-index:-1;
   pointer-events:none;background:rgba(16,86,128,.18);mix-blend-mode:multiply}
 
 .clip--kraft .clip-kicker{color:var(--ink)}   // Sambas ink on saffron kraft = AA
 .clip--kraft .clip-title,.clip--kraft .clip-dek,.clip--kraft .clip-meta,
 .clip--kraft .clip-go{color:#3a2f12}   // dark ink on saffron = AA
-.clip--kraft .clip-tag{background:rgba(58,47,18,.14)}
+.clip--kraft .clip-tag{background:rgba(58,47,18,.14);padding:.28em .55em;
+  clip-path:polygon(3% 12%,22% 2%,60% 6%,96% 3%,98% 44%,100% 78%,82% 98%,46% 95%,
+                    10% 99%,1% 64%,4% 32%);
+  box-shadow:none;filter:var(--df-contact)}
 .clip--kraft .clip-meta .sep{color:var(--ink)}   // Sambas ink on saffron kraft = AA
 // dark ink pressed into saffron kraft — warm seam + a pale tooth halo so the
 // headline presses in like the others (the kraft title had no press before).
@@ -836,7 +885,10 @@ html.baked .board-pile>.clip:nth-child(5n+5){border-image-width:13px;border-imag
 .clip--leaf .clip-title,.clip--leaf .clip-dek,.clip--leaf .clip-meta,
 .clip--leaf .clip-go{color:var(--ink)}            // Sambas ink on Oats = 8.05:1
 .clip--leaf .clip-meta .sep{color:var(--colorado)}
-.clip--leaf .clip-tag{background:rgba(58,47,18,.10)}
+.clip--leaf .clip-tag{background:rgba(58,47,18,.10);padding:.28em .55em;
+  clip-path:polygon(3% 12%,22% 2%,60% 6%,96% 3%,98% 44%,100% 78%,82% 98%,46% 95%,
+                    10% 99%,1% 64%,4% 32%);
+  box-shadow:none;filter:var(--df-contact)}
 // the headline pressed into the cream tooth — the .post-title ink-spread, tuned
 // for the lighter Oats stock (warm seam at the stroke root + a faint warm halo).
 .clip--leaf .clip-title{text-shadow:
@@ -910,7 +962,14 @@ html.baked .clip>.tape[data-tape="oats"]  {background-image:var(--bk-tape-oats)}
   // the polaroid is the one GENUINELY DRAGGABLE scrap (blog.js initDrag): it must
   // accept pointer events even though the litter layer otherwise ignores them, and
   // it shows a grab cursor so the 'pick it up' affordance is legible.
-  .board-litter .litter--photo{pointer-events:auto;cursor:grab;touch-action:none}
+  // EVERY piece of loose PAPER on the desk is pickable (not just the polaroid): the
+  // litter layer ignores pointer events, but each paper scrap re-enables them so it
+  // can be dragged. Decorative non-paper marks (pin/ring/star/clip-deco) stay inert.
+  .board-litter .litter--photo,
+  .board-litter .litter--slip,
+  .board-litter .litter--ticket,
+  .board-litter .litter--quote,
+  .board-litter .litter--byline{pointer-events:auto;cursor:grab;touch-action:none}
   .board-litter .litter--photo.is-dragging{cursor:grabbing;z-index:30}
   // seeded x/y splay across ALL FOUR QUADRANTS *and the centre* — so no 100x100
   // region of the desk is bare. Pieces tuck BEHIND the pile (litter z:0, pile
@@ -1154,9 +1213,12 @@ html.baked .post-banner--ledger{
 // Colorado (--coral-ink, 4.84:1 on Oats) not raw --colorado (#F75458, ~3.1:1),
 // so the small-caps date no longer reads as a faint red wash on the cream
 // standfirst at tablet width. Brand-pure (the sanctioned deepened Colorado ink).
+// date stamp shares the .stamp rubber-ink vocabulary: an irregular hand-cut
+// keyline (NOT a uniform 6px UI rect) so the unbaked frame reads as a pressed
+// stamp, not a coral outline pill. (Baked, --bk-stamp owns the silhouette.)
 .post-datestamp{position:relative;isolation:isolate;display:inline-block;
   padding:.4em .8em;transform:rotate(-2deg);color:var(--coral-ink);
-  border:2px solid var(--coral-ink);border-radius:6px}
+  border:2.4px solid var(--coral-ink);border-radius:8px 4px 10px 5px / 5px 10px 4px 8px}
 html.baked .post-datestamp{border-color:transparent;
   background-image:var(--bk-stamp);background-size:100% 100%}
 .post-datestamp time{color:inherit}
@@ -1193,13 +1255,29 @@ html.baked .subscribe-key{background-image:var(--bk-piece-kraft);background-size
 .subscribe-key:active{transform:translateY(1px);box-shadow:var(--sh-contact)}
 .subscribe-key:focus-visible{outline:3px solid var(--oats);outline-offset:3px}
 
-// ---- prev/next as paper TABS (soft tinted shadow, not hard ink offset) ----
+// ---- prev/next as torn-paper index TABS (soft tinted shadow, not hard ink offset) ----
 .post-nav-link{background-color:var(--paper);box-shadow:var(--sh-contact),var(--sh-ambient);
-  border:0;transition:transform var(--t-micro) ease, box-shadow var(--t-micro) ease}
-html.baked .post-nav-link{background-image:var(--bk-piece-oats);background-size:cover;background-position:center}
+  border:0;transition:transform var(--t-micro) ease, box-shadow var(--t-micro) ease, filter var(--t-micro) ease}
+// baked: the real torn Oats face + two-zone rim owns the silhouette, so drop the
+// fallback clip-path and let the alpha-following cast (P3) hug the tear (the
+// box-shadow would ghost a rectangle past the torn teeth).
+html.baked .post-nav-link{
+  background-color:transparent;background-image:var(--bk-piece-oats);background-size:cover;background-position:center;
+  background-clip:padding-box;clip-path:none;
+  border-style:solid;border-color:transparent;border-width:14px;
+  border-image-source:var(--bk-edge-oats);border-image-slice:var(--bk-edge-oats-slice,38) fill;
+  border-image-width:14px;border-image-repeat:round;
+  box-shadow:none;filter:var(--df-lift);
+}
 .post-nav-link:nth-child(1){transform:rotate(-1deg)}
 .post-nav-link:nth-child(2){transform:rotate(1.2deg)}
 .post-nav-link:hover{transform:rotate(0) translateY(-4px);box-shadow:var(--sh-hover)}
+html.baked .post-nav-link:hover{box-shadow:none;filter:var(--df-hover)}
+// the direction line is a rubber-ink stamp arrow in DM-Mono — no bordered box.
 .post-nav-dir{font-family:var(--f-mono);font-weight:500;text-transform:uppercase;
   letter-spacing:.12em;font-size:.72rem;color:var(--ink)}   // Sambas ink on Oats card = AA at .72rem
+.post-nav-dir::before{margin-right:.4em;color:var(--colorado);font-weight:700}
+.post-nav-link.prev .post-nav-dir::before{content:"\2190";}   // ← stamped arrow glyph
+.post-nav-link.next .post-nav-dir{display:inline-flex;flex-direction:row-reverse}
+.post-nav-link.next .post-nav-dir::before{margin-right:0;margin-left:.4em;content:"\2192";}  // → stamped
 .post-nav-link.next{text-align:right}

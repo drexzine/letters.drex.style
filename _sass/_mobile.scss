@@ -468,11 +468,11 @@ pre {
     // 11px rim (was 9px — too thin: the ~38px-authored torn fiber crushed to a
     // near-straight edge on a 44px chip, reading as a rounded tile). A wider rim
     // shows the real torn teeth so the tab is convincingly hand-cut at this width.
-    border-width: 11px;
+    border-width: 13px;
     border-image-source: var(--bk-edge-oats);
     border-image-slice: var(--bk-edge-oats-slice, 38) fill;
     border-image-repeat: round;
-    border-image-width: 11px;
+    border-image-width: 13px;
     box-shadow: none;
     filter: drop-shadow(0 1px 1px rgba(var(--sh-seam),.40)) drop-shadow(0 2px 3px rgba(var(--sh-warm),.18));
   }

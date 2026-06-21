@@ -131,8 +131,14 @@
 
 // ---------- stamp (general rubber-stamp ink badge) ----------
 // Generalizes the footer .stamp look into a reusable mark (e.g. {% stamp %}).
+// The frame is a RUBBER-INK pressed mark, not a UI outline pill: an irregular
+// hand-cut corner radius (matches the foil-key / sticker 7/4/9/3 grammar, NOT a
+// uniform 6px UI rect) + a thicker double-weight ink keyline + the boiling
+// #roughsm so the rule wobbles like pressed rubber. A clean even border-radius at
+// phone scale was the one read that betrayed a coral outline pill (F7).
 .stamp{display:inline-block;font-family:var(--f-mono);text-transform:uppercase;letter-spacing:.14em;
-  font-size:.72rem;color:var(--colorado);border:2.4px solid var(--colorado);border-radius:6px;
+  font-size:.72rem;color:var(--colorado);border:2.8px solid var(--colorado);
+  border-radius:8px 4px 10px 5px / 5px 10px 4px 8px;
   padding:.5em .8em;transform:rotate(-3deg);filter:url(#roughsm);
   animation:boil-roughsm var(--boil-stamp) step-end infinite}
 .stamp.ink{color:var(--ink);border-color:var(--ink)}

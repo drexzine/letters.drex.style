@@ -26,6 +26,10 @@
 // BEFORE mobile/ui-scrapbook so the mobile overrides still win the cascade.
 // ===================================================================
 
+// the page layout (about + /join-* landing pages) — make its stage a positioning
+// context so the absolute .desk-marg attaches to it (home/post stages already are).
+.page-doc .post-stage { position: relative; }
+
 .desk-marg {
   position: absolute;
   inset: 0;
@@ -34,7 +38,7 @@
   overflow: clip;             // a doodle near the edge can never push a scrollbar
   contain: layout paint style;// isolate the wrapper's paint/layout from the page
   isolation: isolate;         // own stacking + blend context (multiply stays local)
-  opacity: .30;               // faded marker-ghost — present on the bare desk, not a sticker
+  opacity: .33;               // faded marker-ghost — present on the bare desk, not a sticker
 
   // ONE filter pass for the WHOLE field, redrawn by a slightly different hand
   // each step (seed-swap), ~0.7fps effective. Calm breathing, not shimmer.

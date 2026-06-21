@@ -33,7 +33,7 @@
 {%- endcapture -%}
 {%- assign gl = GLYPHS | strip | split: "~~" -%}
 {%- assign inks = "m-grass,m-lazuli,m-coral,m-ink" | split: "," -%}
-{%- assign N = 56 -%}
+{%- assign N = 84 -%}
 <div class="desk-marg desk-marg--{{ ctx }}" aria-hidden="true">
 {%- for i in (1..N) -%}
   {%- comment -%} QUADRATIC scatter: a pure linear (i*k mod n) walk steps by a constant

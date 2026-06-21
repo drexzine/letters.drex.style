@@ -172,13 +172,13 @@ layout: default
       <nav class="post-nav reveal" aria-label="More essays">
         {% if page.previous %}
         <a class="post-nav-link prev" href="{{ page.previous.url | relative_url }}">
-          <span class="post-nav-dir">&larr; Previous</span>
+          <span class="post-nav-dir">Previous</span>
           <span class="post-nav-title">{{ page.previous.title }}</span>
         </a>
         {% endif %}
         {% if page.next %}
         <a class="post-nav-link next" href="{{ page.next.url | relative_url }}">
-          <span class="post-nav-dir">Next &rarr;</span>
+          <span class="post-nav-dir">Next</span>
           <span class="post-nav-title">{{ page.next.title }}</span>
         </a>
         {% endif %}
