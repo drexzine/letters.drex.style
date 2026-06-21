@@ -36,10 +36,18 @@
 {%- assign N = 56 -%}
 <div class="desk-marg desk-marg--{{ ctx }}" aria-hidden="true">
 {%- for i in (1..N) -%}
+  {%- comment -%} QUADRATIC scatter: a pure linear (i*k mod n) walk steps by a constant
+    each iteration, so the doodles fall on visible DIAGONAL LINES. Mixing in an i*i term
+    breaks that lattice so the field reads hand-strewn, not ruled. Stepwise to avoid
+    Liquid's left-to-right filter chaining grouping the terms wrong. {%- endcomment -%}
+  {%- assign ii = i | times: i -%}
   {%- assign gi = i | modulo: 8 -%}
-  {%- assign xx = i | times: 37 | modulo: 95 | plus: 2 -%}
-  {%- assign yy = i | times: 53 | modulo: 95 | plus: 2 -%}
-  {%- assign rr = i | times: 47 | modulo: 19 | minus: 9 -%}
+  {%- assign xa = ii | times: 17 -%}{%- assign xb = i | times: 41 -%}
+  {%- assign xx = xa | plus: xb | modulo: 90 | plus: 4 -%}
+  {%- assign ya = ii | times: 23 -%}{%- assign yb = i | times: 59 -%}
+  {%- assign yy = ya | plus: yb | modulo: 90 | plus: 4 -%}
+  {%- assign ra = ii | times: 7 -%}{%- assign rb = i | times: 13 -%}
+  {%- assign rr = ra | plus: rb | modulo: 23 | minus: 11 -%}
   {%- assign sraw = i | times: 29 | modulo: 50 -%}
   {%- assign sval = sraw | plus: 80 | divided_by: 100.0 -%}
   {%- assign cmod = i | modulo: 9 -%}

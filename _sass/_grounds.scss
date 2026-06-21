@@ -284,6 +284,11 @@ footer .ft-word svg{display:block;width:100%;height:auto}
 // §4.3 on Oats: Sambas ink for the tagline (was Oats for the old Grass bg).
 footer .tagline{font-family:var(--f-slab);font-style:italic;font-weight:700;
   font-size:clamp(1.5rem,3.4vw,2.3rem);color:var(--ink);max-width:13ch;margin:.8rem 0 0;line-height:1.05}
+// "Made with reverence · YEAR" — a quiet typeset credit. (Was a .stamp ink-ring,
+// which is built for SHORT caps like CANON; stretched around a long phrase the
+// baked ring border-image looked broken. Plain muted mono reads as intentional.)
+footer .footer-credit{display:inline-block;font-family:var(--f-mono);font-size:.7rem;
+  letter-spacing:.05em;text-transform:uppercase;color:var(--ink);opacity:.6;margin-top:.5rem}
 // links are no longer a system-underlined CSS list (a stock chrome footer tell):
 // each is a small TORN PAPER CHIP — alternating Lazuli / Colorado baked stock
 // with a two-zone torn rim — scattered (wrap), hand-tilted, so the colophon reads

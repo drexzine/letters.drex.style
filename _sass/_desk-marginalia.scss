@@ -68,6 +68,14 @@
 // mirror the m-mark ink rule: stroke follows the .m-{color} class's --m-ink.
 .dm svg [stroke] { stroke: var(--m-ink); }
 
+// DESATURATED inks — faded grey-leaning marker ghosts, not full-chroma stickers.
+// (The desk was just cleaned; saturated doodles read as scribble-noise. It's
+// animated, so low chroma still reads.) Override the m-{color} --m-ink per cell.
+.desk-marg .m-grass  { --m-ink:#7e978a; }   // muted sage
+.desk-marg .m-lazuli { --m-ink:#7f93a1; }   // muted slate-blue
+.desk-marg .m-coral  { --m-ink:#b08e88; }   // muted clay
+.desk-marg .m-ink    { --m-ink:#857f76; }   // warm grey
+
 // ===================================================================
 // REDUCED MOTION — freeze the boil (the global _whimsy.scss *{animation:none}
 // already covers this; mirrored here for clarity). The static rough field

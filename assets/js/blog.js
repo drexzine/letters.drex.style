@@ -490,13 +490,19 @@ window.__DREX_BLOG_SRC__ = (document.currentScript && document.currentScript.src
     var armed = false, dragging = false, moved = false, raf = 0, pid = null;
     var startX = 0, startY = 0, originX = 0, originY = 0;
     var curX = 0, curY = 0, tgtX = 0, tgtY = 0;
-    var lastMoveX = 0, lastT = 0, dragRot = 0;
+    var lastMoveX = 0, lastT = 0, dragRot = 0, dragBase = "", baseCaptured = false;
     var settleRaf = 0;
     var canLean = !reduceMQ.matches;
 
     function write() {
       if (moveVia === "translate") {
-        el.style.translate = curX.toFixed(1) + "px " + curY.toFixed(1) + "px";
+        // Move via inline TRANSFORM, composed OVER the resting transform (dragBase,
+        // captured at grab) so the card KEEPS its tilt instead of snapping flat. The
+        // drag translate is outermost = pure screen-space motion, so the rect moves by
+        // exactly the drag delta (no un-rotation jump that fought the drag before).
+        // Inline + !important + animation cancelled = beats every competing rule.
+        el.style.setProperty("transform",
+          "translate(" + curX.toFixed(1) + "px," + curY.toFixed(1) + "px)" + dragBase, "important");
       } else {
         el.style.setProperty("--drag-x", curX.toFixed(1) + "px");
         el.style.setProperty("--drag-y", curY.toFixed(1) + "px");
@@ -532,14 +538,24 @@ window.__DREX_BLOG_SRC__ = (document.currentScript && document.currentScript.src
         if (Math.abs(dx) + Math.abs(dy) < 6) return;   // below threshold = click, not drag
         dragging = true; moved = true; el.classList.add("is-dragging");
         try { el.setPointerCapture(pid); } catch (e) {}
-        // CRITICAL: the slam/reveal ENTRANCE animations animate the `translate`
-        // (and `scale`) LONGHANDS with `both` fill, and a filled CSS animation
-        // OVERRIDES inline styles — so el.style.translate set by the drag was
-        // computing to 0 and the object never moved. The entrance has already
-        // played by drag time, so cancel the animation here to free the longhand
-        // (resting rotate lives on `transform`, untouched). This is what actually
-        // makes loose scraps / the polaroid pick up and move.
+        // CRITICAL: cancel the entrance animation (slam/reveal animate the translate/
+        // scale longhands with `both` fill, which override inline styles) AND any
+        // transition, then for the inline-transform move path capture the element's
+        // current resting transform as the base. Writing inline `transform` then
+        // wins over every stylesheet transform (seeded tilt, :hover, nth-child) and
+        // the cancelled animation — so the card actually tracks the pointer.
         el.style.animation = "none";
+        el.style.transition = "none";
+        if (moveVia === "translate" && !baseCaptured) {
+          // snapshot the resting transform (tilt) ONCE, on the first grab — before any
+          // inline drag transform exists. Capturing every grab would re-read the
+          // already-translated value and double-count on the second drag. tgtX/tgtY
+          // accumulate the absolute offset; dragBase stays the constant resting tilt.
+          baseCaptured = true;
+          var cm = "";
+          try { cm = getComputedStyle(el).transform; } catch (e) {}
+          dragBase = (cm && cm !== "none") ? (" " + cm) : "";
+        }
         // clear any stray selection born in the sub-6px window (one shot).
         try { if (window.getSelection) getSelection().removeAllRanges(); } catch (e) {}
         // kill the hover-tilt lean so the object doesn't wobble WHILE it drags
@@ -657,10 +673,13 @@ window.__DREX_BLOG_SRC__ = (document.currentScript && document.currentScript.src
     var toys = doc.querySelectorAll(".board-litter .litter");
     for (var i = 0; i < toys.length; i++) makeDraggable(toys[i], null, false);
 
-    // 2) home CLIPPINGS — grip-only (pin/tape/grip), link, translate (unchanged).
+    // 2) home CLIPPINGS — the actual "pieces of paper". Drag from ANYWHERE on the
+    // card body (not just the pin/tape — that tiny grip made them feel undraggable).
+    // isLink=true: the 6px click-vs-drag threshold means a real drag moves the card
+    // and suppresses navigation, while a plain tap still follows the link.
     var clips = doc.querySelectorAll(".board-pile .clip");
     for (var j = 0; j < clips.length; j++) {
-      makeDraggable(clips[j], ".pin, .tape, .clip-grip", true);
+      makeDraggable(clips[j], null, true);
     }
 
     // 3) in-prose reading objects — band grip + transform-var movement + persist.
