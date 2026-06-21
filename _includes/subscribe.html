@@ -1,0 +1,28 @@
+{%- comment -%}
+  subscribe.html — a Kit inline form re-skinned as a hand-filled REPLY CARD (on-theme for a
+  correspondence blog: you mail a reply card back). The card chrome — taped cream stock, a
+  Patrick-Hand kicker, a Courier-Prime-italic title, the dek — is OURS; the email / name /
+  extra field + submit come from Kit's INLINE embed and are restyled in _subscribe.scss so the
+  whole thing reads as one object. Kit keeps all the plumbing (double opt-in, validation, spam,
+  success state). Two forms exist; pass the uid + copy.
+  API: {% include subscribe.html uid="f0604c333e" accent="grass" kicker="the list is the home"
+        title="Get the next letter." dek="..." %}
+       uid    — REQUIRED Kit form uid.
+       accent — grass (join, default) | coral | lazuli | bus — tape + stamp-button colour.
+       kicker/title/dek — the card copy.
+{%- endcomment -%}
+{%- assign accent = include.accent | default: 'grass' -%}
+<aside class="subscribe-card replycard piece slam subscribe--{{ accent }}" data-mat="oats" data-edge="torn">
+  {%- if accent == 'coral' %}{%- assign tv = 'c' -%}{%- elsif accent == 'lazuli' %}{%- assign tv = 'b' -%}{%- else %}{%- assign tv = '' -%}{%- endif -%}
+  <span class="tape {{ tv }}" aria-hidden="true"></span>
+  <div class="replycard-body">
+    {%- if include.kicker %}<span class="replycard-kicker scrawl">{{ include.kicker }}</span>{%- endif %}
+    {%- if include.title %}<h2 class="replycard-title slab">{{ include.title }}</h2>{%- endif %}
+    {%- if include.dek %}<p class="replycard-dek">{{ include.dek }}</p>{%- endif %}
+    <div class="kit-embed">
+      <script async data-uid="{{ include.uid }}" src="https://drex-2.kit.com/{{ include.uid }}/index.js"></script>
+      <noscript><p class="replycard-noscript">Enable JavaScript, or write to
+        <a href="mailto:hi@drex.style">hi@drex.style</a>, to subscribe.</p></noscript>
+    </div>
+  </div>
+</aside>

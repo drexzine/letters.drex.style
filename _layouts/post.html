@@ -151,20 +151,14 @@ layout: default
       </div>
       {% endif %}
 
-      {%- comment -%} subscribe CTA = a stamped key on a Lazuli washi-taped slip —
-        a heavy taped scrap, so it SLAMS down (its tape slaps on after). {%- endcomment -%}
-      <aside class="subscribe clip clip--lazuli piece slam" data-mat="lazuli" data-edge="torn">
-        <span class="tape" data-tape="oats" aria-hidden="true"></span>
-        <div class="subscribe-body">
-          <span class="clip-kicker">the list is the home</span>
-          <h2 class="subscribe-title slab">Get the <span class="hl draw g">next letter</span>.</h2>
-          <p class="subscribe-dek">The correspondence is a list-first practice. Join the
-            Circle and the next essay arrives where you actually read.</p>
-          <a class="subscribe-key" href="https://letters.drex.style/">
-            Join the list <span class="arr" aria-hidden="true">&rarr;</span>
-          </a>
-        </div>
-      </aside>
+      {%- comment -%} subscribe CTA = the Kit "join the open Circle" form, re-skinned as a
+        hand-filled reply card (see _includes/subscribe.html + _sass/_subscribe.scss). {%- endcomment -%}
+      {% include subscribe.html
+         uid="f0604c333e"
+         accent="grass"
+         kicker="the list is the home"
+         title="Get the next letter."
+         dek="The correspondence is a list-first practice. Pull up a chair and the next essay arrives where you actually read." %}
 
       <nav class="post-nav reveal" aria-label="More essays">
         {% if page.previous %}

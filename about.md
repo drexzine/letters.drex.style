@@ -31,8 +31,27 @@ Tell me: [hi@drex.style](mailto:hi@drex.style).
 ## How to read it
 
 Newest letters sit on [the newsstand](/). If you'd rather they come to you — and you would,
-the list is the home of this whole practice — [join the Circle](https://letters.drex.style/)
-or subscribe to the [feed](/feed.xml).
+the list is the home of this whole practice — pull up a chair below, or subscribe to the
+[feed](/feed.xml).
+
+{% include subscribe.html
+   uid="f0604c333e"
+   accent="grass"
+   kicker="the open invite"
+   title="Join a Drex Circle."
+   dek="An open invite to the practice. Leave your name and the next letter — and the next open Circle — comes to you." %}
+
+## Already running a practice?
+
+If you gather a community around a craft and want the Drex way inside it, invite me in. I'll
+help you run a Circle for the people you already have.
+
+{% include subscribe.html
+   uid="303c1aa9b2"
+   accent="coral"
+   kicker="bring Drex to your people"
+   title="Invite me to help."
+   dek="Tell me about your community's practice and I'll help you start a Circle inside it." %}
 
 You belong here because you showed up. That's enough.
 
