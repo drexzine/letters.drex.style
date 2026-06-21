@@ -532,6 +532,14 @@ window.__DREX_BLOG_SRC__ = (document.currentScript && document.currentScript.src
         if (Math.abs(dx) + Math.abs(dy) < 6) return;   // below threshold = click, not drag
         dragging = true; moved = true; el.classList.add("is-dragging");
         try { el.setPointerCapture(pid); } catch (e) {}
+        // CRITICAL: the slam/reveal ENTRANCE animations animate the `translate`
+        // (and `scale`) LONGHANDS with `both` fill, and a filled CSS animation
+        // OVERRIDES inline styles — so el.style.translate set by the drag was
+        // computing to 0 and the object never moved. The entrance has already
+        // played by drag time, so cancel the animation here to free the longhand
+        // (resting rotate lives on `transform`, untouched). This is what actually
+        // makes loose scraps / the polaroid pick up and move.
+        el.style.animation = "none";
         // clear any stray selection born in the sub-6px window (one shot).
         try { if (window.getSelection) getSelection().removeAllRanges(); } catch (e) {}
         // kill the hover-tilt lean so the object doesn't wobble WHILE it drags
