@@ -524,6 +524,7 @@ window.__DREX_BLOG_SRC__ = (document.currentScript && document.currentScript.src
 
     el.addEventListener("pointerdown", function (ev) {
       if (ev.button && ev.button !== 0) return;
+      if (ev.pointerType === "touch") return;          // touch scrolls/taps/selects — never drags
       if (gripTest && !gripTest(ev, el)) return;       // grip arbiter (selector or band)
       armed = true; moved = false; pid = ev.pointerId;
       startX = ev.clientX; startY = ev.clientY; originX = tgtX; originY = tgtY;
@@ -660,61 +661,38 @@ window.__DREX_BLOG_SRC__ = (document.currentScript && document.currentScript.src
   }
 
   function initDrag() {
-    // NOTE: not gated on reduced-motion — dragging is user-initiated DIRECT manipulation
-    // (a11y guidance reserves reduced-motion for decorative/autonomous motion). The
-    // decorative beats (velocity lean + settle wobble) ARE gated off under reduced motion
-    // inside makeDraggable; objects just track the pointer and stay.
-
-    // FAIL-OPEN: arm the drag layer only now (mirrors js-anim) so no-JS never gets
-    // the injected .drag-grip and selection stays normal everywhere without JS.
+    // ONE consistent drag model for EVERY paper object. Every draggable (home litter
+    // paper, clippings, AND in-prose scraps) free-drags from anywhere via the SAME
+    // inline-transform move and shows the SAME affordance — no object behaves
+    // differently from any other. TOUCH input is bailed inside makeDraggable
+    // (pointerType==="touch") so phones scroll / tap-to-open / select normally; only
+    // mouse/pen drag. No touch-action traps. This is the consistency fix.
     root.classList.add("js-drag");
 
-    // 1) loose desk TOYS — free drag via the translate longhand (no conflict).
-    var toys = doc.querySelectorAll(".board-litter .litter");
-    for (var i = 0; i < toys.length; i++) makeDraggable(toys[i], null, false);
-
-    // 2) home CLIPPINGS — the actual "pieces of paper". Drag from ANYWHERE on the
-    // card body (not just the pin/tape — that tiny grip made them feel undraggable).
-    // isLink=true: the 6px click-vs-drag threshold means a real drag moves the card
-    // and suppresses navigation, while a plain tap still follows the link.
-    var clips = doc.querySelectorAll(".board-pile .clip");
-    for (var j = 0; j < clips.length; j++) {
-      makeDraggable(clips[j], null, true);
-    }
-
-    // 3) in-prose reading objects — band grip + transform-var movement + persist.
-    var objs = doc.querySelectorAll(
+    var draggables = [].slice.call(doc.querySelectorAll(
+      ".board-litter .litter--photo, .board-litter .litter--slip, " +
+      ".board-litter .litter--ticket, .board-litter .litter--quote, " +
+      ".board-litter .litter--byline, .board-pile .clip, " +
       ".prose .pullquote, .prose .callout, .prose .definition, .prose .figure.polaroid"
-    );
-    var seen = {};
-    for (var k = 0; k < objs.length; k++) {
-      var el = objs[k];
-      // inject the transparent grip overlay (border-band = touch-action:none).
-      var grip = doc.createElement("span");
-      grip.className = "drag-grip"; grip.setAttribute("aria-hidden", "true");
-      var hole = doc.createElement("span");
-      hole.className = "drag-grip-hole";
-      grip.appendChild(hole);
-      el.appendChild(grip);
-      // stable id: data-desk-id + an occurrence index so duplicates stay distinct.
-      var base = el.getAttribute("data-desk-id") ||
-        (el.tagName.toLowerCase() + "-" + k);
-      seen[base] = (seen[base] || 0) + 1;
-      var id = base + "-" + seen[base];
-      makeDraggable(el, { gripTest: gripBand, isLink: false, moveVia: "transform-var", deskId: id });
-      el.__deskFullId = id;
+    ));
+    for (var i = 0; i < draggables.length; i++) {
+      var el = draggables[i];
+      // home clippings are links — isLink suppresses navigation on a real drag, while
+      // a plain click still opens the post. Everything else is a plain scrap.
+      var isLink = !!(el.classList && el.classList.contains("clip"));
+      makeDraggable(el, null, isLink);
     }
 
-    // 4) "reset desk" kraft tabs (real <button data-no-drag>) — clear + home.
+    // "RESET THE DESK" — one gesture, every page: snap every object home by clearing
+    // its inline drag transform so the CSS resting tilt returns.
     var resets = doc.querySelectorAll("[data-desk-reset]");
     for (var r = 0; r < resets.length; r++) {
       resets[r].addEventListener("click", function () {
-        var ids = [];
-        for (var m = 0; m < objs.length; m++) {
-          if (objs[m].__deskReset) objs[m].__deskReset();
-          if (objs[m].__deskFullId) ids.push(objs[m].__deskFullId);
+        for (var m = 0; m < draggables.length; m++) {
+          draggables[m].style.transform = "";
+          draggables[m].style.transition = "";
+          draggables[m].style.animation = "";
         }
-        deskClear(ids);
         Foley.drop();
       });
     }

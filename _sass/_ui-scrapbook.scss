@@ -92,31 +92,43 @@ html.baked .post-tag:nth-of-type(3n+3){background-color:var(--grass)!important;
 }
 
 // ---- HANDLE-DRAG affordances (blog.js makeDraggable) ----
-// Loose desk toys drag from anywhere; clippings drag only by their pin/tape GRIP so the
-// link + text selection survive. touch-action:none ONLY on the draggable surfaces/grips
-// (so the rest of a card still scrolls on touch). Lifted while dragging; stays where dropped.
-:root{ --grip-band:14px; }   // the torn-rim width — the bare band you can grab from
+// ONE consistent model: EVERY paper object — home litter paper, clippings, AND the
+// in-prose scraps — free-drags from anywhere and shows the SAME affordance. Drag is a
+// desktop (pointer:fine) feature; on touch nothing binds, so reading/scroll/tap/select
+// stay normal (no touch-action traps). Lifted while dragging; stays where dropped.
+@media (hover:hover) and (pointer:fine){
+  // grab cursor on every draggable, and the SAME warm grass edge-GLOW on hover — the
+  // single "yes, pick me up" cue (alpha-following drop-shadow, never a rectangular halo).
+  .board-litter .litter--photo,
+  .board-litter .litter--slip,
+  .board-litter .litter--ticket,
+  .board-litter .litter--quote,
+  .board-litter .litter--byline,
+  .board-pile .clip,
+  .prose .pullquote,
+  .prose .callout,
+  .prose .definition,
+  .prose .figure.polaroid{ cursor:grab; }
 
-@media (hover:hover){
-  // draggable desk paper ANNOUNCES itself: grab cursor + a soft warm edge GLOW on
-  // hover so you can see what's pickable. drop-shadow follows the torn alpha
-  // silhouette (never a rectangular halo); the brand-grass kiss reads as "live".
-  .board-litter .litter,
-  .board-pile .clip{cursor:grab}
   .board-litter .litter--photo:hover,
   .board-litter .litter--slip:hover,
   .board-litter .litter--ticket:hover,
   .board-litter .litter--quote:hover,
   .board-litter .litter--byline:hover,
-  .board-pile .clip:hover{
+  .board-pile .clip:hover,
+  .prose .pullquote:hover,
+  .prose .callout:hover,
+  .prose .definition:hover,
+  .prose .figure.polaroid:hover{
     filter:drop-shadow(0 1px 2px rgba(var(--sh-seam),.30))
            drop-shadow(0 0 .5rem rgba(28,171,91,.36));
   }
+  // while dragging — identical for every object: grabbing cursor, lifted, deeper cast.
+  .is-dragging{
+    cursor:grabbing!important; z-index:80!important;
+    filter:drop-shadow(3px 8px 12px rgba(20,16,12,.24))!important;
+  }
 }
-.board-litter .litter{touch-action:none}
-.board-pile .clip .pin, .board-pile .clip > .tape{touch-action:none}
-.board-litter .litter.is-dragging, .board-pile .clip.is-dragging{cursor:grabbing; z-index:80!important}
-.board-pile .clip.is-dragging{filter:drop-shadow(3px 8px 10px rgba(20,16,12,.22))}
 
 // pin/tape never start a text range when they initiate a drag.
 .pin, .tape{ user-select:none; -webkit-user-select:none; }
