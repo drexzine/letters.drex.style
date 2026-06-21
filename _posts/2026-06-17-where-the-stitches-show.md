@@ -22,8 +22,8 @@ Here is the part that matters for us. <span class="m-underline m-coral">They did
 {% include m-mark.html type="exclaim" color="coral" side="right" %}
 
 Why? Because the visible part isn't decoration. <span class="m-scribble m-lazuli">It's evidence.</span> Each constellation of stitches says: *this cloth was worth keeping. Someone sat with it in winter. This garment has been carried inside the <span class="m-circle m-grass">practice of a life</span>.* The wear is not shameful. <span class="m-hl m-happy">The wear is the proof that the thing was used, loved, lived in</span> — and the repair is the proof that it was kept.
-{% include m-note.html text="not decoration → evidence. the load-bearing word." color="lazuli" side="right" %}
-{% include m-mark.html type="arrow" color="grass" side="left" %}
+{% include m-note.html text="not decoration → evidence. the load-bearing word." color="lazuli" side="left" %}
+{% include m-mark.html type="arrow" color="grass" side="right" %}
 
 {% include pullquote.html text="The mend is not what went wrong with the garment. The mend is the evidence that someone refused to let it go." attrib="On sashiko, and on us" %}
 {% include m-mark.html type="star" color="coral" side="left" %}

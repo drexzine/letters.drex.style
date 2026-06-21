@@ -24,8 +24,8 @@
 {%- if kind == "note" -%}{%- assign tapecls = "tape b" -%}
 {%- elsif kind == "warning" -%}{%- assign tapecls = "tape c" -%}
 {%- else -%}{%- assign tapecls = "tape" -%}{%- endif -%}
-<aside class="callout callout--{{ kind }} slam" role="note">
+<aside class="callout callout--{{ kind }} slam" role="note" data-desk-id="callout-{{ kind }}">
   <span class="{{ tapecls }}" aria-hidden="true"></span>
-  <span class="callout-label">{{ label }}</span>
-  <div class="callout-body">{{ include.body | markdownify }}</div>
+  <span class="callout-label" data-text>{{ label }}</span>
+  <div class="callout-body" data-text>{{ include.body | markdownify }}</div>
 </aside>

@@ -1,0 +1,102 @@
+// ===================================================================
+// _desk-marginalia.scss — THE FADED SQUIGGLEVISION DOODLE FIELD.
+//
+// A sparse field of brand-ink doodles drawn into the bare Oats desk BEHIND the
+// reading sheet: marker GHOSTS, never stickers. Emitted by
+// _includes/desk-marginalia.html as ONE wrapper (.desk-marg) holding ~12 cells
+// (.dm) in the OUTER THIRDS of the desk (never the central reading band).
+//
+// THE SINGLE-PASS BOIL (grafted from the wrapper-boil idea): the WRAPPER carries
+// the squiggle filter AND the boil animation. Every glyph inherits the wobble
+// from that one parent displacement pass → ONE feDisplacementMap rasterization
+// for the whole field per ~0.47s frame, regardless of doodle count. Children
+// carry NO filter and NO animation. This is what makes "tons" genuinely cheap.
+//
+// Duration is HARD-CODED (1.4s), NOT var(--boil-paper): an undefined var with
+// no fallback makes an animation inert, and those vars historically shipped
+// undefined (now fixed in _tokens.scss, but this layer stays independent of
+// body.marker-boil and of those vars on purpose — a kit-local cadence).
+//
+// LEGIBILITY is STRUCTURAL: wrapper z:0 sits below the opaque cream
+// .prose/.sheet-leaf (z:1), which paints fully over any doodle under the column.
+// Plus margin-only placement + opacity:.16. pointer-events:none preserves drag,
+// desk-reset, burger nav, and text selection. aria-hidden.
+//
+// Imported AFTER marginalia (reuses $m-inks/--m-ink + the #rough* filters) and
+// BEFORE mobile/ui-scrapbook so the mobile overrides still win the cascade.
+// ===================================================================
+
+.desk-marg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;                 // same plane as .board-litter--post; BELOW z:1 reading sheets
+  pointer-events: none;       // never blocks drag / desk-reset / text selection
+  overflow: clip;             // a doodle near the edge can never push a scrollbar
+  contain: layout paint style;// isolate the wrapper's paint/layout from the page
+  isolation: isolate;         // own stacking + blend context (multiply stays local)
+  opacity: .30;               // faded marker-ghost — present on the bare desk, not a sticker
+
+  // ONE filter pass for the WHOLE field, redrawn by a slightly different hand
+  // each step (seed-swap), ~0.7fps effective. Calm breathing, not shimmer.
+  filter: url(#roughsm);
+  animation: dm-boil 1.4s step-end infinite;
+}
+
+// seed-swap family (identical to the shipped boil-roughsm), kit-local name so it
+// is independent of body.marker-boil — this field boils on its own.
+@keyframes dm-boil {
+  0%   { filter: url(#roughsm);  }
+  33%  { filter: url(#roughsm2); }
+  66%  { filter: url(#roughsm3); }
+}
+
+.dm {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  transform: rotate(var(--r, -4deg)) scale(var(--s, 1));
+  mix-blend-mode: multiply;   // each stroke tints toward the Oats desk (ghost, not sticker)
+  // NO filter / NO animation here — the wobble is inherited from the wrapper pass.
+}
+
+.dm svg {
+  display: block;
+  width: 2.6em;
+  height: 2.6em;
+  overflow: visible;
+}
+// mirror the m-mark ink rule: stroke follows the .m-{color} class's --m-ink.
+.dm svg [stroke] { stroke: var(--m-ink); }
+
+// ===================================================================
+// REDUCED MOTION — freeze the boil (the global _whimsy.scss *{animation:none}
+// already covers this; mirrored here for clarity). The static rough field
+// remains: filter stays, so the strokes are still wobbly — just no redraw cycle.
+// ===================================================================
+@media (prefers-reduced-motion: reduce) {
+  .desk-marg { animation: none !important; }
+}
+
+// ===================================================================
+// LITE TIER (FPS governor) — drop the live filter (the paint cost) and the
+// boil. Clean faded brand strokes remain, still on-brand and legible.
+// ===================================================================
+html[data-tier="lite"] .desk-marg {
+  filter: none !important;
+  animation: none !important;
+}
+
+// ===================================================================
+// MOBILE (≤900px) — REDUCE, don't reflow. Kill the displacement cost on phones
+// (static clean strokes), drop opacity further, and hide the near-column cells
+// so the single-column measure stays uncluttered. overflow:clip + absolute
+// positioning guarantee no horizontal scrollbar at 360–414px.
+// ===================================================================
+@media (max-width: 900px) {
+  .desk-marg {
+    opacity: .18;
+    filter: none;
+    animation: none;
+  }
+  .desk-marg .dm--inner { display: none; }
+}

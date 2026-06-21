@@ -4,8 +4,8 @@
   (the canon's definition-block as a real card).
   API:  {% include definition.html term="Hub correspondent" body="..." %}
 {%- endcomment -%}
-<aside class="definition reveal" role="note">
+<aside class="definition reveal" role="note" data-desk-id="definition">
   <span class="definition-label">Definition</span>
-  <h3 class="definition-term">{{ include.term }}</h3>
-  <div class="definition-body">{{ include.body | markdownify }}</div>
+  <h3 class="definition-term" data-text>{{ include.term }}</h3>
+  <div class="definition-body" data-text>{{ include.body | markdownify }}</div>
 </aside>

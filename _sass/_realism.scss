@@ -58,8 +58,13 @@ html.baked body{
   border-image-repeat:round;       // only the thin 14px torn rim tiles now (varied, not a grid)
   border-image-width:14px;
   border-radius:0;                 // torn rim supplies the silhouette
-  filter:none;                     // kill the old SVG #torn boil — sprite owns the edge
-  box-shadow:var(--sh-contact), var(--sh-ambient);
+  // ALPHA-FOLLOWING CAST: drop-shadow rasterises against the torn border-image
+  // alpha, so the cast hugs the ragged teeth instead of ghosting a rectangle
+  // (box-shadow is always the border-box). Same warm-umber tints as the old
+  // --sh-contact/--sh-ambient. (Also replaces the legacy filter:none that only
+  // existed to kill the old SVG #torn boil — the baked sprite already owns that.)
+  filter:var(--df-contact) var(--df-ambient);
+  box-shadow:none;
 }
 
 html.baked .scrap{
@@ -81,7 +86,7 @@ html.baked .scrap.kraft { @include scrap-face(--bk-piece-kraft,  --bk-edge-kraft
 html.baked [data-mat="sambas"]{ position:relative; }
 html.baked [data-mat="sambas"] > .stitch,
 html.baked [data-mat="sambas"]::after{
-  content:""; position:absolute; inset:10px; z-index:1; pointer-events:none; border-radius:2px;
+  content:""; position:absolute; inset:16px; z-index:1; pointer-events:none; border-radius:0;
   background:
     repeating-linear-gradient(90deg, var(--oats) 0 7px, transparent 7px 13px) top    / 100% 1.6px no-repeat,
     repeating-linear-gradient(90deg, var(--oats) 0 7px, transparent 7px 13px) bottom / 100% 1.6px no-repeat,
@@ -116,8 +121,10 @@ html.baked .paper>.sheet{
   border-image-slice:var(--bk-edge-oats-slice,38);
   border-image-repeat:round; border-image-width:16px;
   border-radius:0;
-  filter:none;                                   // sprite edge replaces #torn
-  box-shadow:var(--sh-lift);                     // heavy sheet sits up off the desk
+  // heavy sheet sits up off the desk — alpha-following so the lift hugs the torn
+  // rim instead of casting a rectangle past the teeth.
+  filter:var(--df-lift);
+  box-shadow:none;
   animation:none;                                // no boil; baked edge is the truth
 }
 html.baked .paper>.sheet.ruled{
@@ -205,8 +212,9 @@ html.baked .btn:hover{ transform:rotate(0) translateY(-2px); box-shadow:var(--sh
 html.baked .btn:active{ transform:translateY(2px) rotate(0); box-shadow:var(--sh-contact); }
 
 // ---------- BUTTERY HOVER LIFT on splayed scraps (shadow grows) ----------
-html.baked .splay>*>.sheet{ transition:box-shadow var(--t-trans) var(--ease-settle); }
-html.baked .splay>*:hover>.sheet{ box-shadow:var(--sh-hover); }
+// .sheet carries the torn border-image rim, so the cast follows the alpha.
+html.baked .splay>*>.sheet{ transition:filter var(--t-trans) var(--ease-settle); }
+html.baked .splay>*:hover>.sheet{ filter:var(--df-hover); box-shadow:none; }
 html.baked .polaroid{ transition:transform var(--t-trans) var(--ease-settle); }
 html.baked .polaroid:hover::before{ box-shadow:var(--sh-hover); }
 
@@ -232,6 +240,41 @@ html.baked body[data-motion="full"] .board-pile,
 html.baked body[data-motion="full"] .prose,
 html.baked body[data-motion="full"] .gallery{ perspective:1100px; }
 
+// ===================================================================
+// DRAG-SHUFFLE TRANSFORM CHAIN (BUG-1 + BUG-2 fix) — the in-prose reading
+// objects move via the --drag-x/--drag-y CUSTOM PROPS (NOT the `translate`
+// LONGHAND, which the slam/reveal entrance keyframes own), composed in ONE
+// transform chain so drag movement survives a slam/reveal re-run, the resting
+// --rest-rot, AND the live --tilt-* lean. CRUCIAL: this rule is NOT gated behind
+// @media(hover:hover), so the drag works on TOUCH too — the live tilt vars
+// (--tilt-x/--tilt-y, written only on hover devices) simply default to 0, so at
+// rest this chain reduces to rotate(--rest-rot) — pixel-identical to today on
+// BOTH pointer types. ONE winning transform declaration (no specificity duel):
+// the hover lean rides the SAME chain via the tilt vars, never a second rule.
+// Specificity (0,5,2)+ out-states the _post.scss `.prose .pullquote:nth-of-type`
+// resting `transform:rotate()` rules so movement composes over the seeded tilt.
+html.baked body[data-motion="full"] .prose .pullquote,
+html.baked body[data-motion="full"] .prose .callout,
+html.baked body[data-motion="full"] .prose .definition,
+html.baked body[data-motion="full"] .prose .figure.polaroid{
+  transform-style:preserve-3d;
+  transform:
+    translate3d(var(--drag-x,0px), var(--drag-y,0px), 0)
+    translateY(var(--lift-y,0px))
+    rotate(var(--rest-rot,0deg))
+    rotateX(var(--tilt-x,0deg))
+    rotateY(var(--tilt-y,0deg))
+    rotate(var(--drag-rot,0deg))
+    scale(var(--drag-scale,1));
+}
+// while a desk-reset animates an object home, transition the drag deltas.
+html.baked body[data-motion="full"] .prose .pullquote.is-homing,
+html.baked body[data-motion="full"] .prose .callout.is-homing,
+html.baked body[data-motion="full"] .prose .definition.is-homing,
+html.baked body[data-motion="full"] .prose .figure.polaroid.is-homing{
+  transition:transform var(--t-trans) var(--ease-settle);
+}
+
 @media (hover:hover){
   html.baked body[data-motion="full"] .scrap,
   html.baked body[data-motion="full"] .polaroid,
@@ -253,8 +296,19 @@ html.baked body[data-motion="full"] .gallery{ perspective:1100px; }
   html.baked body[data-motion="full"] .clip:focus-within{
     --lift-y:-6px;
     transition:transform var(--t-trans) var(--ease-settle),
-               box-shadow var(--t-trans) ease;
+               box-shadow var(--t-trans) ease,
+               filter var(--t-trans) ease;
+  }
+  // rectangular cards keep the box-shadow cast (correct for a square silhouette)
+  html.baked body[data-motion="full"] .polaroid:hover,
+  html.baked body[data-motion="full"] .pullquote:hover{
     box-shadow:var(--sh-hover);
+  }
+  // torn-silhouette scrap/clip: cast follows the alpha (no rectangular halo)
+  html.baked body[data-motion="full"] .scrap:hover,
+  html.baked body[data-motion="full"] .clip:hover,
+  html.baked body[data-motion="full"] .clip:focus-within{
+    filter:var(--df-hover); box-shadow:none;
   }
 }
 // --rest-rot mirrors the authored seeded resting angles so the composed transform

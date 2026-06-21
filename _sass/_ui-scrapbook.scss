@@ -61,14 +61,19 @@ html.baked .post-tag{background-image:none!important}   // flat vinyl, not paper
   .kit-embed .formkit-submit::after{transition:none}
 }
 @media (max-width:520px){
-  .post-tag{transform:none}
+  // flatten the sticker tilt AND give the tags a proper >=44px touch target on
+  // phones (they were ~33px tall): taller vertical padding + inline-flex centring.
+  .post-tag,
   .post-tag:nth-of-type(3n+1),.post-tag:nth-of-type(3n+2),.post-tag:nth-of-type(3n+3){transform:none}
+  .post-tag{display:inline-flex; align-items:center; min-height:44px; padding:.5em 1em}
 }
 
 // ---- HANDLE-DRAG affordances (blog.js makeDraggable) ----
 // Loose desk toys drag from anywhere; clippings drag only by their pin/tape GRIP so the
 // link + text selection survive. touch-action:none ONLY on the draggable surfaces/grips
 // (so the rest of a card still scrolls on touch). Lifted while dragging; stays where dropped.
+:root{ --grip-band:14px; }   // the torn-rim width — the bare band you can grab from
+
 @media (hover:hover){
   .board-litter .litter{cursor:grab}
   .board-pile .clip .pin, .board-pile .clip > .tape{cursor:grab}
@@ -77,3 +82,87 @@ html.baked .post-tag{background-image:none!important}   // flat vinyl, not paper
 .board-pile .clip .pin, .board-pile .clip > .tape{touch-action:none}
 .board-litter .litter.is-dragging, .board-pile .clip.is-dragging{cursor:grabbing; z-index:80!important}
 .board-pile .clip.is-dragging{filter:drop-shadow(3px 8px 10px rgba(20,16,12,.22))}
+
+// pin/tape never start a text range when they initiate a drag.
+.pin, .tape{ user-select:none; -webkit-user-select:none; }
+
+// ---- "RESET THE DESK" kraft tab — a real, keyboard-reachable <button> that
+// clears persisted card positions and slides the reading furniture home.
+// data-no-drag keeps it off the shuffle path; kraft palette, no #000/#fff. ----
+.desk-reset{
+  display:inline-block; margin:1.4rem auto 0;
+  font-family:var(--f-mono); font-size:.72rem; letter-spacing:.06em; text-transform:uppercase;
+  color:var(--bus-ink); background:var(--schoolbus);
+  border:0; border-radius:3px 5px 4px 6px;
+  padding:.5em 1em; cursor:pointer;
+  box-shadow:var(--sh-contact);
+  transform:rotate(-1.2deg);
+  transition:transform var(--t-micro) var(--ease-settle), box-shadow var(--t-micro) ease, filter var(--t-micro) ease;
+}
+// baked: a real torn KRAFT tab (face + two-zone torn rim + alpha-following cast),
+// the same die-cut vocabulary as the masthead tabs / footer chips — so RESET THE
+// DESK reads as a hand-cut kraft control on the desk, not a rounded UI button.
+html.baked .desk-reset{
+  background-color:transparent; background-image:var(--bk-piece-kraft);
+  background-size:cover; background-position:center; background-clip:padding-box;
+  border-radius:0; border-style:solid; border-color:transparent;
+  border-width:11px; border-image-source:var(--bk-edge-kraft);
+  border-image-slice:var(--bk-edge-kraft-slice,var(--bk-edge-grass-slice,38)) fill;
+  border-image-width:11px; border-image-repeat:round;
+  padding:.4em .8em; box-shadow:none;
+  filter:drop-shadow(0 1px 1px rgba(var(--sh-seam),.40)) drop-shadow(0 3px 5px rgba(var(--sh-warm),.16));
+}
+// only show it once JS can actually arm the shuffle (otherwise nothing to reset).
+html:not(.js-drag) .desk-reset{ display:none; }
+.desk-reset:hover{ transform:rotate(0) translateY(-2px); box-shadow:var(--sh-hover); }
+.desk-reset:active{ transform:translateY(1px) rotate(0); box-shadow:var(--sh-contact); }
+// baked hover/active follow the torn alpha (the box-shadow would ghost a rect).
+html.baked .desk-reset:hover{ box-shadow:none;
+  filter:drop-shadow(0 4px 4px rgba(var(--sh-seam),.26)) drop-shadow(0 10px 16px rgba(var(--sh-warm),.14)); }
+html.baked .desk-reset:active{ box-shadow:none;
+  filter:drop-shadow(0 1px 1px rgba(var(--sh-seam),.40)) drop-shadow(0 2px 3px rgba(var(--sh-warm),.16)); }
+.desk-reset:focus-visible{ outline:3px solid var(--lazuli); outline-offset:3px; }
+@media (prefers-reduced-motion:reduce){
+  .desk-reset{ transition:none; }
+}
+
+// ---- IN-PROSE DRAG-SHUFFLE: the injected grip overlay + lift state ----
+// The grip is a REAL injected child (NOT a ::before/::after — those pseudos are
+// already load-bearing on .polaroid/.pq-text/.tape). It's a full-cover overlay
+// whose TRANSPARENT BORDER (= --grip-band) owns touch-action:none in the torn
+// band, while the inner .drag-grip-hole restores touch-action:auto over the text
+// — no fragile clip-path math. It is pointer-events:none (the JS geometric band
+// hit-test arms the drag); it exists only to scope touch-action to the band.
+// Injected by JS only after html.js-drag is set (fail-open: no-JS never gets it).
+.drag-grip{
+  position:absolute; inset:0; z-index:60;
+  box-sizing:border-box;
+  border:var(--grip-band) solid transparent;
+  pointer-events:none; touch-action:none;
+  user-select:none; -webkit-user-select:none;
+}
+.drag-grip-hole{
+  position:absolute; inset:0;
+  pointer-events:none; touch-action:auto;
+}
+// only show the grab cursor over the torn band on a real pointer device, and only
+// once the drag layer is armed (the band is where gripBand() accepts).
+@media (hover:hover){
+  html.js-drag body[data-motion="full"] .prose .pullquote,
+  html.js-drag body[data-motion="full"] .prose .callout,
+  html.js-drag body[data-motion="full"] .prose .definition,
+  html.js-drag body[data-motion="full"] .prose .figure.polaroid{ cursor:auto; }
+  html.js-drag .prose .pullquote > .drag-grip,
+  html.js-drag .prose .callout > .drag-grip,
+  html.js-drag .prose .definition > .drag-grip,
+  html.js-drag .prose .figure.polaroid > .drag-grip{ cursor:grab; }
+}
+// the lift state — grabbed objects rise + cast grows (alpha-following) + grab cursor.
+// --lift-y is read by the transform chain in _realism.scss (both pointer types).
+html.baked body[data-motion="full"] .prose .pullquote.is-dragging,
+html.baked body[data-motion="full"] .prose .callout.is-dragging,
+html.baked body[data-motion="full"] .prose .definition.is-dragging,
+html.baked body[data-motion="full"] .prose .figure.polaroid.is-dragging{
+  cursor:grabbing; z-index:80!important; --lift-y:-6px;
+  filter:var(--df-hover); box-shadow:none;
+}

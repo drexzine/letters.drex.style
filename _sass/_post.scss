@@ -163,6 +163,21 @@ html.baked .post-stage { background-color: transparent; }
 }
 .post-meta .sep { color: var(--grass); font-weight: 700; }
 
+/* STANDFIRST SCRAP — dek + meta seated on ONE cream paper slip so they don't
+   float as bare text on the noisy desk. .scrap supplies the baked Oats torn rim +
+   alpha-following cast; here is just the layout/inset + a hand-laid tilt. The dek's
+   own top margin collapses into the slip padding. */
+.post-standfirst {
+  display: inline-block;
+  max-width: min(46ch, 100%);
+  margin: clamp(1rem, 2.6vw, 1.5rem) 0 0;
+  padding: clamp(.9rem, 2.4vw, 1.3rem) clamp(1.1rem, 3vw, 1.6rem) clamp(1rem, 2.6vw, 1.4rem);
+  background-color: var(--paper);
+  transform: rotate(-0.7deg);
+}
+.post-standfirst .post-dek { margin-top: 0; }
+@media (min-width: 600px) { .post-standfirst { margin-left: clamp(1rem, 3vw, 2.4rem); } }
+
 /* ---------------------------------------------------------------------------
    2. PROSE — the SACRED reading SHEET (and legible column on it).
    The .prose box IS the cream paper sheet Chielo wrote on: real Oats tooth, a
@@ -250,13 +265,18 @@ html.baked .prose {
     radial-gradient(circle at 73% 86%, rgba(65,77,87,0.07) 0 0.6px, transparent 1.4px),
     radial-gradient(circle at 9% 54%,  rgba(65,77,87,0.06) 0 0.5px, transparent 1.2px),
     repeating-linear-gradient(0deg, transparent 0 27px, rgba(65, 77, 87, 0.04) 27px 28px),
-    var(--paper) var(--bk-piece-oats);
+    var(--paper);
+  /* FLAT --paper, not the tiled --bk-piece-oats cardstock tile: a 256px baked
+     tile repeated at 200px down a long essay painted a ~200px square quilt lattice
+     with per-cell vignette in blank stretches. This matches the deliberate flat
+     `.paper>.sheet` idiom (_realism.scss L113). The toner specks + soft ruling +
+     torn rim still carry the paper character with NO repeating sprite lattice. */
   background-repeat:
     no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, no-repeat,
-    repeat, repeat;
+    repeat;
   background-size:
     137px 149px, 121px 143px, 151px 131px, 129px 147px, 143px 127px, 119px 139px,
-    auto, 200px 200px;
+    auto;
   border-style:solid; border-width:16px; border-color:transparent;
   border-image-source:var(--bk-edge-oats);
   border-image-slice:var(--bk-edge-oats-slice,38);
@@ -305,6 +325,22 @@ html.baked .prose::before { content:none; } /* the baked torn edge owns the lip 
     2.2rem -2px,               /* paperclip outer loop, clamped over the top edge */
     2.2rem -2px;               /* paperclip inner loop (same anchor) */
   background-size: 44px 44px, 18px 18px, 22px 30px, 22px 30px;
+}
+/* MOBILE: the sheet runs ~full width, so the top-right coffee-ring (anchored at
+   18% down, 0.4rem from the right edge) lands OVER the prose column near the
+   opening line and reads as a faint ghost ring on the text. Lift it up into the
+   top deckle lip (above the first line) and shrink it so it punctuates the
+   margin without ever sitting over a word. The deckle-clamped paperclip + the
+   low-left pencil tick already live in the lip/edge, so they stay. */
+@media (max-width: 700px) {
+  .prose::after {
+    background-position:
+      calc(100% - 0.2rem) -10px,  /* coffee-ring lifted into the top-right lip */
+      0.9rem 90%,                 /* pencil-tick hugs the low-left edge */
+      1.6rem -4px,                /* paperclip outer loop on the top deckle */
+      1.6rem -4px;                /* paperclip inner loop */
+    background-size: 34px 34px, 16px 16px, 20px 28px, 20px 28px;
+  }
 }
 
 /* ---------------------------------------------------------------------------
@@ -426,7 +462,11 @@ html.baked .post-stage--desk { background-color: transparent; }
   letter-spacing: -0.015em;
   color: var(--ink);
   font-size: clamp(1.5rem, 4vw, var(--t-sub, 2rem));
-  margin: 2.1em 0 0.6em;
+  /* rem-based, not em-relative: 2.1em/0.6em resolved against the h2's own fluid
+     font-size, yielding a huge ~4.2rem top vs cramped ~1.2rem bottom (lopsided
+     header-to-header rhythm, and the marker underline crowded the first body
+     line). clamp ties the head rhythm to the same cadence the subscribe cards use. */
+  margin: clamp(2rem, 4vw, 2.6rem) 0 clamp(0.7rem, 1.6vw, 0.95rem);
   max-width: 22ch;
   /* same BAKED-INK look as .post-title — ink pressed into the paper tooth (seam
      bleed-gain + warm wicking halo), DISPLAY headlines only. The running Bitter
@@ -1197,6 +1237,15 @@ html.baked .patterns-splay .pattern {
 html.baked .patterns-splay .pattern:first-child {
   @include scrap-face(--bk-piece-grass, --bk-edge-grass, var(--bk-edge-grass-slice, 38));
   background-color: var(--grass); color: var(--oats);
+}
+/* AA: Oats-on-Grass is ~2.78:1 — below the floor for the .92rem body run. Deepen
+   the Grass field a few % UNDER the text (a soft multiply darkening, NOT a flat
+   block — reads as the stock in shadow under the print) so the Oats eyebrow/head/
+   body clear comfortable contrast on the green weave. Sits behind the content
+   (.pattern > * is z-index:1). Same device as .clip--grass .clip-body::before. */
+.patterns-splay .pattern:first-child::before {
+  content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background: rgba(11, 77, 49, 0.20); mix-blend-mode: multiply;
 }
 .patterns-splay .pattern > * { position: relative; z-index: 1; }
 /* the pin holding each scrap (small steel-orb pin, alternating tints).

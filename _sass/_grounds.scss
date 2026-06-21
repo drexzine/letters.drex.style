@@ -46,21 +46,27 @@ body{
 // fixed below) move as ONE — no horizontal band where a scrolling layer slides
 // past a fixed one.
 html.baked body{
-  // NOT a flat gradient (antipattern). A real warm DESK = TWO seamless fractalNoise
-  // layers COMBINED with the scene-light gradient (body::before):
-  //   (1) fine high-freq paper TOOTH (340px tile, stitched → no seam), and
-  //   (2) a coarse low-freq MOTTLE (cloudy tonal unevenness, like kraft/desk paper),
-  // both MULTIPLIED over warm Oats so the surface reads as textured paper at 100%.
-  // stitchTiles keeps both seamless so no "weird pattern"/quilt ever shows.
+  // ONE lit desk = the warm scene-light wash (--bk-light, baked top-left key)
+  // composited NORMAL over the baked continuous Oats field (--bk-desk), with a
+  // faint MONOCHROME paper tooth/mottle multiplied under the light so the surface
+  // reads as textured paper — NOT as colored TV-static. The two fractalNoise
+  // layers each carry a feColorMatrix saturate=0 so the noise is neutral grey
+  // (luminance only); grey-multiply over warm Oats only darkens/lightens the Oats
+  // hue (no new chroma → brand law holds, no per-pixel confetti). --bk-light is
+  // the TOP layer (normal blend) so the single soft top-left light survives the
+  // multiply and the desk + scene-light read as ONE continuous lit surface. This
+  // is the single source of truth for the desk bg (the equal-specificity rule in
+  // _realism.scss L23 is the same intent and is harmless dead code once this agrees).
   background-image:
+    var(--bk-light, none),
     var(--bk-desk, none),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='340' height='340'%3E%3Cfilter id='t'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23t)' opacity='0.62'/%3E%3C/svg%3E"),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='900'%3E%3Cfilter id='m'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.014' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23m)' opacity='0.4'/%3E%3C/svg%3E");
-  background-repeat:no-repeat, repeat, repeat;
-  background-size:cover, 340px 340px, 900px 900px;
-  background-position:center, center, center;
-  background-attachment:fixed, fixed, fixed;
-  background-blend-mode:normal, multiply, multiply;
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='340' height='340'%3E%3Cfilter id='t'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23t)' opacity='0.42'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='900'%3E%3Cfilter id='m'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.014' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23m)' opacity='0.26'/%3E%3C/svg%3E");
+  background-repeat:no-repeat, no-repeat, repeat, repeat;
+  background-size:cover, cover, 340px 340px, 900px 900px;
+  background-position:center, center, center, center;
+  background-attachment:fixed, fixed, fixed, fixed;
+  background-blend-mode:normal, normal, multiply, multiply;
 }
 
 // ONE soft tinted SCENE LIGHT + a faint edge vignette, laid OVER the desk but
@@ -79,11 +85,13 @@ body::before{
   background-image:
     var(--bk-light, none),
     radial-gradient(120% 95% at 28% 16%,
-      rgba(120,104,72,0) 38%, rgba(96,82,56,.05) 70%, rgba(72,60,42,.10) 100%);
+      rgba(120,98,58,0) 38%, rgba(120,98,58,.06) 70%, rgba(96,76,44,.13) 100%);
   background-size:cover,cover;background-position:top left,top left;
   background-repeat:no-repeat,no-repeat;
-  box-shadow:inset 0 0 190px 22px rgba(64,58,44,.14),
-             inset 0 0 70px  0    rgba(64,58,44,.10);
+  // warm umber edge pool (92,72,44 sits in the --sh-warm family) so the left edge
+  // reads as a WARM lit edge, never a cool pinkish-grey seam.
+  box-shadow:inset 0 0 190px 22px rgba(92,72,44,.13),
+             inset 0 0 70px  0    rgba(92,72,44,.10);
 }
 // everything real sits above the light/vignette.
 .mast, main, footer{position:relative;z-index:1}
@@ -132,7 +140,7 @@ a{color:inherit}
 // the "blog" Patrick-Hand kicker rides beside the wordmark (NOT part of the logo)
 // the "blog" tag rides next to the wordmark — centred to it (was flex-end, which
 // floated it low and read as a stray loose label rather than part of the lockup).
-.mast .mast-kicker{font-family:var(--f-hand);color:var(--colorado);
+.mast .mast-kicker{font-family:var(--f-hand);color:var(--coral-ink);
   font-size:clamp(1rem,2.4vw,1.35rem);line-height:1;transform:rotate(-4deg) translateY(1px);
   margin-left:.2rem;align-self:center}
 
@@ -143,7 +151,7 @@ a{color:inherit}
 .mast>.wrap>nav a{
   font-family:var(--f-mono);font-size:.74rem;font-weight:500;letter-spacing:.1em;
   text-transform:uppercase;text-decoration:none;color:var(--ink);
-  display:inline-flex;align-items:center;min-height:44px;padding:.4em .8em;
+  display:inline-flex;align-items:center;min-height:48px;padding:.4em .8em;
   position:relative;isolation:isolate;
   // each tab is a small torn Oats paper chip (baked face + edge), seated by a
   // soft tinted contact shadow — NOT a hard ink-offset box. radius:0 — the
@@ -161,10 +169,16 @@ html.baked .mast>.wrap>nav a{
   // pinned torn paper, not stock pills. Oats edge sprite, slice w/ fill, RING
   // repeat (no tile clone). Padding compensates the border so the label fits.
   border-style:solid;border-color:transparent;
-  border-width:11px;border-image-source:var(--bk-edge-oats);
-  border-image-slice:var(--bk-edge-oats-slice,var(--bk-edge-grass-slice,38));
-  border-image-width:11px;border-image-repeat:round;
+  // 14px rim (was 11px — too thin: the ~38px-authored torn fiber crushed sub-pixel
+  // to a near-straight edge) + `fill` so the dyed sprite face shows the real torn
+  // silhouette, not a pale flat chip. Matches the proven .scrap rim (14px, slice 38).
+  border-width:14px;border-image-source:var(--bk-edge-oats);
+  border-image-slice:var(--bk-edge-oats-slice,var(--bk-edge-grass-slice,38)) fill;
+  border-image-width:14px;border-image-repeat:round;
   padding:.2em .55em;
+  // alpha-following cast hugs the torn teeth (box-shadow ghosted a rectangle)
+  box-shadow:none;
+  filter:drop-shadow(0 1px 1px rgba(var(--sh-seam),.40)) drop-shadow(0 3px 4px rgba(var(--sh-warm),.16));
 }
 // off-grid: each tab settles at its own tiny tilt — a WIDER spread than the old
 // -1.4/1.6/-1 so the row reads hand-pinned, not a tidy aligned button bar.
@@ -173,7 +187,22 @@ html.baked .mast>.wrap>nav a{
 .mast>.wrap>nav a:nth-child(3){transform:rotate(-1.8deg)}
 .mast>.wrap>nav a:nth-child(4){transform:rotate(3deg)}
 .mast>.wrap>nav a:hover{transform:rotate(0) translateY(-2px);box-shadow:var(--sh-lift)}
+// baked: hover lift follows the torn alpha (no-JS fallback keeps the box-shadow rect)
+html.baked .mast>.wrap>nav a:hover{
+  box-shadow:none;
+  filter:drop-shadow(0 4px 4px rgba(var(--sh-seam),.26)) drop-shadow(0 12px 20px rgba(var(--sh-warm),.14));
+}
 .mast>.wrap>nav a:focus-visible{outline:3px solid var(--lazuli);outline-offset:2px}
+// CURRENT-PAGE stamp: the active tab sits upright with a small Grass underline mark
+// so the reader always knows where they are (no faint pin tell). Palette-pure.
+.mast>.wrap>nav a[aria-current="page"]{transform:rotate(0)}
+.mast>.wrap>nav a[aria-current="page"]::after{
+  content:"";position:absolute;left:.6em;right:.6em;bottom:3px;height:2px;
+  background:var(--grass);border-radius:2px;pointer-events:none}
+html.baked .mast>.wrap>nav a[aria-current="page"]{
+  border-image-source:var(--bk-edge-grass);
+  filter:drop-shadow(0 1px 1px rgba(var(--sh-seam),.40)) drop-shadow(0 3px 5px rgba(var(--sh-warm),.18));
+}
 
 // ---- RSS = the list-first continuity channel: a Sambas STAMP tab so the eye
 // lands on it as a parallel subscribe path, not a buried 4th link. Sambas
@@ -185,12 +214,17 @@ html.baked .mast>.wrap>nav a{
   background-image:none;                 // the stamp reads as solid Sambas ink, not paper
 }
 html.baked .mast>.wrap>nav a.rss-link{
-  background-image:none;                  // solid Sambas stamp face, not paper tooth
-  // its own SAMBAS torn rim (not the Oats one inherited above) so the stamp reads
-  // as a torn ink chip, edge-consistent with the paper tabs beside it.
+  // baked Sambas tooth FACE (like its sibling tabs) so it reads as a torn ink
+  // STAMP, not a flat utility box; its own SAMBAS torn rim w/ fill renders the tear.
+  background-image:var(--bk-piece-sambas);background-size:cover;background-position:center;
   border-image-source:var(--bk-edge-sambas);
+  border-image-slice:var(--bk-edge-sambas-slice,38) fill;
 }
 .mast>.wrap>nav a.rss-link:hover{box-shadow:var(--sh-hover)}
+html.baked .mast>.wrap>nav a.rss-link:hover{
+  box-shadow:none;
+  filter:drop-shadow(0 4px 4px rgba(var(--sh-seam),.26)) drop-shadow(0 12px 20px rgba(var(--sh-warm),.14));
+}
 
 // ===================================================================
 //  FOOTER — a torn GRASS band / colophon sheet. §4.3: on Grass, Oats wordmark.
@@ -258,20 +292,31 @@ footer .tagline{font-family:var(--f-slab);font-style:italic;font-weight:700;
 // is borderline at this label size).
 footer .links{display:flex;flex-flow:row wrap;gap:.55rem .6rem;align-items:flex-start;max-width:18rem}
 footer .links a{
-  font-family:var(--f-mono);font-size:.74rem;letter-spacing:.06em;text-transform:uppercase;color:var(--oats);
+  font-family:var(--f-mono);font-size:.74rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--oats);
+  // a dark occlusion seam under the Oats stencil so the label presses INTO the
+  // saturated sticker (was thin Oats-on-Lazuli/Colorado reading low-contrast at a
+  // distance). Heavier stroke (600) + seam lift the perceived contrast, palette-pure.
+  text-shadow:0 .5px .6px rgba(var(--sh-seam),.55);
   display:inline-flex;align-items:center;min-height:44px;             // >=44px tap target
   padding:.3em .7em;position:relative;isolation:isolate;
   text-decoration:none;                       // NO system underline — chip IS the affordance
   background-color:var(--lazuli);border-radius:0;
+  // pre-bake fallback box-shadow; baked state below swaps to an alpha-following cast.
   box-shadow:var(--sh-contact);
-  transition:transform var(--t-micro) ease,box-shadow var(--t-micro) ease;
+  transition:transform var(--t-micro) ease,box-shadow var(--t-micro) ease,filter var(--t-micro) ease;
 }
 footer .links a:nth-child(even){background-color:var(--colorado);color:var(--sambas)}
 html.baked footer .links a{
   background-color:transparent;background-size:cover;background-position:center;background-clip:padding-box;
   border-style:solid;border-color:transparent;
-  border-width:9px;border-image-slice:var(--bk-edge-grass-slice,38);
-  border-image-width:9px;border-image-repeat:round;padding:.18em .5em}
+  // 12px rim (was 9px — crushed the ~38px-authored torn fiber sub-pixel on a ~30px
+  // chip) + `fill` so the dyed face shows the tear. Drop-shadow hugs the torn alpha,
+  // killing the rectangular box-shadow ghost that read as a pill at this size.
+  border-width:12px;border-image-slice:var(--bk-edge-grass-slice,38) fill;
+  border-image-width:12px;border-image-repeat:round;padding:.18em .5em;
+  box-shadow:none;
+  filter:drop-shadow(0 1px 1px rgba(var(--sh-seam),.40)) drop-shadow(0 2px 3px rgba(var(--sh-warm),.18));
+}
 html.baked footer .links a{background-image:var(--bk-piece-lazuli);border-image-source:var(--bk-edge-lazuli)}
 html.baked footer .links a:nth-child(even){background-image:var(--bk-piece-coral);border-image-source:var(--bk-edge-coral)}
 // OFF the metronome: hand-pinned chips sit at varied tilts (still legible, >=44px).
@@ -281,6 +326,10 @@ footer .links a:nth-child(3){transform:rotate(-1.6deg)}
 footer .links a:nth-child(4){transform:rotate(2.6deg)}
 footer .links a:nth-child(5){transform:rotate(-1.2deg)}
 footer .links a:hover{transform:rotate(0) translateY(-2px);box-shadow:var(--sh-lift)}
+html.baked footer .links a:hover{
+  box-shadow:none;
+  filter:drop-shadow(0 4px 4px rgba(var(--sh-seam),.26)) drop-shadow(0 12px 20px rgba(var(--sh-warm),.14));
+}
 // focus ring on Lazuli (was Oats — invisible on the new Oats scrap).
 footer .links a:focus-visible{outline:3px solid var(--lazuli);outline-offset:2px}
 // footer rubber stamp — a baked patchy ink badge (the v6 --bk-stamp ring). On the
@@ -336,6 +385,10 @@ html.baked .board-head{
   border-width:15px;border-image-source:var(--bk-edge-grass);
   border-image-slice:var(--bk-edge-grass-slice,38);
   border-image-width:15px;border-image-repeat:round;
+  // alpha-following lift: the cast hugs the torn rim instead of casting a hard
+  // rectangle past the teeth (the "machine-cut edge + rectangular shadow band").
+  box-shadow:none;
+  filter:var(--df-lift);
 }
 // Grass ground has NO §4.3 combo for a Happy headline color (Happy + School Bus
 // are dark-ink-text-only 5% accents). The foundation pairing on a saturated Grass
@@ -548,6 +601,22 @@ html.baked .clip--kraft {background-image:var(--bk-piece-kraft); border-image-so
 // polaroid / litter / footer / tabs) — baked Oats tooth face + Oats torn rim.
 html.baked .clip--leaf  {background-image:var(--bk-piece-oats);  border-image-source:var(--bk-edge-oats)}
 
+// DARK STOCK CAST FIX — on Sambas clips the pale --sh-* box-shadow halos the
+// border-box RECTANGLE (corner fill contrasts hard against the desk and laps a
+// pale rectangle onto overlapped polaroids). On cream the rectangle hides in the
+// desk; only the dark stock needs the alpha-following cast. Scope to dark clips
+// so cream cards keep the cheaper box-shadow. (Same warm-umber tints.)
+html.baked .clip--note,
+html.baked .clip--cloth{
+  box-shadow:none;
+  filter:drop-shadow(0 1px 1px rgba(var(--sh-seam),.40)) drop-shadow(0 9px 16px rgba(var(--sh-warm),.12));
+}
+html.baked .clip--note:hover, html.baked .clip--note:focus-within,
+html.baked .clip--cloth:hover, html.baked .clip--cloth:focus-within{
+  box-shadow:none;
+  filter:var(--df-hover);
+}
+
 // ===================================================================
 // CONTENT-MATCHED STOCKS — the clipping's MATERIAL tells you what the post is about:
 // airmail (the correspondence IS a letter) · ledger (a vision memo) · cloth (mending,
@@ -758,7 +827,7 @@ html.baked .board-pile>.clip:nth-child(5n+5){border-image-width:13px;border-imag
 // layered baked-ink seam+halo as .post-title — ink PRESSED into the cream tooth,
 // not flat web type floating above it. The kicker (Patrick Hand) and dek/meta read
 // as confidently as the post body. This is the variant that lets the desk breathe.
-.clip--leaf .clip-kicker{color:var(--colorado)}   // hand kicker in Colorado (its native eyebrow color on cream)
+.clip--leaf .clip-kicker{color:var(--coral-ink)}   // deepened coral kicker — readable on cream (4.84:1)
 .clip--leaf .clip-title,.clip--leaf .clip-dek,.clip--leaf .clip-meta,
 .clip--leaf .clip-go{color:var(--ink)}            // Sambas ink on Oats = 8.05:1
 .clip--leaf .clip-meta .sep{color:var(--colorado)}
@@ -772,15 +841,20 @@ html.baked .board-pile>.clip:nth-child(5n+5){border-image-width:13px;border-imag
 
 // ---- fasteners: the pin/tape are baked SPRITES (bakery.js → --bk-pin /
 // --bk-tape-*) painted as the element's background ON TOP of the clip. ----
-.clip>.pin{position:absolute;z-index:8;left:50%;top:-14px;margin-left:-16px;
-  width:32px;height:38px;pointer-events:none;
+.clip>.pin{position:absolute;z-index:8;left:50%;top:-18px;margin-left:-22px;
+  // 44x50 (was 32x38, well under the 54x60 native sprite) so the baked specular
+  // catchlight + cast survive at display size and the pin reads 3D, not a flat dot.
+  width:44px;height:50px;pointer-events:none;
   background-image:var(--bk-pin);background-size:contain;background-repeat:no-repeat;background-position:center}
+html.baked .clip>.pin{filter:drop-shadow(0 2px 2px rgba(var(--sh-seam),.3))}
 // alternate the pinned clips' pin a touch off-centre for a hand-arranged feel
 .board-pile>.clip:nth-child(5n+5)>.pin{left:auto;right:18%;margin-left:0;transform:rotate(6deg)}
 
-.clip>.tape{position:absolute;z-index:8;left:50%;top:-13px;margin-left:-30px;
-  width:60px;height:24px;pointer-events:none;
-  background-size:100% 100%;background-repeat:no-repeat;mix-blend-mode:multiply;
+.clip>.tape{position:absolute;z-index:8;left:50%;top:-13px;margin-left:-42px;
+  // 84px wide (was 60) + cover (was 100% 100%) so the baked 120px washi sprite's
+  // asymmetric torn ends aren't squashed flat — reads as a real strip, not a bar.
+  width:84px;height:24px;pointer-events:none;
+  background-size:cover;background-repeat:no-repeat;mix-blend-mode:multiply;
   // pre-bake fallback so a fastener is never an empty gap (washi look)
   background-image:linear-gradient(94deg,rgba(241,221,1,.5),rgba(241,221,1,.3) 55%,rgba(241,221,1,.46));border-radius:1px}
 // the right baked washi sprite per data-tape (the bakery bakes happy/lazuli/coral/oats)
@@ -838,11 +912,17 @@ html.baked .clip>.tape[data-tape="oats"]  {background-image:var(--bk-tape-oats)}
   // z>=2), filling the gaps between/around the overlapped clips, not just edges.
   // quote pinned lower + tucked toward the column so it overlaps the first card row
   // rather than floating alone in the top-right void (QA: stranded note + dead desk).
-  .board-litter .litter--quote {left:auto;right:3%;   top:15%}    // upper-right, near the pile
+  // right-edge litter pulled inboard so it doesn't strand in the gutter now that
+  // the desk is capped at 1150px — tighter connective rhythm toward the pile.
+  .board-litter .litter--quote {left:auto;right:8%;   top:15%}    // upper-right, near the pile
   .board-litter .litter--photo {left:1%;   top:40%}               // mid-left
-  .board-litter .litter--slip  {left:auto;right:1%;   top:60%}    // mid-right
+  // pulled inboard (right:5% → 10%): the Lazuli 'filed / re: bringing your gifts'
+  // slip is tilted -1.4deg and was kissing the 1280/1680px viewport edge with its
+  // second line clipping ('…inging fits'). 10% keeps its torn right edge clear of
+  // the viewport at every width >600px.
+  .board-litter .litter--slip  {left:auto;right:10%;  top:60%}    // mid-right
   .board-litter .litter--byline{left:2%;   top:80%}               // lower-left
-  .board-litter .litter--ticket{left:auto;right:4%;   top:91%}    // lower-right
+  .board-litter .litter--ticket{left:auto;right:7%;   top:91%}    // lower-right
   .board-litter .litter--ring  {left:46%;  top:50%}               // DEAD-CENTRE stain
   .board-litter .litter--star  {left:7%;   top:9%}                // upper-left doodle
   .board-litter .litter--clip-deco{left:52%;top:18%}              // upper-CENTRE clip
@@ -959,7 +1039,7 @@ html.baked .litter--ticket{
   border-image-width:12px;border-image-repeat:round;
 }
 .litter--ticket .ticket-no{font-family:var(--f-mono);font-weight:700;font-size:.92rem;
-  letter-spacing:.04em;color:var(--schoolbus)}   // small School-Bus ink No. on cream (5% accent)
+  letter-spacing:.04em;color:var(--bus-ink)}   // deepened School-Bus saffron ink — readable on cream (5.92:1)
 .litter--ticket .ticket-lbl{font-family:var(--f-mono);font-size:.6rem;font-weight:700;
   letter-spacing:.12em;text-transform:uppercase;color:var(--ink)}   // Sambas ink on Oats = AA
 
@@ -978,13 +1058,29 @@ html.baked .litter--ticket{
 // ===================================================================
 .post-head .wrap{position:relative}
 
-// the eyebrow on a small cut Oats scrap, tucked above the banner
+// the eyebrow on a small cut Oats scrap, tucked above the banner.
+// It was an Oats rounded-rect on an Oats desk with only a faint contact kiss —
+// face, edge and desk read as ONE tone (the "invisible empty box"). Fix: a
+// TONALLY-LIFTED stock (Oats nudged warmer with its own light, palette-only) +
+// an irregular hand-cut silhouette + an alpha-following drop-shadow so the chip
+// separates from the desk as a real slip of paper.
 .post-eyebrow{
   position:relative;isolation:isolate;display:inline-block;
-  padding:.3rem .7rem .35rem;margin-bottom:.7rem;transform:rotate(-1.6deg);
-  background-color:var(--paper);border-radius:4px;box-shadow:var(--sh-contact);
+  padding:.32rem .72rem .38rem;margin-bottom:.7rem;transform:rotate(-1.6deg);
+  background-color:color-mix(in srgb, var(--paper) 88%, var(--oats));
+  border-radius:0;
+  clip-path:polygon(0% 6%,10% 1%,32% 3%,58% 0%,82% 2.5%,100% 1%,99% 30%,100% 64%,
+                    98% 88%,100% 100%,74% 98%,46% 100%,22% 97%,4% 100%,1% 66%,2% 34%,0% 16%);
+  filter:drop-shadow(0 1px 1px rgba(var(--sh-seam),.40)) drop-shadow(0 4px 7px rgba(var(--sh-warm),.16));
 }
-html.baked .post-eyebrow{background-image:var(--bk-piece-oats);background-size:cover}
+html.baked .post-eyebrow{
+  @include scrap-face(--bk-piece-oats, --bk-edge-oats, var(--bk-edge-oats-slice,38));
+  border-width:9px;border-image-width:9px;        // chip-scale rim so text isn't clipped
+  background-color:color-mix(in srgb, var(--paper) 88%, var(--oats));
+  clip-path:none;                                  // baked torn rim owns the silhouette
+  box-shadow:none;                                 // mixin sets box-shadow; override to the drop only
+  filter:drop-shadow(0 1px 1px rgba(var(--sh-seam),.40)) drop-shadow(0 5px 9px rgba(var(--sh-warm),.15));
+}
 .post-eyebrow .eyebrow{transform:none;margin:0}
 
 // the title BANNER — a Grass torn scrap, pinned with a thumbtack
@@ -1003,9 +1099,16 @@ html.baked .post-banner{
   background-clip:padding-box;
   clip-path:none;                  // baked torn edge supplies the silhouette
   border-style:solid;border-color:transparent;
-  border-width:15px;border-image-source:var(--bk-edge-grass);
-  border-image-slice:var(--bk-edge-grass-slice,38);
-  border-image-width:15px;border-image-repeat:round;
+  // WIDER rim (18px, was 15) + `fill` so the dyed torn face shows the real frayed
+  // silhouette on the LEFT/RIGHT edges too (without fill the sides read near-
+  // straight — the QA 'machine-cut banner' tell on the green title swatch).
+  border-width:18px;border-image-source:var(--bk-edge-grass);
+  border-image-slice:var(--bk-edge-grass-slice,38) fill;
+  border-image-width:18px;border-image-repeat:round;
+  // alpha-following lift: hugs the torn rim, no rectangular shadow band. The pin
+  // child (top:-15px) stays visible — filter does not clip overflow.
+  box-shadow:none;
+  filter:var(--df-lift);
 }
 .post-banner>.pin{position:absolute;z-index:8;left:auto;right:18%;top:-15px;
   width:32px;height:38px;pointer-events:none;transform:rotate(5deg);
@@ -1042,10 +1145,13 @@ html.baked .post-banner--ledger{
   border-image-width:15px;border-image-repeat:round;clip-path:none;
 }
 
-// the date STAMP — a DM-Mono mark on a baked stamp ring
+// the date STAMP — a DM-Mono mark on a baked stamp ring. Ink is the DEEPENED
+// Colorado (--coral-ink, 4.84:1 on Oats) not raw --colorado (#F75458, ~3.1:1),
+// so the small-caps date no longer reads as a faint red wash on the cream
+// standfirst at tablet width. Brand-pure (the sanctioned deepened Colorado ink).
 .post-datestamp{position:relative;isolation:isolate;display:inline-block;
-  padding:.4em .8em;transform:rotate(-2deg);color:var(--colorado);
-  border:2px solid var(--colorado);border-radius:6px}
+  padding:.4em .8em;transform:rotate(-2deg);color:var(--coral-ink);
+  border:2px solid var(--coral-ink);border-radius:6px}
 html.baked .post-datestamp{border-color:transparent;
   background-image:var(--bk-stamp);background-size:100% 100%}
 .post-datestamp time{color:inherit}

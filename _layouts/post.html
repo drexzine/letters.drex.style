@@ -45,20 +45,24 @@ layout: default
         <h1 class="post-title slab">{{ page.title }}</h1>
       </div>
 
-      {% if page.dek %}<p class="post-dek is-offset reveal">{{ page.dek }}</p>{% endif %}
+      {%- comment -%} dek + meta wrapped in ONE cream scrap so they sit on a real
+        paper slip, not floating as bare text on the noisy desk. {%- endcomment -%}
+      <div class="post-standfirst scrap piece reveal" data-mat="oats" data-edge="torn">
+        {% if page.dek %}<p class="post-dek reveal">{{ page.dek }}</p>{% endif %}
 
-      <div class="post-meta reveal">
-        <span class="post-datestamp"><time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%B %-d, %Y" }}</time></span>
-        {% assign words = content | strip_html | number_of_words %}
-        {% comment %} 240 wpm: furniture (pull-quotes, definitions, call-outs) lets the
-           eye rest, so raw word count overstates effort. {% endcomment %}
-        {% assign rt = words | divided_by: 240 | plus: 1 %}
-        <span class="sep" aria-hidden="true">&middot;</span>
-        <span>{{ rt }} min read</span>
-        {% if page.author or site.author %}
-        <span class="sep" aria-hidden="true">&middot;</span>
-        <span>{{ page.author | default: site.author }}</span>
-        {% endif %}
+        <div class="post-meta reveal">
+          <span class="post-datestamp"><time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%B %-d, %Y" }}</time></span>
+          {% assign words = content | strip_html | number_of_words %}
+          {% comment %} 240 wpm: furniture (pull-quotes, definitions, call-outs) lets the
+             eye rest, so raw word count overstates effort. {% endcomment %}
+          {% assign rt = words | divided_by: 240 | plus: 1 %}
+          <span class="sep" aria-hidden="true">&middot;</span>
+          <span>{{ rt }} min read</span>
+          {% if page.author or site.author %}
+          <span class="sep" aria-hidden="true">&middot;</span>
+          <span>{{ page.author | default: site.author }}</span>
+          {% endif %}
+        </div>
       </div>
     </div>
   </header>
@@ -90,6 +94,11 @@ layout: default
       running Bitter text inside each .prose stays clean, upright, comfortable.
     {%- endcomment -%}
   <div class="post-stage post-stage--desk">
+
+    {%- comment -%} FIRST CHILD: the faded squigglevision doodle field, painted
+        behind every later sibling (the reading sheets occlude it under the
+        column). pointer-events:none → drag/selection unaffected. {%- endcomment -%}
+    {% include desk-marginalia.html context="post" %}
 
     {%- comment -%}
       INTERACTIVITY PARITY (round 2) — the home board has one genuinely
@@ -176,6 +185,11 @@ layout: default
       </nav>
 
       <p class="back-line reveal"><a class="back-link" href="{{ '/' | relative_url }}">&larr; back to <span class="ul draw">the notebook</span></a></p>
+
+      {%- comment -%} a kraft "reset desk" tab — clears any dragged-card positions
+        and slides the reading furniture home. A real <button> (keyboard-reachable,
+        data-no-drag so it never arms the shuffle); inert with no JS. {%- endcomment -%}
+      <button type="button" class="desk-reset" data-desk-reset data-no-drag>reset the desk</button>
 
     </div>
   </div>

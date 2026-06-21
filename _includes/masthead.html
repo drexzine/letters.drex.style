@@ -12,8 +12,8 @@
 
     {%- comment -%} Desktop nav: DM-Mono rubber-stamp tabs. {%- endcomment -%}
     <nav class="mast-nav" aria-label="Primary">
-      <a href="{{ '/' | relative_url }}">Newsstand</a>
-      <a href="{{ '/about/' | relative_url }}">About</a>
+      <a href="{{ '/' | relative_url }}"{% if page.url == '/' %} aria-current="page"{% endif %}>Newsstand</a>
+      <a href="{{ '/about/' | relative_url }}"{% if page.url == '/about/' %} aria-current="page"{% endif %}>About</a>
       <a href="https://drex.style">drex.style</a>
       {%- comment -%} RSS = the list-first continuity channel; flagged with a one-colour
                       ink rss-glyph so it reads as a parallel subscribe path, not an
@@ -43,8 +43,8 @@
   <nav class="mob-nav" id="mob-nav" aria-label="Primary mobile">
     <span class="mob-thread" aria-hidden="true"></span>
     <ul>
-      <li><a href="{{ '/' | relative_url }}">Newsstand</a></li>
-      <li><a href="{{ '/about/' | relative_url }}">About</a></li>
+      <li><a href="{{ '/' | relative_url }}"{% if page.url == '/' %} aria-current="page"{% endif %}>Newsstand</a></li>
+      <li><a href="{{ '/about/' | relative_url }}"{% if page.url == '/about/' %} aria-current="page"{% endif %}>About</a></li>
       <li><a href="https://drex.style">drex.style</a></li>
       <li><a href="https://instagram.com/drexcircles">Instagram</a></li>
       {%- comment -%} RSS called out in the burger too — same rss-glyph, same parallel-channel weight. {%- endcomment -%}

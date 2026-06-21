@@ -17,6 +17,9 @@
   --grass:#1CAB5B; --oats:#FEF6E4; --sambas:#414D57; --colorado:#F75458;
   --lazuli:#2496C9; --schoolbus:#ECAF21; --happy:#F1DD01;
   --grass-deep:#0C6E39;      // AA-safe dark Grass for button/key fills with Oats text
+  --coral-ink:#C9343A;       // Colorado deepened for small text on Oats (4.84:1 AA)
+  --bus-ink:#7A5A12;         // School-Bus deepened to dark saffron ink on cream (5.92:1)
+  --lazuli-deep:#1C6F94;     // Lazuli deepened for small text on Oats (5.2:1)
   --ink:#414D57;             // Sambas doubles as ink (NO pure black)
   --paper:#FEF6E4;           // Oats — palette-pure card/page ground (NO pure white)
 
@@ -80,6 +83,18 @@
   // tight occlusion seam for tape pressed flat (REFS 19 / 7) — barely-there
   --sh-seamline:0 1px 1px rgba(var(--sh-seam),.18);
 
+  // ---- ALPHA-FOLLOWING DROP-SHADOW TWINS (for TORN-silhouette objects) ----
+  // box-shadow is computed from the rectangular border-box and ghosts a square
+  // halo behind a torn border-image rim. filter:drop-shadow() rasterises against
+  // the element's real alpha, so the cast HUGS the torn teeth. Same warm-umber
+  // tints (--sh-seam/--sh-warm), palette-pure, no #000/#fff. Chains kept to 2–3
+  // functions to keep the GPU filter pass cheap. Used ONLY on torn .scrap/.sheet/
+  // banners/clips — rectangular cards keep box-shadow.
+  --df-contact: drop-shadow(0 1px 1px rgba(var(--sh-seam),.40)) drop-shadow(0 2px 3px rgba(var(--sh-warm),.18));
+  --df-ambient: drop-shadow(0 2px 4px rgba(var(--sh-warm),.10)) drop-shadow(0 5px 10px rgba(var(--sh-warm),.07));
+  --df-lift:    drop-shadow(0 2px 2px rgba(var(--sh-seam),.30)) drop-shadow(0 6px 12px rgba(var(--sh-warm),.14)) drop-shadow(0 14px 26px rgba(var(--sh-warm),.10));
+  --df-hover:   drop-shadow(0 4px 4px rgba(var(--sh-seam),.26)) drop-shadow(0 12px 22px rgba(var(--sh-warm),.16)) drop-shadow(0 24px 44px rgba(var(--sh-warm),.11));
+
   // ---- LEGACY shadow aliases (contract stability) ----
   // _grounds.scss / _post.scss / _whimsy.scss (some not owned by this engine)
   // still reference these names. They now map to the SOFT TINTED language so the
@@ -114,4 +129,13 @@
   --t-trans:260ms;           // transitions 200–300ms
   --ease-settle:cubic-bezier(.2,.85,.3,1.12);  // overshoot ~6%, one oscillation
   --ease-slam:cubic-bezier(.5,0,.8,.45);       // gravity-in (accelerate down)
+
+  // ---- squigglevision BOIL cadence (step-end seed-swap redraw rate) ----
+  // These were referenced bare (no fallback) in _whimsy.scss / the kit boil but
+  // NEVER defined in :root — so every animation keyed off them shipped INERT
+  // (an animation with an invalid/empty duration does not run). Defining them
+  // here revives the intended boil. ~1fps so the line "breathes" without shimmer.
+  --boil-paper:1.6s;         // torn-edge / paper redraw
+  --boil-ink:0.9s;           // fine marker stroke redraw
+  --boil-stamp:1.2s;         // stamp / heavier mark redraw
 }

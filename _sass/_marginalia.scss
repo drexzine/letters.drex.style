@@ -33,7 +33,7 @@
 // (Local so the kit is self-contained; values are the palette §4 constants.)
 $m-inks: (
   "grass":  #1CAB5B,
-  "coral":  #F75458,
+  "coral":  #C9343A,   // deepened Colorado: default note/leader ink readable on the pale desk (4.84:1)
   "lazuli": #2496C9,
   "bus":    #ECAF21,
   "happy":  #F1DD01,
@@ -294,8 +294,26 @@ $sheet: 880px;                // reading sheet width (matches _post.scss)
     text-align: right;
     transform: rotate(-2.2deg);
   }
-  .m-note--left .m-note__slip  { width: max-content; max-width: 15rem; }
-  .m-note--right .m-note__slip { width: max-content; max-width: 15rem; }
+  // Viewport-aware width: 100% = the .prose offset-parent (centred in the
+  // full-bleed desk), so the bare side gutter = (100vw - 100%)/2. Cap at 15rem on
+  // wide desks but shrink the slip to fit between ~1100–1350px so the rotated note
+  // NEVER exits the viewport and gets clipped by overflow-x:clip. Text rewraps in
+  // the gutter instead of being chopped.
+  .m-note--left .m-note__slip,
+  .m-note--right .m-note__slip {
+    width: max-content;
+    // NARROWER cap (was 15rem) + a deeper edge subtraction (4rem, was 2.8rem) so
+    // the rotated slip keeps a real safety margin and NEVER kisses the viewport
+    // right edge at ~1280px (where 'bringing your gifts' / 'footnotes.' clipped).
+    // A narrower slip is also FEWER lines tall, which is the main lever against two
+    // adjacent same-side notes overprinting into an unreadable blob.
+    max-width: min(12.5rem, calc((100vw - 100%) / 2 - 4rem));
+    overflow-wrap: anywhere;
+    // a touch smaller on desktop so each note is a tight 1–2 line scrawl, not a
+    // 4-line block that runs down into the next note's row.
+    font-size: clamp(0.92rem, calc(0.86rem + 0.3vw), 1.12rem);
+    line-height: 1.14;
+  }
   .m-note__slip::before { content: none; }   // desktop uses a real leader, not ↳
 
   // the hand-drawn LEADER: a thin wobbly line from the slip back toward the
@@ -309,7 +327,7 @@ $sheet: 880px;                // reading sheet width (matches _post.scss)
     width: 1.9rem;
     background: var(--m-ink);
     border-radius: 3px;
-    opacity: .7;
+    opacity: .85;        // was .7 — the thinnest decorative element was vanishing on the pale desk
     mix-blend-mode: multiply;
     filter: url(#roughsm);
     pointer-events: none;
@@ -378,12 +396,19 @@ html[data-tier="lite"] {
 // just HARD-GUARANTEE no horizontal overflow at 360–414px and trim sizes.
 // ===================================================================
 @media (max-width: 900px) {
+  // RESTORE REAL FLOW HEIGHT: height:0 is only valid >=#{$gutter-arm} where the
+  // slip is position:absolute (out of flow). Below the arm the slip is an in-flow
+  // block child of a height:0 parent, so it painted ZERO layout height and the
+  // next <p> overprinted it. height:auto lets the slip + its bottom margin reserve
+  // real space, pushing the following paragraph below the (wrapped, tilted) note.
+  .m-note, .m-mark { height: auto; }
   .m-note__slip {
     max-width: 100%;
-    transform: rotate(-1.1deg);
+    transform: rotate(-0.8deg);  // less corner dip than -1.1deg when wrapped
     overflow-wrap: anywhere;     // never let a long note push a scrollbar
+    margin: .2em 0 .9em;         // honest bottom clearance now that height reserves it
   }
-  .m-note--right .m-note__slip { transform: rotate(1deg); }
+  .m-note--right .m-note__slip { transform: rotate(0.7deg); }
   // inline marks: keep wobble subtle on small screens, no overflow risk
   .m-circle::before, .m-box::before { filter: url(#roughsm); }
 }

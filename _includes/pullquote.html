@@ -6,9 +6,9 @@
   API:  {% include pullquote.html text="..." attrib="Lave & Wenger" %}
         attrib is optional.
 {%- endcomment -%}
-<figure class="pullquote slam">
-  <blockquote class="pq-text">{{ include.text }}</blockquote>
+<figure class="pullquote slam" data-desk-id="pullquote">
+  <blockquote class="pq-text" data-text>{{ include.text }}</blockquote>
   {%- if include.attrib -%}
-  <figcaption class="pq-attrib">{{ include.attrib }}</figcaption>
+  <figcaption class="pq-attrib" data-text>{{ include.attrib }}</figcaption>
   {%- endif -%}
 </figure>

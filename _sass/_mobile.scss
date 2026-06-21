@@ -52,7 +52,6 @@ body {
   overflow-x: hidden;            // hard stop: no horizontal scrollbar, ever
 }
 
-.wrap,
 .paper,
 .sheet,
 .news,
@@ -75,6 +74,11 @@ footer {
   max-width: 100%;
   overflow-x: clip;
 }
+// .wrap keeps the overhang guard but NOT the max-width override — that
+// unconditionally killed the 1150px desk cap (_grounds.scss .wrap{max-width:1150px})
+// at ALL widths, so wide viewports spread full-bleed and the pile clustered left
+// with a dead right half. overflow-x:clip preserves the SACRED no-x-scroll.
+.wrap { overflow-x: clip; }
 
 // Decorative absolutes (tape / stamp / scrawl / pin / cutline) never extend
 // the box past the viewport. Their parents above clip the overhang.
@@ -442,23 +446,35 @@ pre {
   .burger .burger-tab {
     position: relative;
     display: inline-flex; align-items: center; justify-content: center;
-    width: 38px; height: 30px;
+    width: 46px; height: 38px;                    // larger so the torn rim isn't crushed
     color: var(--ink);                           // SVG strokes ride currentColor
     background: var(--oats);                      // flat Oats fallback (pre-bake)
-    border: 1px solid rgba(28, 171, 91, 0.22);    // faint Grass keyline fallback
-    border-radius: 3px;
+    border: 0;
+    // pre-bake fallback is an IRREGULAR hand-cut silhouette (NOT a 3px rounded
+    // UI tile) so even before bakery.js the tab reads as torn paper, not a chip.
+    border-radius: 0;
+    clip-path: polygon(0% 8%,14% 1%,40% 4%,68% 0%,100% 3%,98% 32%,100% 66%,
+                       97% 92%,100% 100%,72% 97%,44% 100%,18% 96%,2% 100%,1% 64%,3% 34%,0% 14%);
     box-shadow: var(--sh-contact);                // soft tinted desk contact
   }
   // Once baked: swap the flat fallback for the real torn Oats edge + tooth tile.
+  // `fill` shows the dyed torn face; drop-shadow hugs the torn alpha (the box-
+  // shadow ghosted a rounded UI tile on a ~30px chip).
   html.baked .burger .burger-tab {
     border: 0; border-radius: 0;
+    clip-path: none;                              // baked torn rim owns the silhouette
     background: var(--paper) var(--bk-grain);
     border-style: solid;
-    border-width: 8px;
+    // 11px rim (was 9px — too thin: the ~38px-authored torn fiber crushed to a
+    // near-straight edge on a 44px chip, reading as a rounded tile). A wider rim
+    // shows the real torn teeth so the tab is convincingly hand-cut at this width.
+    border-width: 11px;
     border-image-source: var(--bk-edge-oats);
-    border-image-slice: var(--bk-edge-oats-slice, 38);
+    border-image-slice: var(--bk-edge-oats-slice, 38) fill;
     border-image-repeat: round;
-    border-image-width: 9px;
+    border-image-width: 11px;
+    box-shadow: none;
+    filter: drop-shadow(0 1px 1px rgba(var(--sh-seam),.40)) drop-shadow(0 2px 3px rgba(var(--sh-warm),.18));
   }
   .burger .burger-ico {
     position: absolute; inset: 0; margin: auto;
@@ -489,14 +505,30 @@ pre {
   .mob-nav .rss-link {
     background: var(--sambas);
     color: var(--oats);
-    border: 2px solid var(--ink);
-    border-radius: 5px;
+    border: 0; border-radius: 0;                 // was a 2px outlined UI box w/ radius
+    padding: .3em .7em;
     margin: 0.6rem 1.1rem;
     min-height: 44px;
     gap: 0.45em;
-    box-shadow: var(--sh-contact), var(--sh-ambient);   // soft tinted lift, no flat offset
+    box-shadow: var(--sh-contact), var(--sh-ambient);   // soft tinted lift (pre-bake fallback)
+  }
+  // baked: a torn Sambas STAMP chip (face + torn rim + alpha-following cast),
+  // edge-consistent with the desktop RSS stamp — not a utility outline box.
+  html.baked .mob-nav .rss-link {
+    background-color: transparent;
+    background-image: var(--bk-piece-sambas); background-size: cover; background-position: center;
+    background-clip: padding-box;
+    border-style: solid; border-color: transparent;
+    border-width: 9px; border-image-source: var(--bk-edge-sambas);
+    border-image-slice: var(--bk-edge-sambas-slice, 38) fill;
+    border-image-width: 9px; border-image-repeat: round;
+    box-shadow: none;
+    filter: drop-shadow(0 1px 1px rgba(var(--sh-seam),.40)) drop-shadow(0 3px 5px rgba(var(--sh-warm),.16));
   }
   .mob-nav .rss-link .rss-glyph { width: 1em; height: 1em; flex: 0 0 auto; }
+
+  // mobile current-page accent: a Grass left-rule on the active drawer link
+  .mob-nav a[aria-current="page"] { border-left: 3px solid var(--grass); }
 }
 
 // Above the burger breakpoint: hide the burger, show inline nav, hide drawer.

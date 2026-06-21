@@ -7,10 +7,10 @@
         alt     — optional alt text; falls back to caption then "".
 {%- endcomment -%}
 {%- assign alt = include.alt | default: include.caption | default: "" -%}
-<figure class="figure polaroid slam">
+<figure class="figure polaroid slam" data-desk-id="figure">
   <span class="tape" aria-hidden="true"></span>
   <div class="ph"><img src="{{ include.src | relative_url }}" alt="{{ alt | escape }}" loading="lazy" /></div>
   {%- if include.caption -%}
-  <figcaption class="cap">{{ include.caption }}</figcaption>
+  <figcaption class="cap" data-text>{{ include.caption }}</figcaption>
   {%- endif -%}
 </figure>
