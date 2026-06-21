@@ -115,7 +115,11 @@ a{color:inherit}
   background-image:linear-gradient(rgba(254,246,228,.55) 0%, rgba(254,246,228,.18) 60%, rgba(254,246,228,0) 100%);
 }
 .mast .wrap{display:flex;align-items:center;justify-content:space-between;gap:1rem;
-  padding-block:clamp(.9rem,2.4vw,1.4rem);position:relative;z-index:2}
+  padding-block:clamp(.9rem,2.4vw,1.4rem);
+  // side padding so the brand isn't flush-left and the RSS tab isn't jammed against
+  // the viewport edge (it sits in a max-width column, breathing like the content).
+  padding-inline:clamp(1rem,4vw,2.2rem);max-width:1180px;margin-inline:auto;
+  position:relative;z-index:2}
 
 // the brand lockup — icon + wordmark, FLAT on the desk. Logo law: one solid
 // Grass fill, upright, NO filter / shadow / tilt / recolor. (markup: masthead.html)
@@ -126,9 +130,11 @@ a{color:inherit}
 .mast .lg-word{width:clamp(70px,12vw,90px);display:block}
 .mast .lg-icon svg,.mast .lg-word svg{display:block;width:100%;height:auto}
 // the "blog" Patrick-Hand kicker rides beside the wordmark (NOT part of the logo)
+// the "blog" tag rides next to the wordmark — centred to it (was flex-end, which
+// floated it low and read as a stray loose label rather than part of the lockup).
 .mast .mast-kicker{font-family:var(--f-hand);color:var(--colorado);
-  font-size:clamp(1rem,2.4vw,1.35rem);line-height:1;transform:rotate(-4deg);
-  margin-left:.15rem;align-self:flex-end;margin-bottom:.1rem}
+  font-size:clamp(1rem,2.4vw,1.35rem);line-height:1;transform:rotate(-4deg) translateY(1px);
+  margin-left:.2rem;align-self:center}
 
 // ---- desktop nav: small baked paper TAB objects on the desk ----
 // scoped to the DIRECT nav so these never bleed into the mobile burger panel.
@@ -660,7 +666,10 @@ html.baked .board-pile>.clip:nth-child(5n+5){border-image-width:13px;border-imag
 // BRAND LAW: Happy/School-Bus are dark-ink-text-only 5% accents — NEVER eyebrow
 // or emphasis TEXT on a saturated field. The §4.3 foundation pairing on Grass /
 // Sambas / Lazuli is the Patrick-Hand eyebrow in OATS (warm, clears AA).
-.clip--grass .clip-kicker{color:var(--oats)}
+// Oats-on-Grass is a brand-sanctioned §4.3 pairing but computes ~2.78:1 (below AA);
+// a dark ink SEAM (ink pressed into the tooth) lifts the small Patrick-Hand kicker's
+// perceived contrast without recolouring outside the palette.
+.clip--grass .clip-kicker{color:var(--oats);text-shadow:0 1px 1.4px rgba(var(--sh-seam),.55)}
 .clip--grass .clip-title,.clip--grass .clip-dek,.clip--grass .clip-meta,
 .clip--grass .clip-go{color:var(--oats)}
 .clip--grass .clip-dek{text-shadow:0 .6px 0 rgba(var(--sh-seam),.30)}
@@ -827,11 +836,13 @@ html.baked .clip>.tape[data-tape="oats"]  {background-image:var(--bk-tape-oats)}
   // seeded x/y splay across ALL FOUR QUADRANTS *and the centre* — so no 100x100
   // region of the desk is bare. Pieces tuck BEHIND the pile (litter z:0, pile
   // z>=2), filling the gaps between/around the overlapped clips, not just edges.
-  .board-litter .litter--quote {left:auto;right:2%;   top:5%}     // top-right
-  .board-litter .litter--photo {left:1%;   top:34%}               // mid-left
-  .board-litter .litter--slip  {left:auto;right:1%;   top:58%}    // mid-right
+  // quote pinned lower + tucked toward the column so it overlaps the first card row
+  // rather than floating alone in the top-right void (QA: stranded note + dead desk).
+  .board-litter .litter--quote {left:auto;right:3%;   top:15%}    // upper-right, near the pile
+  .board-litter .litter--photo {left:1%;   top:40%}               // mid-left
+  .board-litter .litter--slip  {left:auto;right:1%;   top:60%}    // mid-right
   .board-litter .litter--byline{left:2%;   top:80%}               // lower-left
-  .board-litter .litter--ticket{left:auto;right:4%;   top:90%}    // lower-right
+  .board-litter .litter--ticket{left:auto;right:4%;   top:91%}    // lower-right
   .board-litter .litter--ring  {left:46%;  top:50%}               // DEAD-CENTRE stain
   .board-litter .litter--star  {left:7%;   top:9%}                // upper-left doodle
   .board-litter .litter--clip-deco{left:52%;top:18%}              // upper-CENTRE clip
