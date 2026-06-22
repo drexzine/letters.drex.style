@@ -231,7 +231,9 @@
     var ctx = cv.getContext('2d');
     // Warm Oats tooth across the whole field. scale up the noise cells a touch so
     // the macro-mottle reads as one continuous lit surface, not many small cells.
-    bakeCardstock(ctx, W, H, PAL.oats, { fiber: 1.6, scale: 2.4, rot: 0.05, density: 1.5,
+    // F5: a TOOTHIER baked field — more fiber + density so the cover-scaled baked
+    // layer (not the CSS grain) is no longer the thing washing out in big bare zones.
+    bakeCardstock(ctx, W, H, PAL.oats, { fiber: 2.0, scale: 2.4, rot: 0.05, density: 1.85,
       rng: mulberry32(hashStr('desk')) });
     // warm-dark mottle bias: a faint LOW-frequency umber wash so the desk grain
     // has a warm shadow direction (not a uniform pale field). Big cells (no seam).

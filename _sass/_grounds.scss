@@ -57,16 +57,31 @@ html.baked body{
   // multiply and the desk + scene-light read as ONE continuous lit surface. This
   // is the single source of truth for the desk bg (the equal-specificity rule in
   // _realism.scss L23 is the same intent and is harmless dead code once this agrees).
+  // LAYER ORDER (top→bottom): scene light (normal) · baked Oats desk field (normal)
+  // · FINE close-up fiber (~200px) · medium paper tooth (340px) · soft macro mottle
+  // (900px) · the faint CUTTING-MAT character (dot-grid + blue notebook rules) UNDER
+  // the grain. The three noise layers are saturate=0 grey-multiply over warm Oats —
+  // they only darken/lighten the Oats hue (NO chroma → brand law holds, NO #000/#fff).
+  // F5: the 340px tooth was raised .42→.55 and a THIRD very-fine grain (~200px,
+  // baseFreq 1.2) ADDED so big bare zones (mid-pile gaps, below the subscribe card)
+  // carry a crisp close-up fiber AND the soft mottle and never drift back to a soft
+  // wash at cover-scale. The cutting-mat layer is the ONE place the old removed
+  // dot-grid is welcome back — at the landing's low opacity, ONLY on the bare desk
+  // (body), NEVER on the .prose reading sheet (which stays texture-free).
   background-image:
     var(--bk-light, none),
     var(--bk-desk, none),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='340' height='340'%3E%3Cfilter id='t'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23t)' opacity='0.42'/%3E%3C/svg%3E"),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='900'%3E%3Cfilter id='m'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.014' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23m)' opacity='0.26'/%3E%3C/svg%3E");
-  background-repeat:no-repeat, no-repeat, repeat, repeat;
-  background-size:cover, cover, 340px 340px, 900px 900px;
-  background-position:center, center, center, center;
-  background-attachment:fixed, fixed, fixed, fixed;
-  background-blend-mode:normal, normal, multiply, multiply;
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)' opacity='0.09'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='340' height='340'%3E%3Cfilter id='t'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23t)' opacity='0.11'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='900'%3E%3Cfilter id='m'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.014' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23m)' opacity='0.06'/%3E%3C/svg%3E"),
+    radial-gradient(rgba(96,76,44,.05) 0.9px, transparent 1.1px),
+    repeating-linear-gradient(0deg,  transparent 0 45px, rgba(36,110,150,.045) 45px 46px),
+    repeating-linear-gradient(90deg, transparent 0 45px, rgba(36,110,150,.035) 45px 46px);
+  background-repeat:no-repeat, no-repeat, repeat, repeat, repeat, repeat, repeat, repeat;
+  background-size:cover, cover, 200px 200px, 340px 340px, 900px 900px, 46px 46px, auto, auto;
+  background-position:center, center, center, center, center, center, center, center;
+  background-attachment:fixed, fixed, fixed, fixed, fixed, fixed, fixed, fixed;
+  background-blend-mode:normal, normal, multiply, multiply, multiply, multiply, multiply, multiply;
 }
 
 // ONE soft tinted SCENE LIGHT + a faint edge vignette, laid OVER the desk but
@@ -140,9 +155,34 @@ a{color:inherit}
 // the "blog" Patrick-Hand kicker rides beside the wordmark (NOT part of the logo)
 // the "blog" tag rides next to the wordmark — centred to it (was flex-end, which
 // floated it low and read as a stray loose label rather than part of the lockup).
+// F10 — the ONE optional tactile masthead GREETING (echoing the landing's hero
+// gate). The hand-written 'blog' kicker is a small PEEL-UP paper TAB pinned beside
+// the wordmark: at rest it sits flat with a soft contact shadow; on hover/focus it
+// LIFTS its corner off the desk (a lift-the-flap nudge) and casts a deeper shadow,
+// like a tab you could peel. NON-NEGOTIABLE: this gates NOTHING — the wordmark +
+// all nav + content are fully present and readable with JS off (pure CSS :hover)
+// and under prefers-reduced-motion (the transform is nulled below; the label stays
+// fully legible). One gesture only — the landing earns whimsy with one hero move.
 .mast .mast-kicker{font-family:var(--f-hand);color:var(--coral-ink);
-  font-size:clamp(1rem,2.4vw,1.35rem);line-height:1;transform:rotate(-4deg) translateY(1px);
-  margin-left:.2rem;align-self:center}
+  font-size:clamp(1rem,2.4vw,1.35rem);line-height:1;
+  margin-left:.35rem;align-self:center;
+  position:relative;display:inline-block;
+  padding:.1em .4em .14em;
+  background-color:var(--paper);
+  border-radius:3px 8px 4px 7px;            // hand-cut tab corners
+  box-shadow:var(--sh-contact);
+  transform-origin:left bottom;
+  transform:rotate(-4deg) translateY(1px);
+  transition:transform var(--t-micro,.18s) var(--ease-settle,ease), box-shadow var(--t-micro,.18s) ease}
+html.baked .mast .mast-kicker{
+  background-color:transparent;
+  background-image:var(--bk-piece-oats);background-size:cover;background-position:center;
+  border-radius:0}
+// the peel: a soft warm wedge under the lower-left corner, revealed as the tab lifts
+.mast .brand:hover .mast-kicker,
+.mast .brand:focus-visible .mast-kicker{
+  transform:rotate(-6.5deg) translateY(-2px) rotate(.001deg);   // corner peels up
+  box-shadow:var(--sh-lift)}
 
 // ---- desktop nav: small baked paper TAB objects on the desk ----
 // scoped to the DIRECT nav so these never bleed into the mobile burger panel.
@@ -483,8 +523,19 @@ html.baked .board-head{
 // 3-column card row sharing one baseline. NO negative margins (those packed them
 // into a saturated quilt with no desk showing). The grid gap already supplies the
 // breathing room; these vertical seeds + the seeded widths (below) hand-arrange it.
-// Below 601px the pile is one column with a clean gap (SACRED: no x-overflow).
-@media (min-width:601px){
+// F6: SMOOTH THE ~600px 2-UP SQUEEZE. The auto-fill track (minmax(clamp(13rem,
+// 22vw,16rem),1fr)) fits TWO ~208px columns + gap from ~600px up, producing the
+// cramped near-two-column squeeze the audit flagged at the 600px boundary (a stray
+// star wedged in the tight gutter). So the SINGLE-column treatment + the seeded
+// stagger/overlap now switch at 721px (was 601px): below 721px force one column with
+// a clean generous gap so the awkward 2-up never appears, and the calm single-column
+// stack holds through the whole 360–720px band.
+@media (max-width:720px){
+  .board-pile{grid-template-columns:1fr;gap:clamp(1.4rem,4vw,2.2rem)}
+  .board-pile>.clip{margin:0;max-width:none}
+}
+// Below 721px the pile is one column with a clean gap (SACRED: no x-overflow).
+@media (min-width:721px){
   .board-pile>.clip{margin:0}
   // seeded vertical drop per post (off tilt-N): 0 / 48 / 96 / 24 / 72 / 16 / 56px.
   // Combined with the small translateY in the tilt rules these stagger every top
@@ -540,8 +591,9 @@ html.baked .board-head{
 // SEEDED differing widths so adjacent clips are never the same size (hand-cut
 // scraps, not a uniform card grid). Capped well under the .clip max so even the
 // widest reads as a floating scrap with cream around it. Only >600px — phones
-// keep the full single-column width.
-@media (min-width:601px){
+// keep the full single-column width. F6: only >720px (the seeded narrow widths
+// would re-introduce a cramped column inside the 601–720px single-column band).
+@media (min-width:721px){
   .board-pile>.clip:nth-child(5n+1){max-width:17.5rem}
   .board-pile>.clip:nth-child(5n+2){max-width:14.5rem}
   .board-pile>.clip:nth-child(5n+3){max-width:16.5rem}
@@ -997,9 +1049,26 @@ html.baked .clip>.tape[data-tape="oats"]  {background-image:var(--bk-tape-oats)}
   .board-litter .litter--byline{left:2%;   top:80%}               // lower-left
   .board-litter .litter--ticket{left:auto;right:7%;   top:91%}    // lower-right
   .board-litter .litter--ring  {left:46%;  top:50%}               // DEAD-CENTRE stain
-  .board-litter .litter--star  {left:7%;   top:9%}                // upper-left doodle
-  .board-litter .litter--clip-deco{left:52%;top:18%}              // upper-CENTRE clip
+  // F8 — DEDUPE/RE-ANCHOR the orphan star: it floated alone upper-left (7%,9%).
+  // Now it tucks at the BYLINE scrap's top-right corner (byline sits left:2% top:80%)
+  // so it clearly DECORATES that scrap instead of reading as a stray orphan.
+  .board-litter .litter--star  {left:13%;  top:75%}               // belongs to the byline scrap
+  .board-litter .litter--clip-deco{left:52%;top:18%}              // clamped near the upper-CENTRE pile
   .board-litter .litter--pin   {left:40%;  top:78%}               // lower-CENTRE pin
+  // F8 — the looping connector arrow sweeps from the hero banner toward the first
+  // clip; the caret sits in the bare gutter pointing at the pile. Both desktop-only.
+  .board-litter .litter--connector{left:23%; top:4%; width:150px}
+  .board-litter .litter--caret    {left:36%; top:30%}
+}
+// F8 — HIDE the loose hand-drawn doodles below ~1100px so they never crowd the
+// reading measure or the single-column pile. Aliveness below the arm comes from
+// the furniture EDGE BOIL, not free-floating marks. (The paper scraps + coffee-ring
+// stay; only the line doodles drop.)
+@media (max-width:1100px){
+  .board-litter .litter--star,
+  .board-litter .litter--clip-deco,
+  .board-litter .litter--connector,
+  .board-litter .litter--caret{display:none}
 }
 
 // each litter piece's washi tape, poking above its top edge (data-tape variants,
@@ -1077,6 +1146,12 @@ html.baked .litter--byline{
 
 // a stray hand-drawn Grass star + a dropped pin, just sitting in the litter
 .litter--star{flex:0 0 auto;align-self:center;transform:rotate(-8deg);opacity:.92}
+// F8 — the hero→clip connector arrow + the 'read me first' caret: hand-drawn coral
+// ink, wobbled by the same #roughsm boil hook the rest of the furniture uses (edge
+// boil, not a doodle field), seated under the soft light. Decorative, inert.
+.litter--connector{flex:0 0 auto;opacity:.78;transform:rotate(-2deg);filter:url(#roughsm)}
+.litter--caret    {flex:0 0 auto;opacity:.82;transform:rotate(4deg); filter:url(#roughsm)}
+.litter--connector svg, .litter--caret svg{display:block;width:100%;height:auto;overflow:visible}
 .litter--pin{flex:0 0 auto;align-self:center;width:30px;height:36px;transform:rotate(12deg);
   background-image:var(--bk-pin);background-size:contain;background-repeat:no-repeat;background-position:center}
 

@@ -71,15 +71,18 @@ html.baked .post-tag:nth-of-type(3n+3){background-color:var(--grass)!important;
 // ---- "JOIN A CIRCLE" masthead CTA — the ONE signposted conversion path from every
 //      page (the subscriber persona couldn't find signup; it was buried 60% down /about).
 //      A grass die-cut sticker key: AA-safe grass-deep + Oats, cream keyline, slight tilt.
-.mast-join{
-  color:var(--oats)!important; background:var(--grass-deep)!important;
-  padding:.34em .74em; border-radius:0; border:2px solid var(--oats);
+.mast-join, html.baked .mast-join{
+  color:var(--oats)!important;
+  background-color:var(--grass-deep)!important; background-image:none!important;
+  // the nav tabs carry a baked 14px torn-rim BORDER-IMAGE — it ate the fill and left
+  // a hollow green outline. Kill it: a clean 2px cream keyline so the grass shows solid.
+  border:2px solid var(--oats)!important; border-image:none!important;
+  border-radius:0; padding:.34em .74em;
   box-shadow:1px 2px 3px rgba(var(--sh-seam),.30);
   transform:rotate(-1.5deg);
   text-shadow:0 .5px .6px rgba(var(--sh-seam),.55);
   transition:transform .15s ease, box-shadow .15s ease;
 }
-html.baked .mast-join{background-image:none!important}   // flat vinyl key, not paper tooth
 .mast-join:hover{transform:rotate(0) translateY(-1px);
   box-shadow:1px 3px 5px rgba(var(--sh-seam),.34)}
 .mast-join:focus-visible{outline:3px solid var(--lazuli); outline-offset:3px}
@@ -119,6 +122,10 @@ html.baked .mast-join{background-image:none!important}   // flat vinyl key, not 
 @media (hover:hover) and (pointer:fine){
   .grip-hot{
     cursor:grab;
+    position:relative; z-index:60;                        // rise above neighbours so the
+                                                          // glow is never hidden behind an
+                                                          // overlapping scrap (the "green
+                                                          // doesn't show" bug)
     user-select:none; -webkit-user-select:none;          // move mode = no text selection
     // OBVIOUS bright grass glow (a tight core + a wide halo) so the grabbable paper
     // unmistakably "lights up". Alpha-following — hugs the torn silhouette, no rect halo.

@@ -202,6 +202,42 @@ $crayon-grain:
 }
 
 // ===================================================================
+// LEGIBILITY HARD-GATE — DEFENCE IN DEPTH (F2). The landing's inline LAW: the
+// ONLY sanctioned marks over running prose are HIGHLIGHT + UNDERLINE (they aid
+// reading). Rings / boxes / strikes / dense scribbles read as proofreader /
+// erratum marks clamped on a word mid-sentence — the explicit gate bug. The .md
+// sources are now re-tagged to highlight+underline only, but if a stray authored
+// ring/box/strike ever lands inside a reading paragraph again, downgrade it HERE
+// to the translucent highlighter swipe so it can never re-breach the gate. The
+// full loop/box/strike vocabulary stays intact OUTSIDE .prose p (margins, scrap
+// cards, headings, pull-quotes) where the copy-edit gesture belongs.
+// ===================================================================
+.prose p .m-circle::before,
+.prose p .m-box::before {
+  // become the aiding HIGHLIGHTER swipe: no ring/bracket, just a faint multiply
+  // wash hugging the word (the m-hl idiom), so the word still reads cleanly.
+  border: 0;
+  border-radius: 2px;
+  inset: .04em -.14em -.02em;          // tight to the glyphs, like a highlighter
+  left: -.14em; right: -.18em; top: .04em; bottom: -.02em;
+  background: var(--m-ink);
+  opacity: .16;
+  mix-blend-mode: multiply;
+  transform: rotate(-.6deg);
+  -webkit-mask-image: none;            // drop the conic ring-gap mask
+          mask-image: none;
+}
+.prose p .m-strike::after {
+  // a struck-through line scores OUT the word (erratum) — drop it to a faint
+  // underline that aids instead of impedes.
+  top: auto;
+  bottom: -.08em;
+  height: .12em;
+  transform: none;
+  opacity: .5;
+}
+
+// ===================================================================
 // MARGIN NOTES + MARKS — block-level includes placed right AFTER the line they
 // annotate. On the desk margin (desktop) they pin ABSOLUTELY into the bare
 // gutter beside the centred .prose column, tilted, with a thin hand-drawn
@@ -262,6 +298,16 @@ $sheet: 880px;                // reading sheet width (matches _post.scss)
 .m-mark__glyph svg { display: block; width: 1.4em; height: 1.4em; overflow: visible; }
 .m-mark__glyph svg [stroke] { stroke: var(--m-ink); }
 .m-mark__glyph svg [fill]:not([fill="none"]) { fill: var(--m-ink); }
+
+// F9 — DEMOTE yellow standalone doodle glyphs. School-Bus / Happy are HIGHLIGHTER
+// (m-hl fill) ONLY — never a standalone glyph stroke or small text on cream, where
+// they render near-invisible (a faint smudge). Any m-mark glyph authored bus/happy
+// is remapped to the AA coral ink so every doodle reads as a crafted mark. Yellow
+// stays vivid where it belongs: the m-hl highlighter band.
+.m-mark.m-bus, .m-mark.m-happy,
+.m-bus .m-mark__glyph, .m-happy .m-mark__glyph {
+  --m-ink: #{map-get($m-inks, "coral")};
+}
 
 // ---- DESKTOP: pin into the bare desk margin, with a leader arrow back -------
 @media (min-width: #{$gutter-arm}) {
@@ -390,25 +436,61 @@ html[data-tier="lite"] {
 }
 
 // ===================================================================
-// MOBILE (<=900px) — there is NO gutter. Margin notes/marks reflow to small
-// inline scrawls between the lines (handled by the default un-prefixed rules
-// above, which the desktop @media only overrides at >=#{$gutter-arm}). Here we
-// just HARD-GUARANTEE no horizontal overflow at 360–414px and trim sizes.
+// BELOW THE GUTTER ARM (<1100px) — there is NO real bare-desk gutter beside the
+// sheet, so margin notes/marks reflow to small inline scrawls in normal block
+// flow (the default un-prefixed rules above; the desktop absolute placement only
+// engages at >=#{$gutter-arm}). HARD-GATE FIX (F3): the flow-height restore is
+// gated to (#{$gutter-arm} - 1px) = 1099px, NOT 900px. ROOT CAUSE of the reported
+// '1080px: little stabs hangs over the card' breakage: the base rule sets
+// .m-note/.m-mark{height:0}, the absolute gutter placement is gated >=1100px, but
+// the height:auto restore was gated <=900px — so in the 901–1099px DEAD BAND notes
+// were INLINE (no absolute placement) yet their parent was still height:0, painting
+// ZERO layout height: the next <p> (and the definition card) overprinted them.
+// Restoring height:auto across the WHOLE sub-arm range closes the dead band — notes
+// are absolute-in-gutter >=1100px and clean zero-overlap inline-block <1100px, with
+// no gap where they collapse onto the column.
 // ===================================================================
-@media (max-width: 900px) {
-  // RESTORE REAL FLOW HEIGHT: height:0 is only valid >=#{$gutter-arm} where the
-  // slip is position:absolute (out of flow). Below the arm the slip is an in-flow
-  // block child of a height:0 parent, so it painted ZERO layout height and the
-  // next <p> overprinted it. height:auto lets the slip + its bottom margin reserve
-  // real space, pushing the following paragraph below the (wrapped, tilted) note.
+@media (max-width: #{$gutter-arm - 1px}) {
+  // RESTORE REAL FLOW HEIGHT across the whole sub-arm band (was 900px → left the
+  // 901–1099px dead band). height:auto lets the slip + its bottom margin reserve
+  // real space, pushing the following paragraph below the (wrapped, tilted) note,
+  // so a slip can never straddle a paragraph or overlap the definition card.
   .m-note, .m-mark { height: auto; }
   .m-note__slip {
     max-width: 100%;
     transform: rotate(-0.8deg);  // less corner dip than -1.1deg when wrapped
     overflow-wrap: anywhere;     // never let a long note push a scrollbar
     margin: .2em 0 .9em;         // honest bottom clearance now that height reserves it
+    clear: both;                 // never sit beside a floated definition/scrap card
   }
   .m-note--right .m-note__slip { transform: rotate(0.7deg); }
   // inline marks: keep wobble subtle on small screens, no overflow risk
   .m-circle::before, .m-box::before { filter: url(#roughsm); }
+
+  // ---- F4: AA on the cream sheet ----------------------------------------
+  // Below the arm the slip reflows ONTO the cream Oats sheet, where the authored
+  // brand hues fail AA as small TEXT (grass 2.78:1, lazuli 3.11:1, bus a smudge).
+  // Force the slip TEXT to the AA slate ink (~8:1) regardless of authored hue, and
+  // express the authored colour ONLY on the leader dash + the leader glyph so the
+  // note still reads hand-annotated, just legibly.
+  .m-note__slip { color: var(--ink); }
+  .m-note__slip::before { color: var(--m-ink); }   // the ↳ leader keeps the hue
+  // doodle glyphs authored in yellow (bus/happy) vanish on cream — remap any
+  // standalone m-mark glyph stroke to the AA coral ink so it reads as a crafted
+  // mark, not a faint smudge. (Yellow stays vivid only as the m-hl highlighter band.)
+  .m-bus .m-mark__glyph, .m-happy .m-mark__glyph,
+  .m-mark.m-bus, .m-mark.m-happy { --m-ink: #{map-get($m-inks, "coral")}; }
+}
+
+// ---- F4 cadence thin: on phones, keep at most ONE note/mark per ~2–3 paragraphs
+// so the single column never gets a scrawl after every sentence. The curated lines
+// (.m-note--keep, set in the .md where a beat must survive) always show; the rest
+// fall away on the narrow column. Default authored notes have no keep flag, so this
+// hides the OVERFLOW only where the cadence is too tight to read comfortably. ----
+@media (max-width: 640px) {
+  // hide consecutive same-block annotations: any m-note/m-mark immediately
+  // followed by another collapses the second, halving the densest runs.
+  .prose .m-note + .m-mark,
+  .prose .m-mark + .m-note,
+  .prose .m-mark + .m-mark { display: none; }
 }

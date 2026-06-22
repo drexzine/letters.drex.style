@@ -9,7 +9,11 @@
 .subscribe-card{
   position:relative; isolation:isolate;
   max-width:34rem; margin:clamp(2rem,5vw,3rem) auto;
-  padding:clamp(1.5rem,4vw,2.2rem) clamp(1.4rem,4vw,2rem) clamp(1.7rem,4vw,2.2rem);
+  // F7: a touch more inline-end padding so 'Join a Drex Circle.' (and a slightly
+  // longer headline) clears the torn right rim with visible breathing room — the
+  // -0.8deg tilt was eating the right padding and the terminal period nearly kissed
+  // the tear. Tilt kept.
+  padding:clamp(1.5rem,4vw,2.2rem) clamp(2rem,4.5vw,2.8rem) clamp(1.7rem,4vw,2.2rem) clamp(1.4rem,4vw,2rem);
   background-color:var(--paper); color:var(--ink);
   border-radius:80px 16px 90px 18px / 18px 88px 16px 80px;   // torn deckle fallback
   box-shadow:var(--sh-contact), var(--sh-ambient);
@@ -34,7 +38,9 @@ html.baked .page-doc .subscribe-card{
 .subscribe--lazuli .replycard-kicker{color:var(--lazuli-deep)}
 .subscribe--grass  .replycard-kicker{color:var(--grass-deep)}
 .replycard-title{font-family:var(--f-slab); font-style:italic; font-weight:700;
-  font-size:clamp(1.5rem,4vw,2rem); color:var(--ink); margin:.1rem 0 .5rem; line-height:1.05}
+  // F7: clamp max nudged 2rem→1.85rem so 'Circle.' clears the torn edge at all
+  // desktop widths (the tilt + torn rim ate the headroom at the old max).
+  font-size:clamp(1.5rem,4vw,1.85rem); color:var(--ink); margin:.1rem 0 .5rem; line-height:1.05}
 // the card title is an <h2.replycard-title> INSIDE .prose, so `.prose h2` (0,2,0)
 // beats `.replycard-title` (0,1,0) and leaks the 2.4rem section-head top margin +
 // the green marker underline onto the card. Reclaim its tight internal rhythm and

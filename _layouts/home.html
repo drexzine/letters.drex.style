@@ -20,6 +20,7 @@ layout: default
   from bakery.js). A .pin or .tape fastens it. Hover lifts it off the desk.
 {%- endcomment -%}
 <section class="board" aria-label="The notebook">
+  {% include desk-marginalia.html context="board" %}
   <div class="wrap">
 
     {%- comment -%} The board header — a Grass torn banner pinned to the desk.
@@ -82,10 +83,30 @@ layout: default
         </span>
       </div>
 
-      {%- comment -%} a stray hand-drawn Grass star, off in the litter (v6 doodle). {%- endcomment -%}
+      {%- comment -%} F8 — SPARSE, ANCHORED, hand-drawn marginalia (NOT the removed
+        scribble field). Each doodle now belongs to a scrap / section element, lives
+        ONLY in the bare desk gutter, and is hidden below 1100px so it never crowds
+        the measure. A hand-drawn Grass star tucked at the BYLINE scrap's corner. {%- endcomment -%}
       <svg class="litter litter--star doodle reveal" width="34" height="32" viewBox="0 0 64 56" fill="none">
         <path d="M32.5 6 L45.4 46.2 L10.6 21 L53.8 21.4 L19 46.5 Z"
               stroke="var(--grass)" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+
+      {%- comment -%} F8 — a looping CONNECTOR arrow sweeping from the hero banner
+        toward the first clip (the landing's hand-drawn 'this leads here' gesture),
+        in deep coral ink. Anchored top-left, sweeping right. Desktop-only. {%- endcomment -%}
+      <svg class="litter litter--connector doodle reveal" width="150" height="92" viewBox="0 0 150 92" fill="none" aria-hidden="true">
+        <path d="M8 20 C 40 4, 96 8, 120 36 C 134 52, 122 70, 104 72"
+              stroke="var(--coral-ink)" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <path d="M104 72 L116 60 M104 72 L118 76"
+              stroke="var(--coral-ink)" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+
+      {%- comment -%} F8 — a small 'read me first' caret pointing at the pile, in
+        deep coral. Sits in the bare gutter beside the first clip. Desktop-only. {%- endcomment -%}
+      <svg class="litter litter--caret doodle reveal" width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+        <path d="M10 8 L28 20 L10 32"
+              stroke="var(--coral-ink)" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
       </svg>
 
       {%- comment -%} a stray pin, just dropped on the desk. {%- endcomment -%}
