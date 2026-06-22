@@ -92,36 +92,17 @@ html.baked .post-tag:nth-of-type(3n+3){background-color:var(--grass)!important;
 }
 
 // ---- HANDLE-DRAG affordances (blog.js makeDraggable) ----
-// ONE consistent model: EVERY paper object — home litter paper, clippings, AND the
-// in-prose scraps — free-drags from anywhere and shows the SAME affordance. Drag is a
-// desktop (pointer:fine) feature; on touch nothing binds, so reading/scroll/tap/select
-// stay normal (no touch-action traps). Lifted while dragging; stays where dropped.
+// ONE consistent model: EVERY paper object is picked up by its OUTER ~22px BORDER BAND
+// (the torn-paper frame). blog.js toggles .grip-hot when the pointer is over that band
+// (never on the inner text), so the grabbable frame GLOWS and shows a grab cursor while
+// the inner content stays readable + selectable. Drag is mouse/pen; touch scrolls/taps.
 @media (hover:hover) and (pointer:fine){
-  // grab cursor on every draggable, and the SAME warm grass edge-GLOW on hover — the
-  // single "yes, pick me up" cue (alpha-following drop-shadow, never a rectangular halo).
-  .board-litter .litter--photo,
-  .board-litter .litter--slip,
-  .board-litter .litter--ticket,
-  .board-litter .litter--quote,
-  .board-litter .litter--byline,
-  .board-pile .clip,
-  .prose .pullquote,
-  .prose .callout,
-  .prose .definition,
-  .prose .figure.polaroid{ cursor:grab; }
-
-  .board-litter .litter--photo:hover,
-  .board-litter .litter--slip:hover,
-  .board-litter .litter--ticket:hover,
-  .board-litter .litter--quote:hover,
-  .board-litter .litter--byline:hover,
-  .board-pile .clip:hover,
-  .prose .pullquote:hover,
-  .prose .callout:hover,
-  .prose .definition:hover,
-  .prose .figure.polaroid:hover{
+  // the grabbable BORDER BAND lights up — the single "yes, pick me up here" cue. The
+  // grass edge-glow is alpha-following (hugs the torn silhouette, never a rect halo).
+  .grip-hot{
+    cursor:grab;
     filter:drop-shadow(0 1px 2px rgba(var(--sh-seam),.30))
-           drop-shadow(0 0 .5rem rgba(28,171,91,.36));
+           drop-shadow(0 0 .55rem rgba(28,171,91,.42));
   }
   // while dragging — identical for every object: grabbing cursor, lifted, deeper cast.
   .is-dragging{

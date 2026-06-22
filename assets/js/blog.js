@@ -661,13 +661,22 @@ window.__DREX_BLOG_SRC__ = (document.currentScript && document.currentScript.src
   }
 
   function initDrag() {
-    // ONE consistent drag model for EVERY paper object. Every draggable (home litter
-    // paper, clippings, AND in-prose scraps) free-drags from anywhere via the SAME
-    // inline-transform move and shows the SAME affordance — no object behaves
-    // differently from any other. TOUCH input is bailed inside makeDraggable
-    // (pointerType==="touch") so phones scroll / tap-to-open / select normally; only
-    // mouse/pen drag. No touch-action traps. This is the consistency fix.
+    // ONE consistent model for EVERY paper object: you PICK IT UP BY ITS OUTER BORDER
+    // BAND (the torn-paper frame, ~22px). That band GLOWS on hover so it's obviously
+    // the handle; the INNER content stays readable and text-selectable. Same grip,
+    // same glow, same move for litter paper, clippings, AND in-prose scraps. Touch
+    // never drags (bailed in makeDraggable) so phones scroll / tap / select normally.
     root.classList.add("js-drag");
+    var GRIP = 22;   // px — the grabbable frame width (the "~20px border" handle)
+
+    // inBand: is the pointer over the outer GRIP-px frame of el (not its inner body)?
+    function inBand(ev, el) {
+      var r = el.getBoundingClientRect();
+      var x = ev.clientX, y = ev.clientY;
+      if (x < r.left || x > r.right || y < r.top || y > r.bottom) return false;
+      return (x - r.left) < GRIP || (r.right - x) < GRIP ||
+             (y - r.top) < GRIP || (r.bottom - y) < GRIP;
+    }
 
     var draggables = [].slice.call(doc.querySelectorAll(
       ".board-litter .litter--photo, .board-litter .litter--slip, " +
@@ -676,11 +685,20 @@ window.__DREX_BLOG_SRC__ = (document.currentScript && document.currentScript.src
       ".prose .pullquote, .prose .callout, .prose .definition, .prose .figure.polaroid"
     ));
     for (var i = 0; i < draggables.length; i++) {
-      var el = draggables[i];
-      // home clippings are links — isLink suppresses navigation on a real drag, while
-      // a plain click still opens the post. Everything else is a plain scrap.
-      var isLink = !!(el.classList && el.classList.contains("clip"));
-      makeDraggable(el, null, isLink);
+      (function (el) {
+        // clippings are links — isLink suppresses navigation on a real drag; a plain
+        // click still opens the post. Drag arms ONLY from the border band (gripTest).
+        var isLink = !!(el.classList && el.classList.contains("clip"));
+        makeDraggable(el, { gripTest: inBand, isLink: isLink, moveVia: "translate" });
+        // light the grabbable frame on hover (only when the pointer is on the band,
+        // never on the inner text) so the handle is legible.
+        el.addEventListener("pointermove", function (ev) {
+          if (ev.pointerType === "touch") return;
+          if (el.classList.contains("is-dragging")) return;
+          el.classList.toggle("grip-hot", inBand(ev, el));
+        });
+        el.addEventListener("pointerleave", function () { el.classList.remove("grip-hot"); });
+      })(draggables[i]);
     }
 
     // "RESET THE DESK" — one gesture, every page: snap every object home by clearing
