@@ -447,7 +447,8 @@ html.baked .board-head{
 // eyebrow role (§5.2) with light tracking so it reads as a confident hand-set
 // label opening the board, not a small note. Oats on Grass clears AA at this size.
 .board-head .eyebrow{color:var(--oats);margin-bottom:.5rem;display:inline-block;
-  font-size:clamp(1.18rem,calc(1.0rem + 0.7vw),1.5rem);letter-spacing:.012em}
+  font-size:clamp(1.18rem,calc(1.0rem + 0.7vw),1.5rem);letter-spacing:.012em;
+  text-shadow:0 1px 2px rgba(var(--sh-seam),.55)}   // seam lift so Oats holds on the Grass card
 .board-title{
   font-family:var(--f-slab);font-style:italic;font-weight:700;
   font-size:clamp(2rem,7vw,var(--t-hero,4rem));line-height:.96;letter-spacing:-.02em;

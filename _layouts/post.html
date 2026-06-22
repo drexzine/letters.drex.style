@@ -41,6 +41,7 @@ layout: default
         {%- else -%}{%- assign bmat = 'grass' -%}{%- assign bpin = 'red' -%}
       {%- endcase -%}
       <div class="post-banner post-banner--{{ bstock }} piece slam" data-mat="{{ bmat }}" data-edge="torn">
+        <span class="pin" data-pin="{{ bpin }}" aria-hidden="true"></span>
         <h1 class="post-title slab">{{ page.title }}</h1>
       </div>
 

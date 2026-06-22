@@ -395,31 +395,30 @@ pre {
   // (was a half-height drawer with the desk + scraps bleeding through below it).
   .mast > .mob-nav.open { max-height: 100vh; max-height: 100dvh; overflow-y: auto; padding-bottom: 2rem; }
 
-  // the "string-pull" thread above the drawer items (decorative, hand-feel)
-  .mob-thread {
-    display: block;
-    height: 14px;
-    margin: 0 auto;
-    width: 2px;
-    background: var(--grass);
-  }
+  // (the stray "string-pull" thread is removed — in the full-screen panel it read as an
+  // orphaned green bar floating in the empty space. QA's #1 broken artifact.)
+  .mob-thread { display: none; }
 
+  // the nav fills the panel with a real GUTTER and is centred vertically so it doesn't
+  // jam into the top-left corner with 60% dead cream.
   .mob-nav ul {
-    list-style: none; margin: 0; padding: 0;
-    display: flex; flex-direction: column;
+    list-style: none; margin: 0;
+    min-height: calc(100vh - var(--mast-h, 56px) - 3rem);
+    padding: 1.25rem 1.6rem 2rem;       // the missing container gutter (was flush to x=0)
+    display: flex; flex-direction: column; justify-content: center; gap: .15rem;
   }
   .mob-nav li { margin: 0; }
   .mob-nav a {
     display: flex; align-items: center;
-    min-height: 48px;                   // a11y sacred: comfortable tap target
-    padding: 0.75rem 1.1rem;
+    min-height: 52px;                   // a11y sacred: comfortable tap target
+    padding: 0.7rem 0.4rem;
     font-family: var(--f-mono);
-    font-size: 0.85rem;
+    font-size: 1rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     text-decoration: none;
     color: var(--ink);
-    border-bottom: 1px solid rgba(28, 171, 91, 0.12);  // faint Grass hairline
+    border-bottom: 1px solid rgba(28, 171, 91, 0.18);  // Grass hairline, a touch stronger
   }
   .mob-nav a:focus-visible { outline: 3px solid var(--lazuli); outline-offset: -3px; }
 
@@ -484,14 +483,10 @@ pre {
   }
   .burger .burger-ico--x { opacity: 0; transform: rotate(-30deg) scale(0.7); }
 
-  // The Birdie 'menu' label under the chip — stays legible, never tiny.
-  .burger .burger-label {
-    font-family: var(--f-hand);
-    font-size: 0.72rem;
-    line-height: 1;
-    color: var(--ink);                           // Sambas: AA-safe label on the desk
-    transform: rotate(1.4deg);                   // a second tiny hand angle
-  }
+  // The 'menu' caption dropped BELOW the masthead rule (straddled the divider, looked
+  // like overflow). Hidden — the icon + the X-on-open are self-explanatory; keeps the
+  // cool button chip the founder liked without the broken-looking label.
+  .burger .burger-label { display: none; }
 
   // open state: the menu glyph cross-fades to an X (hooked off aria-expanded).
   .burger[aria-expanded="true"] { transform: rotate(0); }
