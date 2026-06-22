@@ -189,9 +189,9 @@ layout: default
       <article class="clip clip--{{ stock }} piece slam tilt-{{ t }}" data-mat="{{ mat }}" data-edge="torn">
         {%- comment -%} the fastener — a real pinned/taped object on TOP of the scrap {%- endcomment -%}
         {%- if fasten == 'pin' -%}
-          <span class="tape" data-tape="happy" aria-hidden="true"></span>
+          <span class="pin" data-pin="red" aria-hidden="true"></span>
         {%- elsif fasten == 'tape-lazuli' -%}
-          <span class="tape" data-tape="lazuli" aria-hidden="true"></span>
+          <span class="pin" data-pin="red" aria-hidden="true"></span>
         {%- elsif fasten == 'tape-happy' -%}
           <span class="tape" data-tape="happy" aria-hidden="true"></span>
         {%- else -%}
@@ -228,7 +228,7 @@ layout: default
     {% else %}
     <div class="board-pile">
       <article class="clip clip--grass piece slam tilt-2" data-mat="grass" data-edge="torn">
-        <span class="tape" data-tape="lazuli" aria-hidden="true"></span>
+        <span class="pin" data-pin="red" aria-hidden="true"></span>
         <div class="clip-body">
           <span class="clip-kicker">soon</span>
           <h2 class="clip-title">The first letter is being written.</h2>

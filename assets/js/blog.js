@@ -397,8 +397,13 @@ window.__DREX_BLOG_SRC__ = (document.currentScript && document.currentScript.src
         var m = ""; try { m = getComputedStyle(el).transform; } catch (e) {}
         rest = (m && m !== "none") ? (" " + m) : "";
       }
+      // SNAP FIX: killing the entrance animation frees the `transform` (drex-settle fills
+      // a rotate) so the drag can drive it — BUT it also un-fills the `translate` LONGHAND,
+      // which then falls back to the base `.slam{translate:0 -90px}` rule and the paper
+      // JUMPED up ~90px to the cursor on grab. Pin the longhand to 0 so it can't.
       el.style.animation = "none";
       el.style.transition = "none";
+      el.style.translate = "0px";
       el.classList.add("is-dragging");
       try { el.setPointerCapture(pid); } catch (e) {}
       try { if (window.getSelection) getSelection().removeAllRanges(); } catch (e) {}
