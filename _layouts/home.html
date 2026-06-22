@@ -20,10 +20,6 @@ layout: default
   from bakery.js). A .pin or .tape fastens it. Hover lifts it off the desk.
 {%- endcomment -%}
 <section class="board" aria-label="The notebook">
-  {%- comment -%} FIRST CHILD of .board (position:relative): the faded
-      squigglevision doodle field, painted behind the clippings + wrap.
-      pointer-events:none → the draggable polaroid & nav are unaffected. {%- endcomment -%}
-  {% include desk-marginalia.html context="board" %}
   <div class="wrap">
 
     {%- comment -%} The board header — a Grass torn banner pinned to the desk.

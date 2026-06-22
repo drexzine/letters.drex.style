@@ -109,22 +109,29 @@ html.baked .mast-join{background-image:none!important}   // flat vinyl key, not 
 }
 
 // ---- HANDLE-DRAG affordances (blog.js makeDraggable) ----
-// ONE consistent model: EVERY paper object is picked up by its OUTER ~22px BORDER BAND
-// (the torn-paper frame). blog.js toggles .grip-hot when the pointer is over that band
-// (never on the inner text), so the grabbable frame GLOWS and shows a grab cursor while
-// the inner content stays readable + selectable. Drag is mouse/pen; touch scrolls/taps.
+// TWO CLEAR MODES per paper object, decided by where the pointer is:
+//   • READ MODE (pointer over the inner content) — normal cursor, text selectable.
+//   • MOVE MODE (pointer over the OUTER border band) — blog.js sets .grip-hot: the paper
+//     lights up with an OBVIOUS grass glow, the cursor becomes a grab hand, AND text
+//     selection is turned OFF — so a drag can NEVER turn into a text-select. The glow IS
+//     the contract: if it's glowing, you're moving paper; if it's not, you're reading.
+// Drag is mouse/pen; touch always scrolls/taps/selects (never drags).
 @media (hover:hover) and (pointer:fine){
-  // the grabbable BORDER BAND lights up — the single "yes, pick me up here" cue. The
-  // grass edge-glow is alpha-following (hugs the torn silhouette, never a rect halo).
   .grip-hot{
     cursor:grab;
-    filter:drop-shadow(0 1px 2px rgba(var(--sh-seam),.30))
-           drop-shadow(0 0 .55rem rgba(28,171,91,.42));
+    user-select:none; -webkit-user-select:none;          // move mode = no text selection
+    // OBVIOUS bright grass glow (a tight core + a wide halo) so the grabbable paper
+    // unmistakably "lights up". Alpha-following — hugs the torn silhouette, no rect halo.
+    filter:drop-shadow(0 0 2px rgba(28,171,91,.95))
+           drop-shadow(0 0 10px rgba(28,171,91,.80))
+           drop-shadow(0 2px 3px rgba(var(--sh-seam),.32));
   }
-  // while dragging — identical for every object: grabbing cursor, lifted, deeper cast.
+  // while dragging — the glow stays, lifted, selection stays off, deeper contact cast.
   .is-dragging{
     cursor:grabbing!important; z-index:80!important;
-    filter:drop-shadow(3px 8px 12px rgba(20,16,12,.24))!important;
+    user-select:none!important; -webkit-user-select:none!important;
+    filter:drop-shadow(0 0 2px rgba(28,171,91,.9))
+           drop-shadow(3px 8px 12px rgba(20,16,12,.26))!important;
   }
 }
 

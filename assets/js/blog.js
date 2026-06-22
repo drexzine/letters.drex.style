@@ -667,7 +667,7 @@ window.__DREX_BLOG_SRC__ = (document.currentScript && document.currentScript.src
     // same glow, same move for litter paper, clippings, AND in-prose scraps. Touch
     // never drags (bailed in makeDraggable) so phones scroll / tap / select normally.
     root.classList.add("js-drag");
-    var GRIP = 22;   // px — the grabbable frame width (the "~20px border" handle)
+    var GRIP = 26;   // px — the grabbable frame width (generous so the band is easy to hit)
 
     // inBand: is the pointer over the outer GRIP-px frame of el (not its inner body)?
     function inBand(ev, el) {

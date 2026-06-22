@@ -95,11 +95,6 @@ layout: default
     {%- endcomment -%}
   <div class="post-stage post-stage--desk">
 
-    {%- comment -%} FIRST CHILD: the faded squigglevision doodle field, painted
-        behind every later sibling (the reading sheets occlude it under the
-        column). pointer-events:none → drag/selection unaffected. {%- endcomment -%}
-    {% include desk-marginalia.html context="post" %}
-
     {%- comment -%}
       INTERACTIVITY PARITY (round 2) — the home board has one genuinely
       draggable 'pick-it-up' object (blog.js initDrag binds the FIRST
