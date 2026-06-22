@@ -1,0 +1,22 @@
+{%- comment -%}
+  byline.html — renders the author chip for a post.
+  Looks up `post.author` (the front-matter key) in _data/authors.yml and renders
+  a photo + name + role chip linking to /authors/<key>/. If the post has no
+  `author` key (or it isn't in authors.yml), it falls back to site.author as a
+  plain text name — no broken link, no missing photo.
+  API: {% include byline.html author=page.author %}
+{%- endcomment -%}
+{%- assign key = include.author | default: page.author -%}
+{%- assign a = site.data.authors[key] -%}
+{%- if a -%}
+  {%- assign accent = a.accent | default: 'grass' -%}
+  <a class="byline byline--{{ accent }}" href="{{ '/authors/' | append: key | append: '/' | relative_url }}" rel="author">
+    {%- if a.photo %}<span class="byline-photo"><img src="{{ a.photo | relative_url }}" alt="" loading="lazy" width="80" height="80"></span>{%- endif %}
+    <span class="byline-text">
+      <span class="byline-name">{{ a.name }}</span>
+      {%- if a.role %}<span class="byline-role">{{ a.role }}</span>{%- endif %}
+    </span>
+  </a>
+{%- else -%}
+  <span class="byline byline--plain"><span class="byline-text"><span class="byline-name">{{ page.author | default: site.author }}</span></span></span>
+{%- endif -%}

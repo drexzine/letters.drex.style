@@ -1,0 +1,60 @@
+---
+layout: default
+---
+{%- comment -%}
+  author.html — an author's home: bio header (from _data/authors.yml, keyed by
+  page.slug) + a taped headshot + the list of letters they've written.
+{%- endcomment -%}
+{%- assign a = site.data.authors[page.slug] -%}
+{%- assign accent = a.accent | default: 'grass' -%}
+<article class="author author--{{ accent }}">
+
+  <header class="author-head">
+    <div class="wrap">
+      {% if a.photo %}
+      <figure class="author-photo polaroid">
+        <span class="tape" aria-hidden="true"></span>
+        <div class="ph"><img src="{{ a.photo | relative_url }}" alt="{{ a.name }}" width="600" height="600" loading="lazy"></div>
+      </figure>
+      {% endif %}
+      <div class="author-id">
+        <span class="eyebrow">a voice in the correspondence</span>
+        <h1 class="slab">{{ a.name | default: page.name | default: page.title }}</h1>
+        {% if a.role %}<p class="author-role">{{ a.role }}</p>{% endif %}
+        {% if a.bio %}<p class="author-bio">{{ a.bio }}</p>{% endif %}
+      </div>
+    </div>
+  </header>
+
+  {%- comment -%} the author page body (free prose from the _authors/<slug>.md file). {%- endcomment -%}
+  {% if content != '' %}
+  <div class="wrap">
+    <div class="prose">
+      {{ content }}
+    </div>
+  </div>
+  {% endif %}
+
+  {%- comment -%} letters by this author — match post.author against page.slug. {%- endcomment -%}
+  <section class="author-letters">
+    <div class="wrap">
+      <h2 class="slab">Letters from {{ a.name | default: page.name | default: page.title }}</h2>
+      <ul class="author-letter-list">
+        {%- assign mine = site.posts | where: "author", page.slug -%}
+        {% for post in mine %}
+        <li class="author-letter">
+          <a href="{{ post.url | relative_url }}">
+            {% if post.eyebrow %}<span class="eyebrow">{{ post.eyebrow }}</span>{% endif %}
+            <span class="author-letter-title slab">{{ post.title }}</span>
+            {% if post.dek %}<span class="author-letter-dek">{{ post.dek }}</span>{% endif %}
+            <span class="author-letter-date"><time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%B %-d, %Y" }}</time></span>
+          </a>
+        </li>
+        {% else %}
+        <li class="author-letter author-letter--empty">No letters yet — the first one is on its way.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </section>
+
+</article>

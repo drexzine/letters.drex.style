@@ -1,16 +1,16 @@
 {%- comment -%}
-  figure.html — a real POLAROID (v6 .b-photo): white print frame, emulsion chin
-  shadow + diagonal print gloss in the well, washi tape, Birdie caption.
+  figure.html — a real POLAROID: white print frame, photo well (.ph), washi tape,
+  a Patrick-Hand caption (.cap). Lazy-loaded image. Tearable (direct .tape child).
   API:  {% include figure.html src="..." caption="..." alt="..." %}
         src     — image path (required).
         caption — optional handwritten caption under the print.
         alt     — optional alt text; falls back to caption then "".
 {%- endcomment -%}
 {%- assign alt = include.alt | default: include.caption | default: "" -%}
-<figure class="figure polaroid slam" data-desk-id="figure">
+<figure class="polaroid slam">
   <span class="tape" aria-hidden="true"></span>
   <div class="ph"><img src="{{ include.src | relative_url }}" alt="{{ alt | escape }}" loading="lazy" /></div>
   {%- if include.caption -%}
-  <figcaption class="cap" data-text>{{ include.caption }}</figcaption>
+  <figcaption class="cap">{{ include.caption }}</figcaption>
   {%- endif -%}
 </figure>

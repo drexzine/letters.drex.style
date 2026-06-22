@@ -4,158 +4,64 @@ layout: default
 <article class="post">
 
   {%- comment -%}
-    COLLAGE MASTHEAD — the post opens as hand-arranged clippings on the desk,
-    deliberately OFF-GRID (a type-collage hero, not a centered stack):
-      - the eyebrow kicker on a small Oats scrap OVERLAPS the banner's top-left
-        corner at its own angle (.is-corner) so it reads as a clipping tucked
-        UNDER the headline, not a label stacked above it;
-      - the big Pitch-italic title rides a GRASS torn banner pinned with a
-        thumbtack — a heavy taped/pinned scrap, so it SLAMS in;
-      - the Bitter-italic dek sits on a DIFFERENT, narrower measure and is
-        offset/indented off the title's left edge (.is-offset), reveals up;
-      - a DM-Mono date stamp.
-    Then the reading SHEET (.prose) below — the sacred legible Bitter column on
-    real cream paper. ENTRANCE PHYSICS: the heavy pinned banner gets `slam`;
-    the lighter eyebrow scrap, dek and meta get `reveal`; all are inert at rest
-    and settle to final visible state under reduced motion (engine fail-safe).
-    (styles: _post.scss + _grounds.scss; motion: _realism.scss/_whimsy.scss)
+    COLLAGE MASTHEAD — the post opens as hand-arranged clippings on the desk:
+      - the eyebrow kicker on a small Oats scrap (.reveal) tucks under the headline;
+      - the big Courier-Prime-italic title rides a Grass/stock torn banner pinned
+        with a thumbtack (.slam) so it SLAMS in;
+      - the Bitter-italic dek + date + read-time + byline sit on one cream scrap (.reveal).
+    Then the reading SHEET (.prose) below — the sacred legible Bitter column.
+    All furniture is inert at rest and settles to final state under reduced motion.
   {%- endcomment -%}
   <header class="post-head">
     <div class="wrap">
 
       {% if page.eyebrow %}
-      <span class="post-eyebrow is-corner scrap-kicker piece reveal" data-mat="oats" data-edge="cut">
+      <span class="post-eyebrow reveal">
         <span class="eyebrow">{{ page.eyebrow }}</span>
       </span>
       {% endif %}
 
-      {%- comment -%} the title banner carries the POST'S OWN MATERIAL (front-matter
-        `stock:`) so the page opens in the same substance as its home clipping:
-        airmail letter · ledger memo · stitched cloth · (default) Grass banner. {%- endcomment -%}
       {%- assign bstock = page.stock | default: 'grass' -%}
-      {%- case bstock -%}
-        {%- when 'cloth'     -%}{%- assign bmat = 'sambas' -%}{%- assign bpin = 'oats' -%}
-        {%- when 'airmail'   -%}{%- assign bmat = 'oats'   -%}{%- assign bpin = 'red'  -%}
-        {%- when 'ledger'    -%}{%- assign bmat = 'oats'   -%}{%- assign bpin = 'red'  -%}
-        {%- when 'newsprint' -%}{%- assign bmat = 'oats'   -%}{%- assign bpin = 'red'  -%}
-        {%- else -%}{%- assign bmat = 'grass' -%}{%- assign bpin = 'red' -%}
-      {%- endcase -%}
-      <div class="post-banner post-banner--{{ bstock }} piece slam" data-mat="{{ bmat }}" data-edge="torn">
-        <span class="pin" data-pin="{{ bpin }}" aria-hidden="true"></span>
+      <div class="post-banner post-banner--{{ bstock }} slam">
+        <span class="pin" aria-hidden="true"></span>
         <h1 class="post-title slab">{{ page.title }}</h1>
       </div>
 
-      {%- comment -%} dek + meta wrapped in ONE cream scrap so they sit on a real
-        paper slip, not floating as bare text on the noisy desk. {%- endcomment -%}
-      <div class="post-standfirst scrap piece reveal" data-mat="oats" data-edge="torn">
-        {% if page.dek %}<p class="post-dek reveal">{{ page.dek }}</p>{% endif %}
+      <div class="post-standfirst reveal">
+        {% if page.dek %}<p class="post-dek">{{ page.dek }}</p>{% endif %}
 
-        <div class="post-meta reveal">
+        <div class="post-meta">
           <span class="post-datestamp"><time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%B %-d, %Y" }}</time></span>
+          {%- comment -%} 240 wpm: furniture (pull-quotes, definitions, call-outs) lets
+             the eye rest, so raw word count overstates effort. {%- endcomment -%}
           {% assign words = content | strip_html | number_of_words %}
-          {% comment %} 240 wpm: furniture (pull-quotes, definitions, call-outs) lets the
-             eye rest, so raw word count overstates effort. {% endcomment %}
           {% assign rt = words | divided_by: 240 | plus: 1 %}
           <span class="sep" aria-hidden="true">&middot;</span>
           <span>{{ rt }} min read</span>
-          {% if page.author or site.author %}
-          <span class="sep" aria-hidden="true">&middot;</span>
-          <span>{{ page.author | default: site.author }}</span>
-          {% endif %}
+        </div>
+
+        <div class="post-byline">
+          {% include byline.html author=page.author %}
         </div>
       </div>
     </div>
   </header>
 
   {%- comment -%}
-    THE READING STAGE — a CONTINUOUS warm Oats desk holding the sacred cream
-    reading sheet(s). v6 round-3 FIX: kill the monolithic ~5000px sheet (the
-    single biggest post-page tell: a flat Medium document, the opposite of v6's
-    short dense overlapping desk). TWO moves, both done here in the layout:
-
-      1. .post-stage is now a bare CONTINUOUS DESK (no rounded panel, no inner
-         padding) so the baked Oats desk tooth + scene light read end-to-end and
-         BLEED well past the reading column on both sides — bare warm desk shows
-         around every sheet, exactly like v6.
-
-      2. The essay body is SPLIT at its <h2> section breaks into a stack of
-         SHORTER torn paper sheets. Each section sheet tears its own deckle (the
-         per-:nth-of-type variants in _post.scss), settles at its own seeded
-         tilt, and a strip of bare desk shows between sheets — so no single
-         sheet is a 5000px tile and the border-image tear never visibly repeats
-         down one giant edge. Splitting on <h2 is SAFE: furniture (callouts,
-         definitions, pull-quotes, figures) never contains an <h2>, so no scrap
-         is ever cut across two sheets — only whole top-level sections move.
-
-      Robust + content-agnostic: a post with no <h2> sections simply renders as
-      ONE sheet on the continuous desk (the short posts are not 5000px monoliths
-      anyway); the long, deeply-sectioned essay — the real offender — becomes a
-      stack of ~8 short overlapping sheets. Reading legibility is SACRED: the
-      running Bitter text inside each .prose stays clean, upright, comfortable.
-    {%- endcomment -%}
-  <div class="post-stage post-stage--desk">
+    THE READING STAGE — a continuous warm Oats desk holding the sacred cream
+    reading sheet. The running Bitter text inside .prose stays clean, upright,
+    comfortable: NO tape, NO texture, NO filter under the reading column (BRAND LAW).
+  {%- endcomment -%}
+  <div class="post-stage">
     {% include desk-marginalia.html context="post" %}
-
-    {%- comment -%}
-      INTERACTIVITY PARITY (round 2) — the home board has one genuinely
-      draggable 'pick-it-up' object (blog.js initDrag binds the FIRST
-      `.board-litter .litter--photo` in the document). The long essay had none.
-      So we drop a SINGLE decorative loose polaroid onto the post desk, in the
-      `.board-litter--post` overlay. It is:
-        - aria-hidden + NOT a link (purely a craft toy; assistive tech skips it);
-        - pinned into the BARE DESK MARGIN beside the reading column (positioned
-          in _post.scss so it can never sit over `.prose` — content is never on
-          the drag path, so a drag can never strand a word of the essay);
-        - desktop-only as a drag affordance: on phones the litter overlay collapses
-          out of the way (no absolute splay), so it never crowds the 360px measure.
-      initDrag grabs the first match document-wide; the post has exactly one, so
-      no JS change is needed and the home page is untouched. REVEAL (not slam): it
-      fades in once and LANDS at translate:0 0 — the same home position initDrag
-      settles to (tgtX/tgtY=0) — so the entrance engine and the drag never fight
-      over the `translate` longhand, and the scrap computes opacity:1 at rest.
-    {%- endcomment -%}
-    <div class="board-litter board-litter--post" aria-hidden="true">
-      <figure class="litter litter--photo figure polaroid piece reveal" data-mat="oats" data-edge="cut">
-        <span class="tape" data-tape="lazuli"></span>
-        <div class="ph">
-          <img src="{{ '/assets/img/studio.jpg' | relative_url }}" alt=""
-               loading="lazy" decoding="async"
-               onerror="this.closest('.ph').classList.add('ph--empty');this.remove()">
-        </div>
-        <figcaption class="cap">drag me &#10047;</figcaption>
-      </figure>
-    </div>
-
-    {%- comment -%} split on the section rule; the leading "" chunk before the
-        first heading is the intro sheet, each following chunk re-grows its <h2 {%- endcomment -%}
-    {% assign sections = content | split: '<h2' %}
-    {%- assign shown = 0 -%}
-    {% for section in sections %}
-      {%- if forloop.first -%}
-        {%- assign chunk = section -%}
-      {%- else -%}
-        {%- assign chunk = section | prepend: '<h2' -%}
-      {%- endif -%}
-      {%- comment -%} skip an empty leading chunk (post that opens straight on a heading) {%- endcomment -%}
-      {%- assign trimmed = chunk | strip -%}
-      {%- if trimmed != '' -%}
-      <div class="prose sheet-leaf">
-        {{ chunk }}
+    <div class="wrap">
+      <div class="prose">
+        {{ content }}
       </div>
-      {%- assign shown = shown | plus: 1 -%}
-      {%- comment -%} MOBILE-AUDIT: the page is long and the reply card sits at the very
-        bottom, so a phone reader who drops off mid-letter never sees a subscribe prompt.
-        Drop ONE lightweight taped slip into the body — after the second sheet (well into
-        the read, not at the masthead) — that anchor-jumps to the reply card. A scrap,
-        NOT a sticky bar, styled phone-only in _mobile.scss so it never breaks the column. {%- endcomment -%}
-      {%- if shown == 2 -%}
-      <p class="mid-sub" aria-hidden="false"><a href="#reply-card">more letters land in the inbox</a></p>
-      {%- endif -%}
-      {%- endif -%}
-    {% endfor %}
+    </div>
   </div>
 
-  {%- comment -%} Post foot: tags, the stamped subscribe key, prev/next paper tabs. {%- endcomment -%}
+  {%- comment -%} Post foot: tags, the subscribe reply card, prev/next nav, reset desk. {%- endcomment -%}
   <div class="post-foot">
     <div class="wrap">
 
@@ -166,8 +72,8 @@ layout: default
       </div>
       {% endif %}
 
-      {%- comment -%} subscribe CTA = the Kit "join the open Circle" form, re-skinned as a
-        hand-filled reply card (see _includes/subscribe.html + _sass/_subscribe.scss). {%- endcomment -%}
+      {%- comment -%} end-of-post subscribe = the Kit "open invite" form (main list),
+        re-skinned as a hand-filled reply card. {%- endcomment -%}
       {% include subscribe.html
          uid="f0604c333e"
          accent="grass"
@@ -192,10 +98,9 @@ layout: default
 
       <p class="back-line reveal"><a class="back-link" href="{{ '/' | relative_url }}">&larr; back to <span class="ul draw">the notebook</span></a></p>
 
-      {%- comment -%} a kraft "reset desk" tab — clears any dragged-card positions
-        and slides the reading furniture home. A real <button> (keyboard-reachable,
-        data-no-drag so it never arms the shuffle); inert with no JS. {%- endcomment -%}
-      <button type="button" class="desk-reset" data-desk-reset data-no-drag>reset the desk</button>
+      {%- comment -%} a "reset desk" button — clears any dragged-card positions and
+        slides the furniture home. A real keyboard-reachable button; blog.js wires it. {%- endcomment -%}
+      <button class="reset-desk" type="button">put it back</button>
 
     </div>
   </div>

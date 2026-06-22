@@ -1,26 +1,21 @@
 <!doctype html>
 <html lang="{{ site.lang | default: 'en' }}">
 <head>
-{% include head.html %}
+  {% include head.html %}
 </head>
-<body data-motion="full">
-{% include filters.html %}
-{% include masthead.html %}
+<body>
 
-<main id="top">
-{{ content }}
-</main>
+  {%- comment -%} Live SVG filters that power every torn/rough edge. Rendered ONCE. {%- endcomment -%}
+  {% include filters.html %}
 
-{% include footer.html %}
+  {% include masthead.html %}
 
-{%- comment -%}
-  bakery.js FIRST: it bakes the v6 material sprites (desk, scene light, torn
-  scrap faces + edges, washi tape, pushpin, ink stamp) into :root --bk-* vars
-  and flags <html class="baked"> so the SCSS swaps flat fallbacks for real
-  baked paper. blog.js SECOND: motion (reveal/slam paper physics, all gated by
-  prefers-reduced-motion), the burger nav, the reduced-motion switch.
-{%- endcomment -%}
-<script src="{{ '/assets/js/bakery.js' | relative_url }}" defer></script>
-<script src="{{ '/assets/js/blog.js' | relative_url }}" defer></script>
+  <main id="top">
+    {{ content }}
+  </main>
+
+  {% include footer.html %}
+
+  <script src="{{ '/assets/js/blog.js' | relative_url }}" defer></script>
 </body>
 </html>

@@ -1,1673 +1,498 @@
-/* =============================================================================
-   _post.scss — the reading stage + the Markdown-callable furniture kit.
+// ===================================================================
+// _post.scss — the READING STAGE for a single letter.
+//
+// THREE jobs:
+//   1. .post-stage — a CONTINUOUS warm Oats desk; bare desk shows around every
+//      sheet (no monolithic 5000px tile; the layout splits the essay on <h2>).
+//   2. .prose — the SACRED reading column: Bitter on a cream sheet, upright,
+//      comfortable measure (≤~64ch), AA contrast. ZERO texture / filter / tape /
+//      tilt under the running text. This exclusion is brand law.
+//   3. furniture — colored torn-paper craft objects (pullquote / callout /
+//      definition / figure / cite) + margin marginalia (m-note / m-mark) sitting
+//      in the bare desk GUTTER beside the column on desktop, reflowing inline on
+//      mobile (mobile rules live in _mobile.scss).
+//
+// All texture = live SVG filters. All shadows = flat solid ink offsets.
+// ===================================================================
 
-   v6 MATERIAL OVERHAUL. The furniture is no longer pale CSS boxes with hard ink
-   offsets — it is COLORED TORN-PAPER SCRAPS pinned/taped to a warm desk under
-   ONE soft tinted light, ported from the working v6 zine-maker code
-   (compose-v6.html: .b-headline / .b-answer / .b-photo .cap / .b-quote /
-   .b-credit). Reproduced = reused, re-skinned to the blog's furniture.
+.post{padding-top:clamp(1.5rem,4vw,3rem)}
 
-   THREE jobs:
-     1. .post-stage  — a warm continuous OATS DESK under one soft top-left light.
-     2. .prose       — the SACRED reading SHEET: a real cream paper sheet (tooth +
-        torn deckle + soft tinted contact shadow) — but the running Bitter text
-        stays clean, upright, comfortable measure, AA contrast.
-     3. furniture    — colored craft objects: a Colorado torn quote-scrap, a
-        Sambas dark torn answer-note, an index-card definition, numbered torn
-        pattern scraps, a real polaroid, a kraft stamped-credit clipping.
+// ---------------------------------------------------------------
+// STANDALONE PAGE HEAD — about / start-here / topics / join pages (layout:page).
+// A simpler, calmer cousin of the post collage: an eyebrow scrap, a slab title,
+// a Bitter-italic dek. No banner/pin theatre — these are reference pages.
+// ---------------------------------------------------------------
+.page{padding-top:clamp(1.5rem,4vw,3rem)}
+.page-head{position:relative;padding-bottom:clamp(1rem,3vw,2rem)}
+.page-head .wrap{position:relative}
+.page-head .eyebrow{display:inline-block;margin-bottom:.3rem}
+.page-head h1,.page-head .slab{font-family:var(--f-slab);font-style:italic;font-weight:700;
+  line-height:1.0;letter-spacing:-.018em;font-size:clamp(2rem,6vw,3.6rem);
+  color:var(--ink);margin:.1rem 0 0;text-wrap:balance}
+.page-dek{font-family:var(--f-body);font-style:italic;font-weight:400;
+  font-size:var(--t-lede,clamp(1.2rem,2.1vw,1.6rem));line-height:1.45;color:var(--sambas);
+  margin:.7rem 0 0;max-width:52ch}
 
-   ---- THE MATERIAL CONTRACT (how realism is achieved, per REFS 33) ----
-   The shadow vocabulary (--sh-contact / --sh-ambient / --sh-lift / --sh-hover —
-   warm umber 58,49,38 cast, 44,36,26 occlusion seam) and the baked sprite slots
-   (--bk-piece-{oats,grass,sambas,coral,lazuli,kraft}, --bk-edge-*, --bk-tape-*,
-   --bk-pin, --bk-stamp) are OWNED by _tokens/_realism (the engine). This file
-   does NOT redefine them.
+// ---------------------------------------------------------------
+// COLLAGE MASTHEAD — off-grid hand-arranged clippings, not a centered stack.
+// ---------------------------------------------------------------
+.post-head{position:relative;padding-bottom:clamp(1.5rem,4vw,2.6rem)}
+.post-head .wrap{position:relative}
 
-   So each furniture object is built in two layers, exactly like the engine's
-   .scrap primitive:
-     • BASE (always): a flat brand-color surface lifted by the soft tinted
-       --sh-* shadows — legible, on-brand, correct even with JS off.
-     • html.baked (when bakery.js has run): the real two-zone torn paper FACE +
-       EDGE border-image via the engine's `scrap-face` mixin, so the scrap gains
-       actual paper tooth, dye-core rims and pulp fiber.
-   Reading legibility is sacred: the .prose column never gets a colored scrap.
-   ------------------------------------------------------------------------- */
+// the eyebrow kicker on a little Oats scrap, tucked at the banner's top-left.
+.post-eyebrow{display:inline-block;z-index:3;
+  @include paper-face($filter:roughsm, $radius:6px, $boil:none,
+    $border:2.4px solid var(--ink), $shadow:3px 3px 0 0 var(--ink));
+  padding:.2rem .7rem;
+  transform:rotate(-2deg);margin-left:clamp(.5rem,3vw,2rem)}
+.post-eyebrow .eyebrow{transform:rotate(0);color:var(--coral-ink)}
 
-/* ---------------------------------------------------------------------------
-   1. POST STAGE — the warm OATS DESK under one soft top-left light.
-   The masthead/eyebrow/title/dek live above the prose, on the desk grain.
-   ------------------------------------------------------------------------- */
-.post-stage {
-  position: relative;
-  width: 100%;
-  max-width: 880px;
-  margin: clamp(1.6rem, 5vw, 3.4rem) auto;
-  padding: clamp(1.4rem, 5vw, 3rem) clamp(1rem, 4vw, 1.6rem) clamp(2.6rem, 6vw, 4rem);
-  overflow-x: clip; /* tape / tilts never push a horizontal scrollbar */
+// the title rides a torn banner pinned with a thumbtack — a heavy scrap (slams).
+// the title rides a torn banner; the torn edge + Grass face boil gently on a
+// ::before behind the title, so the title text itself is crisp (was warped).
+.post-banner{display:inline-block;margin-top:-.4rem;
+  @include paper-face($filter:torn, $radius:7px, $boil:boil-torn, $bg:var(--grass));
+  padding:clamp(1rem,3vw,1.7rem) clamp(1.3rem,4vw,2.4rem);
+  max-width:min(100%,22ch);
+  transform:rotate(-1deg)}
+.post-title{font-family:var(--f-slab);font-style:italic;font-weight:700;line-height:1.0;letter-spacing:-.012em;
+  font-size:clamp(2rem,6.5vw,4.4rem);margin:0;color:var(--oats);text-wrap:balance;
+  text-shadow:1.5px 1.5px 0 rgba(12,110,57,.55)}        // seam shadow → AA on Grass
+// post stock recolors the banner SUBSTANCE — set on the ::before paper face so
+// the deckle keeps its torn edge. Names match the front-matter / home clip stock
+// vocabulary (oats|cloth|kraft|grass|lazuli|coral). Vivid/dark faces get light
+// title text; cream/saffron faces get ink title text (all AA).
+.post-banner--cloth::before{background:var(--sambas)}
+.post-banner--cloth .post-title{color:var(--oats);text-shadow:1.5px 1.5px 0 rgba(0,0,0,.3)}
+.post-banner--lazuli::before{background:var(--lazuli)}
+.post-banner--lazuli .post-title{color:var(--oats);text-shadow:1.5px 1.5px 0 rgba(12,76,110,.55)}
+.post-banner--coral::before{background:var(--colorado)}
+.post-banner--coral .post-title{color:var(--oats);text-shadow:1.5px 1.5px 0 rgba(150,40,42,.55)}
+.post-banner--oats::before{background:var(--paper)}
+.post-banner--oats .post-title{color:var(--ink);text-shadow:none}
+.post-banner--kraft::before{background:var(--schoolbus)}
+.post-banner--kraft .post-title{color:var(--ink);text-shadow:none}
+// the thumbtack pin (a glossy dome + a short metal shaft grounding it).
+.pin{position:absolute;top:-13px;left:50%;margin-left:-14px;width:28px;height:28px;z-index:4;pointer-events:none}
+.pin::before{content:"";position:absolute;left:9px;top:18px;width:6px;height:14px;border-radius:0 0 2px 2px;
+  background:linear-gradient(90deg,#8a93a0,#c6ccd4 45%,#6d7682);transform:rotate(8deg)}
+.pin::after{content:"";position:absolute;left:0;top:0;width:28px;height:28px;border-radius:50%;
+  background:radial-gradient(circle at 36% 32%, #ff9ea0 0 14%, var(--colorado) 46%, #b23b3e 100%);
+  border:1.5px solid rgba(65,77,87,.45);box-shadow:2px 3px 0 0 rgba(65,77,87,.28)}
+.pin[data-pin="grass"]::after{background:radial-gradient(circle at 36% 32%, #6fe0a0 0 14%, var(--grass) 46%, var(--grass-deep) 100%)}
+.pin[data-pin="oats"]::after{background:radial-gradient(circle at 36% 32%, #fffaf0 0 14%, var(--oats) 46%, #d9cbab 100%)}
 
-  /* a warm desk panel under ONE soft tinted light: a warm top-left key + a mild
-     cool bottom-right falloff (ported from v6 bakeSceneLight — radial warm hi,
-     radial cool lo, both capped). The continuous baked desk tooth comes from
-     `html.baked body` (engine); this panel just seats the essay on warm Oats. */
-  background-color: var(--oats);
-  background-image:
-    radial-gradient(120% 80% at 26% 8%, rgba(255, 250, 236, 0.55) 0%, rgba(255, 250, 236, 0.06) 44%, rgba(255, 250, 236, 0) 70%),
-    radial-gradient(80% 60% at 86% 96%, rgba(64, 58, 44, 0.10) 0%, rgba(64, 58, 44, 0) 60%);
-  border-radius: 10px;
+// the standfirst — dek + meta on ONE cream slip, offset off the title's left edge.
+.post-standfirst{z-index:2;display:block;width:fit-content;max-width:min(100%,52ch);
+  margin-top:clamp(1.2rem,3vw,2rem);margin-left:clamp(1.5rem,6vw,4rem);
+  @include paper-face($filter:torn, $radius:7px, $boil:boil-torn,
+    $border:2.4px solid var(--ink), $shadow:6px 6px 0 0 var(--ink));
+  padding:clamp(1rem,2.5vw,1.4rem) clamp(1.2rem,3vw,1.8rem);
+  transform:rotate(.5deg)}
+.post-dek{font-family:var(--f-body);font-style:italic;font-weight:400;font-size:var(--t-lede,clamp(1.2rem,2.1vw,1.6rem));
+  line-height:1.45;color:var(--ink);margin:0;max-width:42ch}
+.post-meta{font-family:var(--f-mono);font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--sambas);margin-top:.9rem;display:flex;flex-wrap:wrap;align-items:center;gap:.5rem}
+.post-meta .sep{opacity:.55}
+.post-datestamp{color:var(--grass-deep)}
+
+// ---------------------------------------------------------------
+// BYLINE CHIP — the author credit on every post foot (byline.html) + reused on
+// author pages. A small taped headshot + name + role. AA on cream. The accent
+// modifier just tints the name rule. Falls back to a plain name (no photo/link)
+// when the post has no mapped author.
+// ---------------------------------------------------------------
+.post-byline{margin-top:1rem}
+.byline{display:inline-flex;align-items:center;gap:.6rem;text-decoration:none;color:var(--ink);
+  max-width:100%}
+.byline-photo{flex:0 0 auto;width:40px;height:40px;border-radius:50%;overflow:hidden;
+  border:2px solid var(--ink);background:var(--sambas);box-shadow:2px 2px 0 0 var(--ink);
+  transform:rotate(-2deg)}
+.byline-photo img{width:100%;height:100%;object-fit:cover;display:block}
+.byline-text{display:flex;flex-direction:column;line-height:1.15}
+.byline-name{font-family:var(--f-slab);font-style:italic;font-weight:700;font-size:1.05rem;color:var(--ink)}
+.byline-role{font-family:var(--f-mono);font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;color:var(--sambas)}
+a.byline:hover .byline-name{color:var(--grass-deep);text-decoration:underline;text-underline-offset:3px}
+a.byline:focus-visible{outline:3px solid var(--lazuli);outline-offset:3px;border-radius:6px}
+.byline--coral .byline-name{color:var(--coral-ink)}
+.byline--lazuli .byline-name{color:var(--lazuli-deep)}
+.byline--grass .byline-name{color:var(--grass-deep)}
+.byline--plain{color:var(--sambas)}
+
+// ---------------------------------------------------------------
+// THE READING STAGE — a continuous bare Oats desk (no panel, no padding) so
+// the ground tooth bleeds around every sheet on both sides.
+// ---------------------------------------------------------------
+.post-stage{position:relative;padding-block:clamp(1rem,3vw,2rem)}
+
+// ---------------------------------------------------------------
+// .prose — THE SACRED COLUMN. A real cream sheet with a torn deckle + flat ink
+// offset, but the running Bitter text is CLEAN: upright, ≤64ch, AA, NO texture,
+// NO filter, NO tape, NO tilt. Each <h2> section is its own short sheet leaf.
+// ---------------------------------------------------------------
+// THE FLAGSHIP RULE. The deckle is a STATIC torn edge on a ::before PAPER FACE
+// pinned behind the text (inset:0; z-index:0); the running Bitter text rides at
+// z-index:1 on a TRANSPARENT box, so it is COMPLETELY unwarped. The reading
+// sheet is DEAD-STILL ($boil:none) — longest dwell, text-adjacent, calmest.
+// (A filter on .prose itself would rasterize + warp every glyph of body copy; a
+// child filter:none can NOT undo an ancestor filter — that was the old bug.)
+.prose{
+  @include paper-face($filter:torn, $radius:7px, $boil:none);
+  z-index:1;
+  max-width:var(--measure);margin:clamp(1rem,2.5vw,1.6rem) auto;
+  color:var(--ink);
+  padding:clamp(1.6rem,4vw,3rem) clamp(1.4rem,4.5vw,3.4rem);
+  font-family:var(--f-body);font-weight:400;font-size:clamp(1.02rem,calc(1rem + .3vw),1.18rem);line-height:1.72;
+  // NO transform/tilt: a tilted reading column hurts legibility.
+  transform:none;
 }
-/* when baked, the desk tooth is already continuous behind everything — let it
-   show through the stage panel (no flat Oats fill blocking it). */
-html.baked .post-stage { background-color: transparent; }
+.prose p{margin:0 0 1.15em;max-width:64ch}
+.prose h2,.prose h3,.prose h4{font-family:var(--f-slab);font-style:italic;font-weight:700;
+  line-height:1.08;letter-spacing:-.01em;color:var(--ink);text-wrap:balance}
+.prose h2{font-size:clamp(1.5rem,3.5vw,2.2rem);margin:1.8em 0 .5em}
+.prose h2:first-child{margin-top:.2em}
+.prose h3{font-size:clamp(1.3rem,2.6vw,1.7rem);margin:1.5em 0 .4em}
+.prose h4{font-size:1.15rem;margin:1.3em 0 .3em}
+.prose a{color:var(--grass-deep);text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px;
+  text-decoration-color:rgba(12,110,57,.45)}
+.prose a:hover{text-decoration-color:var(--grass-deep)}
+.prose a:focus-visible{outline:3px solid var(--lazuli);outline-offset:2px;border-radius:2px}
+.prose strong{font-weight:600}
+.prose em{font-style:italic}
+.prose ul,.prose ol{margin:0 0 1.15em;padding-left:1.5em;max-width:62ch}
+.prose li{margin:0 0 .4em}
+.prose blockquote{margin:1.4em 0;padding:.2em 0 .2em 1.1em;border-left:3px solid var(--grass);
+  font-style:italic;color:var(--sambas)}
+.prose code{font-family:var(--f-mono);font-size:.9em;background:rgba(65,77,87,.07);
+  padding:.12em .35em;border-radius:4px}
+.prose pre{background:var(--sambas);color:var(--oats);padding:1rem 1.2rem;border-radius:7px;overflow-x:auto;
+  border:2.4px solid var(--ink)}
+.prose pre code{background:none;padding:0;color:inherit}
+.prose img{max-width:100%;height:auto;border-radius:5px}
+.prose hr{border:0;border-top:2.4px dashed rgba(65,77,87,.4);margin:2em 0}
+// each split section leaf gets its own seeded resting tilt so a long essay reads
+// as a STACK of short overlapping sheets, never one giant tile. The TEXT inside
+// stays upright — only the sheet leaf rakes a hair.
+.sheet-leaf:nth-of-type(2n){transform:rotate(.35deg)}
+.sheet-leaf:nth-of-type(3n){transform:rotate(-.4deg)}
+.sheet-leaf:nth-of-type(5n){transform:rotate(.25deg)}
 
-/* the post header: eyebrow scrawl, slab-italic title, dek standfirst, meta */
-.post-head {
-  position: relative;
-  margin-bottom: clamp(1.6rem, 4vw, 2.6rem);
-}
+// ===================================================================
+// FURNITURE — torn-paper craft scraps the author drops into the column.
+// Each renders a direct .tape (so it is tear-armed) EXCEPT definition/cite
+// (pinned cards). Live filters; flat ink offsets. AA text.
+// ===================================================================
 
-.post-head .eyebrow {
-  margin-bottom: 0.7rem;
-}
+// shared scrap frame helper-ish block
+.pullquote,.callout,.figure,.definition,.cite{position:relative}
 
-.post-title {
-  font-family: var(--f-slab);
-  font-style: italic;
-  font-weight: 700;
-  line-height: 1.02;
-  letter-spacing: -0.02em;
-  color: var(--ink);
-  text-wrap: balance;
-  font-size: clamp(2.1rem, 7.5vw, var(--t-hero, 3.4rem));
-  margin: 0.2rem 0 0;
-  max-width: 18ch; /* tight on small phones (<=414px) — keeps title under 2 lines */
-  /* BAKED-INK look (v6): the display headline reads as INK PRESSED into torn
-     paper, not clean web text. A layered ink-spread shadow — a tight dark seam
-     (bleed gain at the stroke root) + two soft warm haloes (ink wicking into the
-     paper tooth) — never a hard drop offset. Plus a tiny seeded baseline tilt so
-     the line sits hand-set on the desk, never grid-true. Display role ONLY. */
-  text-shadow:
-    0 0.5px 0   rgba(var(--sh-seam), 0.42),   /* bleed-gain seam at the stroke root */
-    0.4px 0.8px 0.6px rgba(var(--sh-seam), 0.18),
-    0 0 1.1px   rgba(var(--sh-warm), 0.22);   /* ink wicking into the tooth */
-  transform: rotate(-0.6deg);                 /* seeded hand-set baseline jitter */
-  transform-origin: left center;
-}
-.post-title .stop { color: var(--grass); }
+// ---- pullquote — a Colorado torn quote-scrap, big knocked-out quote-mark ----
+.pullquote{margin:clamp(1.6rem,4vw,2.4rem) auto;max-width:48ch;
+  @include paper-face($filter:torn, $radius:8px, $boil:boil-torn, $bg:var(--colorado));
+  padding:clamp(1.4rem,3vw,2rem) clamp(1.4rem,3vw,2.1rem) clamp(1.2rem,2.5vw,1.6rem);
+  transform:rotate(-1.4deg)}
+.pullquote .pq-text{font-family:var(--f-slab);font-style:italic;font-weight:700;
+  font-size:clamp(1.3rem,2.6vw,1.9rem);line-height:1.2;color:var(--oats);margin:0;position:relative}
+.pullquote .pq-text::before{content:"\201C";position:absolute;left:-.05em;top:-.55em;
+  font-family:var(--f-slab);font-style:italic;font-weight:700;font-size:2.8em;line-height:1;
+  color:rgba(254,246,228,.4)}
+.pullquote .pq-attrib{font-family:var(--f-hand);font-size:1.15rem;color:var(--oats);margin:.7rem 0 0}
+.pullquote .pq-attrib::before{content:"\2014 ";}
 
-/* tablet/desktop: relax the measure so dense essay titles get breathing room
-   instead of stacking into 3-line wraps. Home newsstand cards stay a touch
-   tighter (22ch) to preserve card legibility. Small-phone base stays 18ch. */
-@media (min-width: 768px) {
-  .post-title { max-width: 24ch; }
-  .card-title { max-width: 22ch; }
-}
+// ---- callout — a dark Sambas answer-note (for-drex) / kraft note / coral warning ----
+.callout{margin:clamp(1.6rem,4vw,2.2rem) auto;max-width:46ch;
+  @include paper-face($filter:torn, $radius:7px, $boil:boil-torn, $bg:var(--sambas));
+  padding:clamp(1.2rem,3vw,1.7rem) clamp(1.3rem,3vw,1.9rem);transform:rotate(1deg)}
+.callout-label{display:inline-block;font-family:var(--f-mono);font-weight:500;text-transform:uppercase;
+  letter-spacing:.12em;font-size:.72rem;color:var(--happy);margin-bottom:.5rem}
+.callout-body{font-family:var(--f-body);font-size:1rem;line-height:1.55;color:rgba(254,246,228,.94)}
+.callout-body :is(p):first-child{margin-top:0}
+.callout-body :is(p):last-child{margin-bottom:0}
+.callout-body a{color:var(--happy);text-decoration:underline;text-underline-offset:3px}
+.callout--note::before{background:var(--paper)}
+.callout--note .callout-label{color:var(--bus-ink)}
+.callout--note .callout-body{color:var(--ink)}
+.callout--note .callout-body a{color:var(--grass-deep)}
+.callout--warning::before{background:var(--paper)}
+.callout--warning .callout-label{color:var(--coral-ink)}
+.callout--warning .callout-body{color:var(--ink)}
 
-/* dek / standfirst — the lede under the title. Bitter italic, larger. */
-.post-dek,
-.prose > .dek {
-  font-family: var(--f-body);
-  font-style: italic;
-  font-weight: 400;
-  font-size: clamp(1.15rem, 2.4vw, var(--t-lede, 1.45rem));
-  line-height: 1.45;
-  color: var(--ink);
-  max-width: 40ch;
-  margin: clamp(1rem, 2.6vw, 1.5rem) 0 0;
-}
-.post-dek em,
-.prose > .dek em { font-style: normal; font-weight: 600; }
+// ---- definition — a ruled INDEX CARD (pinned, no tape) ----
+.definition{margin:clamp(1.6rem,4vw,2.2rem) auto;max-width:46ch;
+  // a pinned ruled INDEX CARD: the ruled lines + the colorado top tab + the torn
+  // edge all live on the ::before face; the card holds STILL (no boil) under its
+  // text. The ruled gradient rides as the face background.
+  @include paper-face($filter:torn, $radius:7px 7px 9px 7px, $boil:none,
+    $bg:var(--paper) repeating-linear-gradient(0deg,transparent 0 26px,rgba(36,150,201,.10) 26px 27px));
+  padding:clamp(1.2rem,3vw,1.6rem) clamp(1.3rem,3vw,1.8rem);transform:rotate(-.6deg)}
+.definition::before{border-top:5px solid var(--colorado)}
+.definition-label{display:inline-block;font-family:var(--f-mono);font-weight:500;text-transform:uppercase;
+  letter-spacing:.12em;font-size:.68rem;color:var(--grass-deep);margin-bottom:.3rem}
+.definition-term{font-family:var(--f-slab);font-style:italic;font-weight:700;font-size:1.4rem;color:var(--ink);margin:0 0 .3rem}
+.definition-body{font-family:var(--f-body);font-size:1rem;line-height:1.55;color:var(--ink)}
+.definition-body :is(p):first-child{margin-top:0}
+.definition-body :is(p):last-child{margin-bottom:0}
 
-/* OFF-GRID TYPE-COLLAGE HERO ----------------------------------------------
-   The masthead reads as hand-arranged clippings, not a centered stack:
-     - the eyebrow scrap (.is-corner) OVERLAPS the banner's top-left corner at
-       its own steeper angle, tucked UNDER the headline;
-     - the title banner rides a varied tilt (steeper than its base -1.4deg);
-     - the dek (.is-offset) sits on a NARROWER measure, indented off the
-       title's left edge, at its own slight angle.
-   Three different angles + measures => a type collage. The .reveal/.slam
-   entrance classes only animate opacity/translate/scale LONGHANDS, so these
-   `transform: rotate()` tilts survive intact; under reduced motion the engine
-   settles every scrap to this final tilted resting state (no stranded hidden).
-   GUARD: only engages >=600px. On phones the scraps stay in normal flow with
-   no negative margins/offsets, so nothing collides or overflows at 360-414px. */
-@media (min-width: 600px) {
-  .post-eyebrow.is-corner {
-    position: relative;
-    z-index: 9;
-    margin: 0 0 -1rem 0;
-    left: -0.5rem;
-    transform: rotate(-4.5deg);
-  }
-  .post-banner { transform: rotate(-2.2deg); } /* varied tilt vs base -1.4deg */
-  .post-dek.is-offset {
-    max-width: 32ch;
-    margin-left: clamp(1.4rem, 4vw, 3.2rem);
-    transform: rotate(-0.5deg);
-    transform-origin: left center;
-  }
-}
+// ---- figure — a real polaroid (uses the shared .polaroid frame) ----
+figure.polaroid{margin:clamp(1.8rem,4vw,2.6rem) auto;width:min(320px,90%);transform:rotate(1.5deg)}
 
-/* byline / date / reading-time — mono label row */
-.post-meta {
-  font-family: var(--f-mono);
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  font-size: 0.74rem;
-  color: var(--ink); /* full Sambas — 5.3:1 on Oats, meets AA (was rgba .72 ≈ 4.0:1) */
-  margin-top: clamp(0.9rem, 2.2vw, 1.3rem);
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.55rem;
-}
-.post-meta .sep { color: var(--grass); font-weight: 700; }
+// ---- cite — a torn cream clipping with a kraft stamped credit ----
+.cite{margin:clamp(1.6rem,4vw,2.2rem) auto;max-width:46ch;
+  @include paper-face($filter:torn, $radius:7px, $boil:none,
+    $border:2.4px solid var(--ink), $shadow:6px 6px 0 0 var(--ink));
+  padding:clamp(1.1rem,2.5vw,1.5rem) clamp(1.2rem,3vw,1.7rem);transform:rotate(.5deg)}
+.cite-text{font-family:var(--f-body);font-style:italic;font-size:1.05rem;line-height:1.5;color:var(--ink);margin:0}
+.cite-attrib{margin:.7rem 0 0;font-family:var(--f-mono);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--sambas);display:flex;flex-wrap:wrap;gap:.4rem;align-items:center}
+.cite-author{color:var(--grass-deep)}
+.cite-sep{opacity:.55}
+.cite-work{font-style:normal}
 
-/* STANDFIRST SCRAP — dek + meta seated on ONE cream paper slip so they don't
-   float as bare text on the noisy desk. .scrap supplies the baked Oats torn rim +
-   alpha-following cast; here is just the layout/inset + a hand-laid tilt. The dek's
-   own top margin collapses into the slip padding. */
-.post-standfirst {
-  display: inline-block;
-  max-width: min(46ch, 100%);
-  margin: clamp(1rem, 2.6vw, 1.5rem) 0 0;
-  padding: clamp(.9rem, 2.4vw, 1.3rem) clamp(1.1rem, 3vw, 1.6rem) clamp(1rem, 2.6vw, 1.4rem);
-  background-color: var(--paper);
-  transform: rotate(-0.7deg);
-}
-.post-standfirst .post-dek { margin-top: 0; }
-@media (min-width: 600px) { .post-standfirst { margin-left: clamp(1rem, 3vw, 2.4rem); } }
+// ---- cutline — a scissors "cut here" section seam (paper break, not a plain hr)
+.cutline{position:relative;display:flex;align-items:center;justify-content:center;height:30px;
+  margin:clamp(1.8rem,4vw,2.6rem) auto;max-width:var(--measure)}
+.cutline .cut-rule{position:absolute;left:0;right:0;top:50%;height:0;border-top:2.6px dashed rgba(65,77,87,.5)}
+.cutline .cut-torn{position:absolute;left:0;top:50%;height:0;width:38%;border-top:2.8px solid var(--ink);filter:url(#roughsm)}
+.cutline .cut-scissors{position:absolute;top:50%;left:38%;transform:translate(-50%,-50%);width:24px;height:24px;color:var(--sambas);z-index:2}
+.cutline .cut-scissors svg{display:block;width:100%;height:100%}
+.cutline .label{position:relative;z-index:1;background:var(--oats);padding:0 .55rem;
+  font-family:var(--f-mono);text-transform:uppercase;letter-spacing:.12em;font-size:.7rem;color:rgba(65,77,87,.6)}
 
-/* ---------------------------------------------------------------------------
-   2. PROSE — the SACRED reading SHEET (and legible column on it).
-   The .prose box IS the cream paper sheet Chielo wrote on: real Oats tooth, a
-   torn deckle edge, and a SOFT TINTED contact+ambient shadow (NOT a hard ink
-   offset). The running Bitter text on it stays clean, upright, comfortable
-   measure, AA contrast — SACRED. Headings get marker/Pitch treatment; scraps
-   interleave like clippings without breaking the reading.
-   ------------------------------------------------------------------------- */
-.prose {
-  position: relative;
-  font-family: var(--f-body);
-  font-weight: 300;
-  font-size: 1rem;            /* 16px base, mobile-first */
-  line-height: 1.72;
-  color: var(--ink);          /* Sambas ink on Oats — AA, upright, untextured */
-  max-width: 64ch;            /* ~62–66ch measure on desktop */
-  margin: 0 auto;
+// ===================================================================
+// MARGIN MARGINALIA — m-note (hand scrawl) + m-mark (doodle glyph). On DESKTOP
+// they pin into the BARE DESK GUTTER beside the reading column via a negative
+// margin out of the 64ch measure, with a thin leader pointing back. They are
+// placed inline in the source right after the line they annotate, so they sit
+// at that vertical position. On mobile they reflow to a small inline scrawl
+// (rules in _mobile.scss). A real <span> → readable + selectable + AA.
+// ===================================================================
+.m-note,.m-mark{display:inline-block;position:relative;font-family:var(--f-hand);line-height:1.15}
 
-  /* the cream SHEET: Oats with a faint warm ruled grain, lifted off the desk by
-     the soft layered tinted lift shadow (top-left light → cast down-right). It's
-     a big heavy sheet, so it sits up on --sh-lift, not the tight contact cast. */
-  background-color: var(--paper);
-  background-image:
-    /* faint warm paper TOOTH (cross-hatched micro-speckle) so the sheet reads as
-       a real cream paper surface, not a flat fill — even with JS off. The baked
-       --bk-piece-oats tile replaces this when bakery.js has run (rule below). */
-    /* XEROX TONER SPECKS — faint stray toner dots scattered across the sheet so
-       no flat span runs >150px (REFS density). Three offset speck fields at
-       different scales => an irregular >=5-per-100x100 litter, not a grid. */
-    radial-gradient(circle at 17% 23%, rgba(65,77,87,0.10) 0 0.6px, transparent 1.4px),
-    radial-gradient(circle at 61% 9%,  rgba(65,77,87,0.08) 0 0.5px, transparent 1.3px),
-    radial-gradient(circle at 88% 41%, rgba(65,77,87,0.07) 0 0.7px, transparent 1.5px),
-    radial-gradient(circle at 34% 71%, rgba(65,77,87,0.08) 0 0.5px, transparent 1.3px),
-    radial-gradient(circle at 73% 86%, rgba(65,77,87,0.07) 0 0.6px, transparent 1.4px),
-    radial-gradient(circle at 9% 54%,  rgba(65,77,87,0.06) 0 0.5px, transparent 1.2px),
-    repeating-linear-gradient(0deg, transparent 0 27px, rgba(65, 77, 87, 0.045) 27px 28px),
-    /* the two crossed diagonal fibers read as a faint QUILT/cross-hatch on the big
-       reading surface — zeroed so the prose sheet stays calm warm cream (organic
-       toner specks + the soft horizontal rule carry the paper character). */
-    repeating-linear-gradient(46deg, rgba(120, 96, 58, 0) 0 2px, transparent 2px 5px),
-    repeating-linear-gradient(-44deg, rgba(120, 96, 58, 0) 0 2px, transparent 2px 6px);
-  background-repeat:
-    no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, no-repeat,
-    repeat, repeat, repeat;
-  background-size:
-    137px 149px, 121px 143px, 151px 131px, 129px 147px, 143px 127px, 119px 139px,
-    auto, auto, auto;
-  padding: clamp(1.6rem, 5vw, 3.4rem) clamp(1.3rem, 5vw, 3rem);
-  border-radius: 255px 18px 225px 14px / 14px 225px 18px 255px; /* hand-torn deckle fallback (varied per-instance below) */
-  box-shadow: var(--sh-lift);
-}
-/* SEEDED non-repeating deckle so JS-off sheets aren't clone siblings — every
-   torn sheet tears differently. (Baked sheets get the real border-image edge
-   below, which overrides border-radius to 0.) */
-.prose:nth-of-type(4n+1) { border-radius: 255px 18px 225px 14px / 14px 225px 18px 255px; }
-.prose:nth-of-type(4n+2) { border-radius: 14px 240px 16px 210px / 230px 12px 250px 18px; }
-.prose:nth-of-type(4n+3) { border-radius: 235px 12px 18px 245px / 16px 220px 14px 235px; }
-.prose:nth-of-type(4n+4) { border-radius: 20px 215px 250px 12px / 245px 16px 225px 14px; }
-.prose > * { position: relative; z-index: 1; }
-/* the pale torn fiber lip on the lit (top-left) deckle edge, ported from v6's
-   pale-fiber-lip pass — a thin warm highlight where the paper tore. */
-.prose::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  box-shadow: inset 1px 1px 0 rgba(255, 253, 247, 0.5),
-              inset -1px -1px 0 rgba(44, 36, 26, 0.06);
-}
-/* baked: the real Oats paper face + two-zone torn EDGE border-image (the sheet
-   idiom from _realism). The ruled grain rides on top of the baked tooth. */
-html.baked .prose {
-  /* the real baked Oats tooth tile, with the faint ruled writing-grain riding ON
-     TOP so the sheet still reads as a paper sheet someone wrote on (not a bare
-     tile). The ruled line stays subtle — reading legibility is sacred. */
-  background:
-    /* xerox toner specks ride ON TOP of the real baked Oats tooth tile so the
-       sheet keeps physical incident density (no flat span >150px) when baked. */
-    radial-gradient(circle at 17% 23%, rgba(65,77,87,0.10) 0 0.6px, transparent 1.4px),
-    radial-gradient(circle at 61% 9%,  rgba(65,77,87,0.08) 0 0.5px, transparent 1.3px),
-    radial-gradient(circle at 88% 41%, rgba(65,77,87,0.07) 0 0.7px, transparent 1.5px),
-    radial-gradient(circle at 34% 71%, rgba(65,77,87,0.08) 0 0.5px, transparent 1.3px),
-    radial-gradient(circle at 73% 86%, rgba(65,77,87,0.07) 0 0.6px, transparent 1.4px),
-    radial-gradient(circle at 9% 54%,  rgba(65,77,87,0.06) 0 0.5px, transparent 1.2px),
-    repeating-linear-gradient(0deg, transparent 0 27px, rgba(65, 77, 87, 0.04) 27px 28px),
-    var(--paper);
-  /* FLAT --paper, not the tiled --bk-piece-oats cardstock tile: a 256px baked
-     tile repeated at 200px down a long essay painted a ~200px square quilt lattice
-     with per-cell vignette in blank stretches. This matches the deliberate flat
-     `.paper>.sheet` idiom (_realism.scss L113). The toner specks + soft ruling +
-     torn rim still carry the paper character with NO repeating sprite lattice. */
-  background-repeat:
-    no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, no-repeat,
-    repeat;
-  background-size:
-    137px 149px, 121px 143px, 151px 131px, 129px 147px, 143px 127px, 119px 139px,
-    auto;
-  border-style:solid; border-width:16px; border-color:transparent;
-  border-image-source:var(--bk-edge-oats);
-  border-image-slice:var(--bk-edge-oats-slice,38);
-  border-image-repeat:round; border-image-width:16px;
-  border-radius:0;
-}
-html.baked .prose::before { content:none; } /* the baked torn edge owns the lip */
+@media(min-width:1000px){
+  .m-note{position:absolute;width:clamp(120px,15vw,180px);font-size:1.05rem;z-index:5}
+  .m-note__slip{display:inline-block;transform:rotate(-2deg)}
+  .m-note--right{right:-1px;margin-right:calc(-1 * clamp(130px,16vw,200px));text-align:left}
+  .m-note--left{left:-1px;margin-left:calc(-1 * clamp(130px,16vw,200px));text-align:right}
+  // the leader — a thin hand-drawn line pointing from the slip back to the column.
+  .m-note::before{content:"";position:absolute;top:.55em;width:clamp(14px,2vw,28px);height:0;
+    border-top:2px solid currentColor;opacity:.6;filter:url(#roughsm)}
+  .m-note--right::before{left:-.4em;transform:translateX(-100%)}
+  .m-note--left::before{right:-.4em;transform:translateX(100%)}
 
-/* LOW-FREQUENCY PHYSICAL INCIDENTS — an occasional coffee-ring, a pencil tick
-   and a steel paperclip silhouette, scattered toward the sheet's edges so they
-   punctuate the surface (no flat span >150px) WITHOUT ever crossing the reading
-   column. All faint, behind the text, non-interactive — legibility is sacred. */
-.prose::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  background-image:
-    /* a faint coffee-ring stain (open umber annulus) top-right margin */
-    radial-gradient(circle at 50% 50%,
-      transparent 0 16px,
-      rgba(120, 84, 44, 0.10) 16px 18px,
-      rgba(120, 84, 44, 0.05) 18px 21px,
-      transparent 21px),
-    /* a soft graphite pencil-tick low-left margin */
-    linear-gradient(58deg, transparent 0 6px, rgba(58,62,66,0.22) 6px 7px, transparent 7px),
-    /* a STEEL PAPERCLIP silhouette clamped over the top-left deckle (a real desk
-       object): two nested wire loops drawn as thin metal annuli (a circle ramp
-       stretched into the paperclip ellipse by its background-size), plus a soft
-       highlight — sits in the margin, off the reading column. */
-    radial-gradient(circle at 50% 50%,
-      transparent 0 40%,
-      rgba(150,156,162,0.55) 40% 47%,
-      rgba(90,96,102,0.5) 47% 51%,
-      transparent 51%),
-    radial-gradient(circle at 50% 38%,
-      transparent 0 42%,
-      rgba(170,176,182,0.5) 42% 52%,
-      transparent 52%);
-  background-repeat: no-repeat, no-repeat, no-repeat, no-repeat;
-  background-position:
-    calc(100% - 0.4rem) 18%,   /* coffee-ring, top-right margin */
-    1.1rem 82%,                /* pencil-tick, low-left margin */
-    2.2rem -2px,               /* paperclip outer loop, clamped over the top edge */
-    2.2rem -2px;               /* paperclip inner loop (same anchor) */
-  background-size: 44px 44px, 18px 18px, 22px 30px, 22px 30px;
+  .m-mark{position:absolute;width:34px;height:34px;z-index:5}
+  .m-mark--right{right:-1px;margin-right:calc(-1 * clamp(40px,5vw,60px))}
+  .m-mark--left{left:-1px;margin-left:calc(-1 * clamp(40px,5vw,60px))}
+  .m-mark__glyph{display:block;width:100%}
+  .m-mark__glyph svg{display:block;width:100%;height:auto;filter:url(#roughsm)}
 }
-/* MOBILE: the sheet runs ~full width, so the top-right coffee-ring (anchored at
-   18% down, 0.4rem from the right edge) lands OVER the prose column near the
-   opening line and reads as a faint ghost ring on the text. Lift it up into the
-   top deckle lip (above the first line) and shrink it so it punctuates the
-   margin without ever sitting over a word. The deckle-clamped paperclip + the
-   low-left pencil tick already live in the lip/edge, so they stay. */
-@media (max-width: 700px) {
-  .prose::after {
-    background-position:
-      calc(100% - 0.2rem) -10px,  /* coffee-ring lifted into the top-right lip */
-      0.9rem 90%,                 /* pencil-tick hugs the low-left edge */
-      1.6rem -4px,                /* paperclip outer loop on the top deckle */
-      1.6rem -4px;                /* paperclip inner loop */
-    background-size: 34px 34px, 16px 16px, 20px 28px, 20px 28px;
-  }
-}
+// marginalia color → ink-deep for small text/leader AA on cream
+.m-note.m-coral,.m-mark.m-coral{color:var(--coral-ink)}
+.m-note.m-grass,.m-mark.m-grass{color:var(--grass-deep)}
+.m-note.m-lazuli,.m-mark.m-lazuli{color:var(--lazuli-deep)}
+.m-note.m-ink,.m-mark.m-ink{color:var(--ink)}
+.m-mark.m-happy{color:var(--schoolbus)}   // doodle glyphs may use saffron; text m-notes fall back upstream
+.m-mark.m-bus{color:var(--bus-ink)}
 
-/* ---------------------------------------------------------------------------
-   2b. CONTINUOUS DESK + SPLIT SHEETS (v6 round-3: break the monolithic sheet)
-   .post-stage--desk drops the rounded 880px panel so the baked Oats desk tooth
-   + scene light read end-to-end and BLEED past the reading column on BOTH sides
-   — bare warm desk shows around every sheet, like v6. The essay body is split
-   at <h2> into a STACK of shorter .prose.sheet-leaf sheets: each tears its own
-   deckle (the :nth-of-type variants above), settles at its own seeded tilt, and
-   a strip of bare desk shows between sheets — so no single sheet is a ~5000px
-   tile and the border-image tear never visibly repeats down one giant edge.
-   Reading legibility is SACRED: the running text inside each leaf is untouched.
-   ------------------------------------------------------------------------- */
-.post-stage--desk {
-  max-width: none;                 /* desk is continuous — bleed past the column */
-  padding-inline: 0;               /* the leaves carry their own padding/measure */
-  background-image: none;          /* the baked html.baked body desk shows through */
-  border-radius: 0;
-  overflow-x: clip;
-  position: relative;              /* anchor the draggable post litter to the desk */
-}
-html.baked .post-stage--desk { background-color: transparent; }
+// ===================================================================
+// POST FOOT — tags, the reply card, prev/next paper tabs, back line.
+// ===================================================================
+.post-foot{position:relative;padding-block:clamp(1.5rem,4vw,2.6rem)}
 
-/* ---------------------------------------------------------------------------
-   2c. THE DRAGGABLE POST POLAROID (interactivity parity with the home board)
-   The long essay gets ONE genuinely 'pick-it-up' object — a loose studio
-   polaroid dropped onto the desk. blog.js initDrag binds the first
-   `.board-litter .litter--photo` document-wide; the post has exactly one, so
-   no JS change is needed. It lives in the BARE DESK MARGIN beside the centred
-   reading column (sheet measure is 880px) so it can NEVER sit over `.prose` —
-   content is never on the drag path, so a drag can never strand a word.
-   Decorative + aria-hidden + not a link. Below the column width it collapses
-   out of the splay (handled in _mobile.scss) so it never crowds the measure.
-   ------------------------------------------------------------------------- */
-.board-litter--post {
-  position: absolute;
-  inset: 0;
-  z-index: 0;                      /* tucks BEHIND the reading sheets (sheets z>0) */
-  margin: 0; padding: 0;
-  display: block;
-  pointer-events: none;            /* the layer never steals clicks from the text */
-}
-/* hidden by default — only splayed onto the desk once there is bare margin wide
-   enough that the polaroid sits clear of the 880px reading sheet (see below). */
-.board-litter--post .litter--photo { display: none; }
+.post-tags{display:flex;flex-wrap:wrap;align-items:center;gap:.55rem;margin-bottom:clamp(1.5rem,4vw,2.4rem)}
+.post-tags-label{font-family:var(--f-mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--sambas);margin-right:.3rem}
+.post-tag,.clip-tag{font-family:var(--f-mono);font-size:.7rem;letter-spacing:.06em;text-transform:lowercase;
+  color:var(--ink);background:var(--paper);border:2px solid var(--ink);border-radius:5px;padding:.3em .6em;
+  box-shadow:2px 2px 0 0 var(--ink);transform:rotate(-1deg)}
+.post-tag:nth-child(even){transform:rotate(1.2deg)}
 
-/* only when the desk is meaningfully wider than the reading sheet do we have a
-   bare-desk gutter to drop the polaroid into. ~880px sheet + a ~190px polaroid +
-   breathing room => arm it at 1180px up. It pins to the RIGHT gutter, low on the
-   desk (past the masthead/intro), clear of the centred column. */
-@media (min-width: 1180px) {
-  .board-litter--post .litter--photo {
-    display: block;
-    position: absolute;
-    /* right gutter: (100% - 880px sheet) / 2 is the bare margin; sit inside it */
-    right: clamp(0.5rem, calc((100% - 880px) / 2 - 11rem), 4rem);
-    top: clamp(16rem, 30vw, 32rem);
-    width: min(11rem, 16vw);
-    transform: rotate(3.4deg);
-    pointer-events: auto;          /* the ONE scrap that accepts the drag */
-    cursor: grab;
-    touch-action: none;
-    z-index: 2;                    /* the toy rides above the desk, beside the text */
-  }
-  .board-litter--post .litter--photo.is-dragging { cursor: grabbing; z-index: 30; }
+// prev/next — paper tabs
+.post-nav{display:flex;flex-wrap:wrap;gap:clamp(1rem,3vw,1.6rem);margin:clamp(2rem,5vw,3rem) 0 0;justify-content:space-between}
+.post-nav-link{flex:1 1 240px;text-decoration:none;color:var(--ink);
+  background:var(--paper);border:2.6px solid var(--ink);border-radius:7px;
+  box-shadow:5px 5px 0 0 var(--ink);padding:.9rem 1.1rem;
+  transition:transform .1s ease, box-shadow .1s ease;transform:rotate(-.8deg);min-height:44px}
+.post-nav-link.prev{text-align:left;transform:rotate(-.8deg)}
+.post-nav-link.next{text-align:right;transform:rotate(.8deg)}
+.post-nav-link:hover{transform:rotate(0) translate(-1px,-1px);box-shadow:6px 6px 0 0 var(--grass)}
+.post-nav-link:focus-visible{outline:3px solid var(--lazuli);outline-offset:3px}
+.post-nav-dir{display:block;font-family:var(--f-mono);font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;color:var(--sambas)}
+.post-nav-title{display:block;font-family:var(--f-slab);font-style:italic;font-weight:700;font-size:1.05rem;margin-top:.2rem;line-height:1.15}
+
+.back-line{margin:clamp(1.6rem,4vw,2.4rem) 0 0;font-family:var(--f-body)}
+.back-link{color:var(--grass-deep);text-decoration:none;font-style:italic}
+
+// the kraft "reset the desk" tab — a real button, hand-cut silhouette. Class is
+// .reset-desk to match the markup (_layouts/post.html) + blog.js selector. The
+// rough edge lives on the ::before face so the CAPS label isn't warped; the face
+// holds still (a control edge shouldn't crawl).
+.reset-desk{display:inline-flex;align-items:center;min-height:44px;margin-top:clamp(1.4rem,4vw,2rem);
+  font-family:var(--f-mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;
+  color:var(--bus-ink);padding:.5em .9em;
+  @include paper-face($filter:roughsm, $radius:7px 4px 9px 3px, $boil:none,
+    $bg:rgba(236,175,33,.16), $border:2.4px solid var(--ink), $shadow:3px 3px 0 0 var(--ink));
+  transform:rotate(-1.6deg);transition:transform .1s ease, box-shadow .1s ease}
+.reset-desk:hover{transform:rotate(0)}
+.reset-desk:active{transform:translate(3px,3px) rotate(0)}
+.reset-desk:active::before{box-shadow:0 0 0 0 var(--ink)}
+.reset-desk:focus-visible{outline:3px solid var(--lazuli);outline-offset:3px}
+
+// the loose decorative polaroid pinned in the post-stage margin (drag toy). On
+// desktop it sits in the bare gutter, never over .prose.
+.board-litter--post{position:absolute;inset:0;pointer-events:none;z-index:0}
+.board-litter--post .litter{pointer-events:auto}
+@media(min-width:1100px){
+  .board-litter--post .litter--photo{position:absolute;top:14%;right:clamp(0px,3vw,3rem);width:200px}
+}
+@media(max-width:1099px){
+  .board-litter--post{display:none}
 }
 
-/* the split section sheets: a stack with bare desk between them. Slight overlap
-   + alternating seeded tilt so they read as hand-stacked clippings, never a tidy
-   column. The first leaf sits highest; later leaves tuck slightly under it. */
-.post-stage--desk .sheet-leaf {
-  margin-block: clamp(1.4rem, 4vw, 2.8rem);  /* the bare-desk strip between sheets */
-  position: relative;
-}
-.post-stage--desk .sheet-leaf:first-child { margin-top: 0; }
-/* seeded resting tilt per leaf — no two sheets sit the same; legibility holds at
-   these tiny angles. Engine reveal/settle (opacity/translate longhands only)
-   leaves these rotate() resting transforms intact; reduced-motion keeps them. */
-@media (min-width: 600px) {
-  .post-stage--desk .sheet-leaf:nth-of-type(4n+1) { transform: rotate(-0.5deg); }
-  .post-stage--desk .sheet-leaf:nth-of-type(4n+2) { transform: rotate(0.45deg); }
-  .post-stage--desk .sheet-leaf:nth-of-type(4n+3) { transform: rotate(-0.35deg); }
-  .post-stage--desk .sheet-leaf:nth-of-type(4n+4) { transform: rotate(0.4deg); }
-  /* a gentle overlap: each leaf after the first tucks up under its predecessor
-     so a strip of the sheet above peeks over — overlapping clippings, not a gap
-     ladder. Kept small so the bare-desk strip still reads between them. */
-  .post-stage--desk .sheet-leaf:not(:first-child) { margin-top: clamp(0.6rem, 2.5vw, 1.6rem); }
-}
-/* phones: keep the leaves upright and in clean flow — no tilt, modest gap — so a
-   long essay stays comfortable and nothing collides on a 360px column (SACRED). */
-@media (max-width: 599px) {
-  .post-stage--desk .sheet-leaf { transform: none; margin-block: 1.2rem; }
-}
+// the mid-post subscribe nudge — a small taped slip (phone-shown; styled in _mobile)
+.mid-sub{display:none}
 
-.prose p {
-  margin: 0 0 1.15em;
+// ===================================================================
+// SUBSCRIBE REPLY CARD — a Kit INLINE form re-skinned as a hand-filled reply
+// card. Card chrome is ours (taped cream torn stock, Patrick-Hand kicker,
+// Courier-italic title, dek); the Kit .formkit-* fields + submit are restyled so
+// the whole thing reads as one paper object. Ported from the old _subscribe.scss
+// with the bakery/realism layers (html.baked, --df-*, --sh-*) stripped → flat
+// ink offsets. !important is required to beat Kit's injected per-form theme.
+// ===================================================================
+.subscribe-card{
+  // the whole Kit form is a deep subtree, so the torn edge MUST sit on a ::before
+  // face — otherwise every input/select/button label warps. Calm --boil-paper
+  // breath on the face; the form rides crisp at z-index:1.
+  @include paper-face($filter:torn, $radius:8px, $boil:boil-torn);
+  isolation:isolate;
+  max-width:34rem;margin:clamp(2rem,5vw,3rem) auto;
+  padding:clamp(1.5rem,4vw,2.2rem) clamp(2rem,4.5vw,2.8rem) clamp(1.7rem,4vw,2.2rem) clamp(1.4rem,4vw,2rem);
+  color:var(--ink);
+  transform:rotate(-.8deg);
 }
-.prose > p:first-of-type { margin-top: 0; }
+.replycard-kicker{display:block;font-family:var(--f-hand);color:var(--coral-ink);
+  font-size:1.18rem;line-height:1.1;transform:rotate(-1deg);margin-bottom:.15rem}
+.subscribe--lazuli .replycard-kicker{color:var(--lazuli-deep)}
+.subscribe--grass  .replycard-kicker{color:var(--grass-deep)}
+.subscribe--bus    .replycard-kicker{color:var(--bus-ink)}
+.replycard-title{font-family:var(--f-slab);font-style:italic;font-weight:700;
+  font-size:clamp(1.5rem,4vw,1.85rem);color:var(--ink);margin:.1rem 0 .5rem;line-height:1.05}
+.prose .replycard-title{margin:.1rem 0 .5rem!important}
+.prose .replycard-title::after{content:none}
+.replycard-dek{font-family:var(--f-body);font-size:1rem;line-height:1.5;color:var(--ink);max-width:44ch;margin:0 0 1rem}
 
-/* lede paragraph (first paragraph or an explicit .dek) gets a dropcap option */
-.prose .dropcap::first-letter,
-.prose > p.lede::first-letter {
-  font-family: var(--f-slab);
-  font-style: italic;
-  font-weight: 700;
-  font-size: 3.1em;
-  line-height: 0.78;
-  float: left;
-  margin: 0.06em 0.1em 0 0;
-  color: var(--ink);   /* Sambas drop cap: AA-safe on the cream reading sheet (Grass fails 3:1) */
+// ---- Kit inline form re-skin ----
+.kit-embed{margin-top:.3rem}
+.kit-embed .formkit-form{
+  background:transparent!important;border:0!important;box-shadow:none!important;
+  padding:0!important;margin:0!important;max-width:none!important;min-width:0!important;
+  width:100%!important;font-family:var(--f-body)!important;
 }
+.kit-embed .formkit-background,.kit-embed .formkit-image,
+.kit-embed .formkit-powered-by-convertkit,.kit-embed [class*="powered-by"]{display:none!important}
+.kit-embed .formkit-fields,.kit-embed .seva-fields{
+  display:flex!important;flex-direction:column!important;gap:.7rem!important;margin:0!important;padding:0!important;
+}
+.kit-embed .formkit-field{margin:0!important;width:100%!important}
+.kit-embed .formkit-input,
+.kit-embed .formkit-select,
+.kit-embed select[name="tags[]"]{
+  width:100%!important;box-sizing:border-box!important;max-width:none!important;
+  font-family:var(--f-mono)!important;font-size:1rem!important;color:var(--ink)!important;
+  background:rgba(254,246,228,.9)!important;
+  border:0!important;border-bottom:2px dashed rgba(65,77,87,.45)!important;
+  border-radius:5px 4px 6px 4px!important;
+  padding:.7em .8em!important;min-height:46px!important;height:auto!important;
+  box-shadow:inset 0 -1px 0 rgba(255,255,255,.45)!important;margin:0!important;
+}
+.kit-embed .formkit-input::placeholder{color:rgba(65,77,87,.82)!important;font-style:italic;font-weight:500}
+.kit-embed .formkit-input:focus,
+.kit-embed .formkit-select:focus,
+.kit-embed select[name="tags[]"]:focus{
+  border-bottom-style:solid!important;border-bottom-color:var(--grass)!important;
+  outline:3px solid var(--lazuli)!important;outline-offset:2px!important;
+  background:linear-gradient(0deg,rgba(241,221,1,.06),rgba(241,221,1,.06)),var(--paper)!important;
+}
+.kit-embed .formkit-select,
+.kit-embed select[name="tags[]"]{
+  -webkit-appearance:none!important;appearance:none!important;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='10'%3E%3Cpath d='M1 1l6 7 6-7' fill='none' stroke='%23414D57' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E")!important;
+  background-repeat:no-repeat!important;background-position:right .8em center!important;padding-right:2.2em!important;
+  text-overflow:ellipsis!important;white-space:nowrap!important;overflow:hidden!important;
+}
+.kit-embed .formkit-submit{
+  position:relative;
+  display:inline-flex!important;align-items:center!important;justify-content:center!important;
+  font-family:var(--f-mono)!important;text-transform:uppercase!important;letter-spacing:.1em!important;
+  font-weight:500!important;font-size:.86rem!important;
+  background:var(--grass-deep)!important;color:var(--oats)!important;
+  border:2.8px solid var(--ink)!important;border-radius:7px 4px 9px 3px!important;
+  box-shadow:5px 5px 0 0 var(--ink)!important;
+  padding:.85em 1.35em!important;min-height:48px!important;margin-top:.5rem!important;width:auto!important;
+  transform:rotate(-1.4deg);transition:transform .09s ease, box-shadow .09s ease;cursor:pointer;
+}
+.subscribe--coral  .kit-embed .formkit-submit{background-color:var(--colorado)!important}
+.subscribe--lazuli .kit-embed .formkit-submit{background-color:var(--lazuli)!important}
+.subscribe--bus    .kit-embed .formkit-submit{background-color:var(--bus-ink)!important}
+.kit-embed .formkit-submit:hover{transform:rotate(0)}
+.kit-embed .formkit-submit:active{transform:translate(5px,5px) rotate(0);box-shadow:0 0 0 0 var(--ink)!important}
+.kit-embed .formkit-submit:focus-visible{outline:3px solid var(--lazuli)!important;outline-offset:3px!important}
+.kit-embed .formkit-submit > *{background:transparent!important;color:inherit!important;font:inherit!important}
+.kit-embed .formkit-submit .formkit-spinner > div{background:var(--oats)!important}
+.kit-embed .formkit-alert{
+  font-family:var(--f-mono)!important;font-size:.82rem!important;margin:.7rem 0 0!important;
+  padding:.5em .7em!important;border-radius:7px 4px 9px 3px!important;
+  background:var(--paper)!important;color:var(--coral-ink)!important;border:2px solid var(--colorado)!important;
+}
+.kit-embed .formkit-alert-success{color:var(--grass-deep)!important;border-color:var(--grass)!important}
+.replycard-noscript{font-family:var(--f-body);font-size:.9rem;color:var(--ink)}
 
-/* ---- headings: marker-underlined h2, scrawl-accented h3 ---- */
-.prose h2 {
-  font-family: var(--f-slab);
-  font-style: italic;
-  font-weight: 700;
-  line-height: 1.06;
-  letter-spacing: -0.015em;
-  color: var(--ink);
-  font-size: clamp(1.5rem, 4vw, var(--t-sub, 2rem));
-  /* rem-based, not em-relative: 2.1em/0.6em resolved against the h2's own fluid
-     font-size, yielding a huge ~4.2rem top vs cramped ~1.2rem bottom (lopsided
-     header-to-header rhythm, and the marker underline crowded the first body
-     line). clamp ties the head rhythm to the same cadence the subscribe cards use. */
-  margin: clamp(2rem, 4vw, 2.6rem) 0 clamp(0.7rem, 1.6vw, 0.95rem);
-  max-width: 22ch;
-  /* same BAKED-INK look as .post-title — ink pressed into the paper tooth (seam
-     bleed-gain + warm wicking halo), DISPLAY headlines only. The running Bitter
-     body below stays perfectly clean (no shadow, no tilt) — legibility sacred. */
-  text-shadow:
-    0 0.5px 0   rgba(var(--sh-seam), 0.38),
-    0.3px 0.6px 0.5px rgba(var(--sh-seam), 0.15),
-    0 0 1px     rgba(var(--sh-warm), 0.2);
-  transform-origin: left center;
-}
-/* tiny SEEDED, non-repeating baseline jitter — every h2 sits hand-set, no two
-   the same angle (so the post never reads as a tidy templated ladder of clean
-   web headings). Cycle is long + irregular to avoid a visible metronome. */
-.prose h2:nth-of-type(5n+1) { transform: rotate(-0.7deg); }
-.prose h2:nth-of-type(5n+2) { transform: rotate(0.5deg); }
-.prose h2:nth-of-type(5n+3) { transform: rotate(-0.4deg); }
-.prose h2:nth-of-type(5n+4) { transform: rotate(0.8deg); }
-.prose h2:nth-of-type(5n+5) { transform: rotate(-0.55deg); }
-/* wobbly marker underline under the h2 (the brand's h2 squiggle) */
-.prose h2::after {
-  content: "";
-  display: block;
-  width: 2.1em;
-  height: 0.18em;
-  margin-top: 0.28em;
-  background: var(--grass);
-  border-radius: 3px;
-  filter: url(#rough);
-}
+// ===================================================================
+// AUTHOR PAGE — /authors/<slug>/. A bio header (taped headshot polaroid + name +
+// role + bio) on the warm desk, then the list of that author's letters as small
+// paper rows. The .author--{accent} modifier tints the name + letter titles.
+// ===================================================================
+.author{padding-top:clamp(1.5rem,4vw,3rem)}
+.author-head{position:relative;padding-bottom:clamp(1.5rem,4vw,2.4rem)}
+.author-head .wrap{display:flex;flex-wrap:wrap;align-items:flex-start;gap:clamp(1.2rem,4vw,2.4rem)}
+.author-photo{flex:0 0 auto;width:min(200px,40%)}
+.author-photo.polaroid{transform:rotate(-2deg)}
+.author-id{flex:1 1 280px;min-width:0}
+.author-id .eyebrow{display:inline-block;margin-bottom:.2rem}
+.author-id h1,.author-id .slab{font-family:var(--f-slab);font-style:italic;font-weight:700;
+  line-height:1.0;letter-spacing:-.018em;font-size:clamp(2rem,5.5vw,3.4rem);color:var(--ink);margin:.1rem 0 0;text-wrap:balance}
+.author-role{font-family:var(--f-mono);font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--sambas);margin:.5rem 0 0}
+.author-bio{font-family:var(--f-body);font-size:1.05rem;line-height:1.6;color:var(--ink);margin:.9rem 0 0;max-width:54ch}
 
-.prose h3 {
-  font-family: var(--f-mono);
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-size: 1.02rem;
-  color: var(--ink);   /* Sambas heading: AA-safe on the sacred reading sheet */
-  margin: 1.8em 0 0.5em;
-}
+.author-letters{padding-block:clamp(1.5rem,4vw,2.6rem)}
+.author-letters h2,.author-letters .slab{font-family:var(--f-slab);font-style:italic;font-weight:700;
+  font-size:clamp(1.5rem,3.5vw,2.2rem);color:var(--ink);margin:0 0 clamp(1rem,3vw,1.6rem);text-wrap:balance}
+.author-letter-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:clamp(.9rem,2.5vw,1.4rem)}
+.author-letter > a{display:block;text-decoration:none;color:var(--ink);
+  @include paper-face($filter:torn, $radius:7px, $boil:none,
+    $border:2.4px solid var(--ink), $shadow:5px 5px 0 0 var(--ink));
+  padding:clamp(.9rem,2.5vw,1.3rem) clamp(1.1rem,3vw,1.6rem);
+  transform:rotate(-.5deg);transition:transform .12s ease}
+.author-letter:nth-child(even) > a{transform:rotate(.6deg)}
+.author-letter > a:hover{transform:rotate(0) translate(-1px,-1px)}
+.author-letter > a:hover::before{box-shadow:7px 8px 0 0 var(--grass)}
+.author-letter > a:focus-visible{outline:3px solid var(--lazuli);outline-offset:3px}
+.author-letter .eyebrow{display:inline-block;font-size:1.05rem}
+.author-letter-title{display:block;font-family:var(--f-slab);font-style:italic;font-weight:700;
+  font-size:clamp(1.2rem,2.4vw,1.6rem);line-height:1.1;color:var(--ink);margin:.2rem 0 .3rem;text-wrap:balance}
+.author-letter-dek{display:block;font-family:var(--f-body);font-size:.95rem;line-height:1.45;color:var(--sambas);margin:0 0 .4rem}
+.author-letter-date{display:block;font-family:var(--f-mono);font-size:.68rem;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--grass-deep)}
+.author-letter--empty{font-family:var(--f-body);font-style:italic;color:var(--sambas)}
 
-.prose h4 {
-  font-family: var(--f-body);
-  font-weight: 600;
-  font-style: normal;
-  font-size: 1.08rem;
-  letter-spacing: 0;
-  color: var(--ink);
-  margin: 1.5em 0 0.4em;
-}
+// accent tints — keep AA on the cream/desk
+.author--coral .author-id h1,.author--coral .author-letter-title{color:var(--coral-ink)}
+.author--lazuli .author-id h1,.author--lazuli .author-letter-title{color:var(--lazuli-deep)}
+.author--grass .author-id h1,.author--grass .author-letter-title{color:var(--grass-deep)}
+.author--bus .author-id h1,.author--bus .author-letter-title{color:var(--bus-ink)}
+.author--happy .author-id h1,.author--happy .author-letter-title{color:var(--bus-ink)}
 
-/* ---- links: ONE wobbly green hand-marker underline on EVERY .prose a (post +
-   page-layout join/about pages alike — the selector is NOT layout-scoped, so it
-   is the single site-wide inline-link treatment). The stroke is a hand-marker mark,
-   not a straight CSS rule: a stacked grass gradient whose thickness breathes (a thin
-   wash + a heavier core band sitting a hair off the baseline) so it reads as a marker
-   swipe with pressure variation, never a uniform 1px system underline. Body-text
-   colour/opacity untouched (legibility sacred); grass-only signal stays AA-safe. ---- */
-.prose a {
-  color: var(--ink);   /* Sambas link: AA-safe body-size on the sacred sheet (Grass underline + ink-on-hover keep the green signal) */
-  text-decoration: none;
-  background-image:
-    linear-gradient(var(--grass), var(--grass)),
-    linear-gradient(rgba(28,171,91,.55), rgba(28,171,91,.55));
-  background-repeat: no-repeat, no-repeat;
-  background-position: 0 100%, 0 92%;
-  background-size: 100% 0.1em, 100% 0.06em;
-  padding-bottom: 0.04em;
-  transition: background-size 0.12s ease, color 0.12s ease;
-}
-.prose a:hover {
-  color: var(--ink);
-  background-size: 100% 0.42em, 100% 0.1em;
-}
-.prose a:focus-visible {
-  outline: 3px solid var(--lazuli);
-  outline-offset: 2px;
-  border-radius: 3px;
-}
-
-/* ---- emphasis ---- */
-.prose strong { font-weight: 600; color: var(--ink); }
-.prose em { font-style: italic; }
-.prose mark,
-.prose .hl-text {
-  background: var(--happy);
-  color: var(--ink);                 /* lock ink colour so text isn't shifted by blend */
-  mix-blend-mode: multiply;
-  padding: 0 0.12em;
-  border-radius: 2px;
-  box-shadow: inset 0 -0.08em 0 0 var(--ink); /* flat ink underline boosts perceived contrast to AA */
-}
-
-/* ---- lists ---- */
-.prose ul,
-.prose ol {
-  margin: 0 0 1.15em;
-  padding-left: 1.5em;
-}
-.prose li { margin-bottom: 0.45em; line-height: 1.65; }
-.prose ul > li::marker { color: var(--colorado); }
-.prose ol > li::marker {
-  color: var(--ink);   /* Sambas list numbers: AA-safe reading flow on the sacred sheet */
-  font-family: var(--f-mono);
-  font-weight: 500;
-}
-
-/* ---- inline code / pre ---- */
-.prose code {
-  font-family: var(--f-mono);
-  font-size: 0.86em;
-  background: rgba(65, 77, 87, 0.08);
-  padding: 0.08em 0.4em;
-  border-radius: 3px;
-  color: var(--ink);   /* Sambas inline code: AA-safe on the sacred sheet */
-}
-.prose pre {
-  font-family: var(--f-mono);
-  font-size: 0.86rem;
-  line-height: 1.55;
-  background: var(--sambas);
-  color: var(--paper);
-  border: 2.4px solid var(--ink);
-  border-radius: 6px;
-  box-shadow: var(--sh-contact), var(--sh-ambient); /* soft tinted cast under the one light, not a hard ink offset */
-  padding: 1rem 1.1rem;
-  overflow-x: auto;
-  margin: 0 0 1.4em;
-}
-.prose pre code { background: none; color: inherit; padding: 0; }
-
-/* ---- blockquote (bare markdown >) — a quiet highlighter-edged aside ---- */
-.prose blockquote {
-  margin: 1.6em 0;
-  padding: 0.6em 0 0.6em 1.1em;
-  border-left: 0.28em solid var(--grass);
-  font-style: italic;
-  color: var(--ink);
-}
-.prose blockquote p:last-child { margin-bottom: 0; }
-
-/* ---- hr falls back to a marker rule (cutline.html is preferred) ---- */
-.prose hr {
-  border: 0;
-  height: 0.16em;
-  background: var(--ink);
-  border-radius: 3px;
-  filter: url(#roughsm);
-  margin: 2.4em auto;
-  width: 4em;
-}
-
-/* ---- bare markdown images become taped polaroids ---- */
-.prose img {
-  display: block;
-  max-width: 100%;
-  height: auto;
-}
-.prose p > img:only-child {
-  margin: 1.6em auto;
-  padding: 11px 11px 11px;
-  background: var(--paper);
-  border: 2px solid var(--ink);
-  border-radius: 4px;
-  box-shadow: var(--sh-lift); /* a taped polaroid sits up off the sheet under the one light */
-  transform: rotate(-1deg);
-}
-
-/* tables — torn-edged, mono headers */
-.prose table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 0 0 1.4em;
-  font-size: 0.94rem;
-}
-.prose th {
-  font-family: var(--f-mono);
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  font-size: 0.78rem;
-  text-align: left;
-  border-bottom: 2.4px solid var(--ink);
-  padding: 0.5em 0.7em;
-}
-.prose td {
-  border-bottom: 1px solid rgba(65, 77, 87, 0.18);
-  padding: 0.5em 0.7em;
-  vertical-align: top;
-}
-
-/* =============================================================================
-   3. FURNITURE COMPONENTS — each a believable COLORED PAPER CRAFT object,
-   ported from v6's literal component CSS and re-skinned to the blog's furniture.
-   Furniture is colored cardstock (flat base + html.baked face), tilted off-grid,
-   tape/pin/stamp attached, lifted by SOFT TINTED shadows. The running prose
-   around it stays calm and legible.
-   ========================================================================== */
-
-/* ---- eyebrow.html : .eyebrow — Patrick-Hand kicker in color (v6 .b-headline
-   .kicker is Birdie/Happy on a dark ground; on the Oats sheet the brand §4.3
-   eyebrow runs Colorado). Primitive lives in _whimsy.scss; nothing to add. ---- */
-
-/* ---- pullquote.html : a CREAM TORN QUOTE-SLIP with a Colorado tape accent ----
-   BUDGET (v6 cream-breathing-room): the default pull-quote is now a torn OATS/cream
-   slip in crisp Sambas ink — so a long essay's quotes read as cream clippings on the
-   desk, not a metronomic ladder of full-saturation Colorado blocks. The colour signal
-   is carried by a SMALL Colorado accent: the knocked-IN opening quote-mark + the red
-   thumbtack that pins it. The rarer fully-saturated red note is the .pullquote--shout
-   variant only (below). Pitch-italic line, tilted, pinned. */
-.pullquote {
-  position: relative;
-  margin: clamp(2.2rem, 5.5vw, 3.4rem) auto clamp(1.8rem, 4vw, 2.6rem);
-  width: min(30ch, 100%);
-  max-width: none;
-  padding: clamp(1.5rem, 4vw, 2rem) clamp(1.6rem, 4vw, 2rem) clamp(1.6rem, 4vw, 2.1rem);
-  /* cream torn cardstock — flat Oats base + soft tinted cast (cream dominates). */
-  background-color: var(--paper);
-  border-radius: 9px 5px 11px 6px / 6px 11px 5px 9px; /* torn deckle fallback */
-  box-shadow: var(--sh-contact), var(--sh-ambient);
-  transform: rotate(2.2deg); /* v6 .b-quote rot — varied per-instance by seed below */
-}
-/* SEEDED non-repeating tilt AND width so two pull-quotes in one post never share
-   the same angle+size (kills the metronome-even templated cadence). The 601px
-   float block already alternates which margin each breaks into. Long irregular
-   cycle, distinct width per instance. */
-.prose .pullquote:nth-of-type(3n+1) { transform: rotate(2.2deg);  --rest-rot: 2.2deg;  width: min(31ch, 100%); }
-.prose .pullquote:nth-of-type(3n+2) { transform: rotate(-2.6deg); --rest-rot: -2.6deg; width: min(27ch, 100%); }
-.prose .pullquote:nth-of-type(3n+3) { transform: rotate(1.5deg);  --rest-rot: 1.5deg;  width: min(33ch, 100%); }
-/* baked: the real torn Oats/cream paper face + edge. */
-html.baked .pullquote {
-  @include scrap-face(--bk-piece-oats, --bk-edge-oats, var(--bk-edge-oats-slice, 38));
-  background-color: var(--paper);
-}
-/* pq-text is a <blockquote>; neutralize the bare-markdown .prose blockquote
-   styling (grass border-left, italic, padding) so the scrap owns its look. */
-.prose .pullquote .pq-text {
-  margin: 0;
-  padding: 0;
-  border-left: 0;
-  font-style: italic;
-}
-/* big opening quote-mark in COLORADO — the small deliberate colour accent that
-   carries the red signal on the cream slip (ink pressed into the Oats tooth). */
-.pullquote .pq-text::before {
-  content: "\201C";
-  display: block;
-  font-family: var(--f-slab);
-  font-style: italic;
-  font-weight: 700;
-  font-size: 2.9rem;
-  line-height: 0.5;
-  height: 0.5em;
-  color: var(--colorado);
-  opacity: 0.92;
-  text-shadow: 0 0.5px 0 rgba(var(--sh-seam), 0.3);
-}
-.pullquote .pq-text {
-  font-family: var(--f-slab);
-  font-style: italic;
-  font-weight: 700;
-  line-height: 1.18;
-  letter-spacing: -0.005em;
-  font-size: clamp(1.25rem, 3.6vw, 1.55rem);
-  color: var(--ink);              /* crisp Sambas ink on the cream slip — AA */
-  text-shadow: 0 0.6px 0 rgba(254, 246, 228, 0.32);
-  margin: 0.3rem 0 0;
-  display: block;
-}
-.pullquote .pq-text::after { content: none; }
-.pullquote .pq-attrib {
-  font-family: var(--f-hand);
-  font-size: 1.05rem;
-  color: var(--ink);                  /* Birdie attribution in Sambas ink on cream */
-  margin-top: 0.9rem;
-  transform: rotate(-1deg);
-  display: block;
-}
-.pullquote .pq-attrib::before { content: "\2014 "; }
-/* the red thumbtack that pins the scrap (v6's bakePin orb is JS-baked; this is
-   a faithful CSS pin: glossy plastic orb + steel stub + soft contact shadow). */
-.pullquote::after {
-  content: "";
-  position: absolute;
-  top: -9px; left: 26px;
-  width: 17px; height: 17px;
-  border-radius: 50%;
-  background:
-    radial-gradient(circle at 34% 30%,
-      color-mix(in srgb, var(--colorado) 26%, #fff) 0%,   /* glossy specular tint (≈#ffd9da) */
-      color-mix(in srgb, var(--colorado) 78%, #fff) 30%,  /* lit face (≈#f17a7d) */
-      color-mix(in srgb, var(--colorado) 85%, #000) 70%,  /* body shade (≈#d8383b) */
-      color-mix(in srgb, var(--colorado) 62%, #000) 100%); /* occluded rim (≈#a82a2d) — all derived from --colorado */
-  box-shadow: 0 0 0 1px rgba(120, 30, 32, 0.3),
-              1px 2px 3px rgba(44, 36, 26, 0.4),
-              inset 1px 1px 2px rgba(255, 255, 255, 0.6);
-}
-
-/* RARER full-saturation Colorado note — the v6 .b-quote red scrap, reserved for a
-   deliberate "shout" quote (markdown opts in via .pullquote--shout). Keeps the
-   saturated red OFF the default cadence so most quotes stay cream (budget). */
-.pullquote--shout {
-  background-color: var(--colorado);
-}
-html.baked .pullquote--shout {
-  @include scrap-face(--bk-piece-coral, --bk-edge-coral, var(--bk-edge-coral-slice, 38));
-  background-color: var(--colorado);
-}
-.pullquote--shout .pq-text::before { color: var(--oats); }
-.pullquote--shout .pq-text { color: color-mix(in srgb, var(--sambas) 68%, #000); }  /* a darker Sambas ink (≈#2c343b) derived from the token — crisp on red, AA (v6 fix) */
-.pullquote--shout .pq-attrib {
-  color: var(--oats);
-  text-shadow: 0 1px 1px rgba(120, 30, 32, 0.35);
-}
-
-/* ---- callout.html : a CREAM/KRAFT TAPED SLIP (default) ----
-   BUDGET (v6 cream-breathing-room): the everyday callout is now a torn OATS/cream
-   slip in Sambas ink, taped on at a tilt — so the column reads as cream clippings,
-   not a metronomic ladder of full-saturation dark Sambas blocks. The colour signal
-   is a SMALL Sambas tape accent. The full-saturation dark Sambas "answer-note" (the
-   v6 .b-answer port) is reserved for the rarer .callout--answer variant (below);
-   the bright Grass aside stays .callout--note. */
-.callout {
-  position: relative;
-  margin: clamp(1.8rem, 4vw, 2.6rem) 0;
-  padding: clamp(1.2rem, 3vw, 1.6rem) clamp(1.2rem, 3vw, 1.7rem) clamp(1.1rem, 3vw, 1.5rem);
-  /* cream torn slip — flat Oats base + soft tinted cast (cream dominates). */
-  background-color: var(--paper);
-  color: var(--ink);
-  /* TORN DECKLE fallback (REFS 9 + 29 never-square). The old tiny 4–9px radius
-     left every callout — and the saturated GRASS .callout--note worst of all —
-     reading as a flat web block with hard right/bottom edges + square corners.
-     A heavy ASYMMETRIC deckle (the same idiom .prose/.pullquote/.cite use) tears
-     all four rims so the slip reads as a real clipping even pre-bake / on a
-     partial bake — and, unlike clip-path, it never crops the overhanging washi
-     tape or pin. The baked two-zone border-image rim overrides this to 0 below. */
-  border-radius: 78px 14px 92px 18px / 18px 88px 14px 74px;
-  box-shadow: var(--sh-contact), var(--sh-ambient);
-  transform: rotate(-0.9deg);     /* a note torn off + taped on at a tilt (seeded below) */
-}
-/* SEEDED non-repeating tilt, deckle AND width per instance (no fixed single
-   angle/size/tear → not a band; the saturated Grass note never clones a
-   neighbour's rim). The 601px float block alternates which margin each breaks into. */
-.prose .callout:nth-of-type(4n+1) { transform: rotate(-0.9deg); --rest-rot: -0.9deg; border-radius: 78px 14px 92px 18px / 18px 88px 14px 74px; }
-.prose .callout:nth-of-type(4n+2) { transform: rotate(1.2deg);  --rest-rot: 1.2deg;  border-radius: 16px 84px 20px 96px / 90px 14px 80px 18px; }
-.prose .callout:nth-of-type(4n+3) { transform: rotate(-1.6deg); --rest-rot: -1.6deg; border-radius: 90px 16px 74px 22px / 14px 82px 20px 92px; }
-.prose .callout:nth-of-type(4n+4) { transform: rotate(0.7deg);  --rest-rot: 0.7deg;  border-radius: 20px 96px 16px 80px / 86px 18px 92px 14px; }
-@media (min-width: 601px) {
-  .prose .callout:nth-of-type(4n+1) { width: min(54%, 29ch); }
-  .prose .callout:nth-of-type(4n+2) { width: min(58%, 31ch); }
-  .prose .callout:nth-of-type(4n+3) { width: min(52%, 27ch); }
-  .prose .callout:nth-of-type(4n+4) { width: min(57%, 32ch); }
-}
-/* baked: the real torn Oats/cream slip face + edge (the baked two-zone border-image
-   rim supplies the silhouette, so the deckle radius resets to 0). */
-html.baked .callout {
-  @include scrap-face(--bk-piece-oats, --bk-edge-oats, var(--bk-edge-oats-slice, 38));
-  background-color: var(--paper);
-  color: var(--ink);
-}
-/* the local ink-well veil under the reading column. On the default cream slip it
-   is a faint WARM cream wash (lifts the serif off the Oats tooth); the saturated
-   variants override the tint to a dark/colored wash below. */
-.callout::before {
-  content: "";
-  position: absolute;
-  inset: 12px auto 14px 14px;
-  width: 62%;
-  z-index: 0;
-  border-radius: 10px;
-  background: radial-gradient(125% 100% at 42% 32%,
-    rgba(255, 250, 236, 0.55) 0%, rgba(255, 250, 236, 0.3) 58%, rgba(255, 250, 236, 0) 100%);
-  filter: blur(3px);
-  pointer-events: none;
-}
-.callout > * { position: relative; z-index: 1; }
-/* default tape accent = a small Sambas washi strip (the colour signal on cream). */
-.callout > .tape {
-  position: absolute;
-  z-index: 4;
-  left: 1.4rem;
-  top: -14px;
-  transform: rotate(-5deg);
-  background: linear-gradient(94deg, rgba(65,77,87,.34), rgba(65,77,87,.2) 55%, rgba(65,77,87,.32));
-}
-.callout-label {
-  font-family: var(--f-mono);
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.16em;
-  font-size: 0.72rem;
-  color: var(--colorado);         /* Colorado mono kicker — §4.3 Oats-bg eyebrow accent */
-  display: block;
-  margin-bottom: 0.6rem;
-}
-.callout-body {
-  font-family: var(--f-body);
-  font-weight: 400;
-  font-size: 1rem;
-  line-height: 1.55;
-  color: var(--ink);              /* Sambas body on the cream slip — AA */
-}
-.callout-body :last-child { margin-bottom: 0; }
-.callout-body p { margin: 0 0 0.7em; }
-.callout-body strong { color: var(--ink); font-weight: 600; }
-.callout-body em { font-style: italic; color: var(--ink); font-weight: 600; }
-.callout-body a {
-  color: var(--ink);              /* Sambas link w/ Grass underline — AA on cream */
-  background: none;
-  border-bottom: 1px solid var(--grass);
-}
-
-/* RARER full-saturation DARK SAMBAS answer-note — the v6 .b-answer port, reserved
-   for the occasional "answer" beat (markdown opts in via .callout--answer). Keeps
-   the saturated dark block OFF the default cadence so the column stays cream. */
-.callout--answer {
-  background-color: var(--sambas);
-  color: var(--oats);
-}
-html.baked .callout--answer {
-  @include scrap-face(--bk-piece-sambas, --bk-edge-sambas, var(--bk-edge-sambas-slice, 38));
-  background-color: var(--sambas);
-  color: var(--oats);
-}
-/* dark ink-well veil so the serif strokes stay sharp on the dark tooth (v6). */
-.callout--answer::before {
-  background: radial-gradient(125% 100% at 42% 32%,
-    rgba(58, 69, 79, 0.55) 0%, rgba(58, 69, 79, 0.32) 58%, rgba(58, 69, 79, 0) 100%);
-}
-.callout--answer > .tape { background: linear-gradient(94deg, rgba(28,171,91,.44), rgba(28,171,91,.26) 55%, rgba(28,171,91,.4)); }
-.callout--answer .callout-label {
-  color: var(--oats);             /* §4.3 dark-bg: light Oats label */
-  text-shadow: 0 1px 1px rgba(var(--sh-seam), 0.42);
-}
-.callout--answer .callout-body {
-  color: var(--oats);
-  text-shadow: 0 0.6px 0 rgba(var(--sh-seam), 0.5); /* warm seam lifts serif off the dark tooth */
-}
-.callout--answer .callout-body strong { color: var(--paper); }
-.callout--answer .callout-body em { color: var(--oats); }
-.callout--answer .callout-body a {
-  color: var(--grass);            /* §4.3 dark-bg link = Grass */
-  border-bottom-color: rgba(28, 171, 91, 0.55);
-}
-
-/* for-drex (the DEFAULT callout kind) had NO skin, so every "For Drex" aside fell
-   through to plain CREAM — cream paper on the cream sheet, where only the torn rim +
-   shadow separated it (the "fucked border" look). PRINCIPLE: paper layered on paper
-   changes colour. So for-drex is now its own dark Sambas margin-note (distinct from
-   the cream sheet, distinct from the Grass `note` kind), School-Bus label. */
-.callout--for-drex { background-color: var(--sambas); color: var(--oats); }
-html.baked .callout--for-drex {
-  @include scrap-face(--bk-piece-sambas, --bk-edge-sambas, var(--bk-edge-sambas-slice, 38));
-  background-color: var(--sambas); color: var(--oats);
-}
-.callout--for-drex::before { background: radial-gradient(125% 100% at 42% 32%,
-  rgba(58,69,79,.55) 0%, rgba(58,69,79,.32) 58%, rgba(58,69,79,0) 100%); }
-.callout--for-drex .callout-label { color: var(--schoolbus); text-shadow: 0 1px 1px rgba(var(--sh-seam),.42); }
-.callout--for-drex .callout-body { color: var(--oats); text-shadow: 0 .6px 0 rgba(var(--sh-seam),.5); }
-.callout--for-drex .callout-body strong { color: var(--paper); }
-.callout--for-drex .callout-body em { color: var(--oats); }
-.callout--for-drex .callout-body a { color: var(--grass); border-bottom-color: rgba(28,171,91,.55); }
-.callout--for-drex > .tape { background: linear-gradient(94deg, rgba(236,175,33,.44), rgba(236,175,33,.26) 55%, rgba(236,175,33,.4)); }
-
-/* "note" kind = a GRASS taped slip (the brighter aside; brief: callout = Grass
-   or Lazuli, never a pale fill). Grass torn cardstock, light Oats ink, Lazuli
-   washi tape, a faint light ink-well veil so the serif strokes stay sharp. */
-.callout--note {
-  background-color: var(--grass);
-  color: var(--oats);
-  transform: rotate(0.7deg);
-}
-html.baked .callout--note {
-  @include scrap-face(--bk-piece-grass, --bk-edge-grass, var(--bk-edge-grass-slice, 38));
-  background-color: var(--grass);
-  color: var(--oats);
-}
-/* light ink-well veil (Grass is bright) so the Bitter strokes don't get chewed
-   by the tooth — a faint warm-white radial under the reading column. */
-.callout--note::before {
-  background: radial-gradient(125% 100% at 42% 32%,
-    rgba(20, 120, 64, 0.5) 0%, rgba(20, 120, 64, 0.28) 58%, rgba(20, 120, 64, 0) 100%);
-}
-.callout--note .callout-label { color: var(--oats); text-shadow: 0 1px 1px rgba(var(--sh-seam), 0.4); }
-.callout--note .callout-body { color: var(--oats); text-shadow: 0 0.5px 0 rgba(var(--sh-seam), 0.4); }
-.callout--note .callout-body strong { color: var(--paper); }
-.callout--note .callout-body em { color: var(--oats); font-weight: 600; }
-.callout--note .callout-body a { color: var(--oats); border-bottom-color: rgba(255,246,228,.6); }
-.callout--note > .tape { background: linear-gradient(94deg, rgba(36,150,201,.44), rgba(36,150,201,.26) 55%, rgba(36,150,201,.4)); }
-
-.callout--warning .callout-label { color: var(--colorado); }
-.callout--warning > .tape { background: linear-gradient(94deg, rgba(247,84,88,.44), rgba(247,84,88,.26) 55%, rgba(247,84,88,.4)); }
-
-/* ---- definition.html : a CREAM RULED FILE-CARD (default) ----
-   BUDGET (v6 cream-breathing-room): the everyday definition is now a torn OATS/cream
-   index card in Sambas ink, carrying faint printed Sambas rulings, with a small
-   LAZULI filed edge-tab as the colour accent — so a long essay's definitions read as
-   cream cards on the desk, not a metronomic ladder of full-saturation Lazuli blocks.
-   The full-saturation dyed-blue index card (the original) is reserved for the rarer
-   .definition--filed variant (below). */
-.definition {
-  position: relative;
-  margin: clamp(2rem, 4.5vw, 2.8rem) 0;
-  padding: clamp(1.5rem, 4vw, 2.1rem) clamp(1.4rem, 4vw, 2.1rem) clamp(1.4rem, 4vw, 2rem);
-  /* cream file-card stock: a printed Sambas top margin-rule + faint body rules over
-     the Oats, lifted by the soft tinted cast (cream dominates). */
-  background-color: var(--paper);
-  background-image:
-    linear-gradient(rgba(65, 77, 87, 0.5), rgba(65, 77, 87, 0.5)) no-repeat 0 2.6rem / 100% 1.4px,
-    repeating-linear-gradient(0deg, transparent 0 26px, rgba(65, 77, 87, 0.08) 26px 27px);
-  color: var(--ink);
-  border-radius: 9px 5px 11px 6px / 6px 11px 5px 9px; /* torn deckle fallback */
-  border-left: 6px solid var(--lazuli);    /* the filed Lazuli edge tab (small colour accent) */
-  box-shadow: var(--sh-contact), var(--sh-ambient);
-  transform: rotate(-0.6deg);              /* seeded per instance below */
-}
-/* SEEDED non-repeating tilt AND width per instance. The 601px float block
-   alternates which margin each breaks into. */
-.prose .definition:nth-of-type(3n+1) { transform: rotate(-0.6deg); --rest-rot: -0.6deg; }
-.prose .definition:nth-of-type(3n+2) { transform: rotate(0.9deg);  --rest-rot: 0.9deg; }
-.prose .definition:nth-of-type(3n+3) { transform: rotate(-1.1deg); --rest-rot: -1.1deg; }
-@media (min-width: 601px) {
-  .prose .definition:nth-of-type(3n+1) { width: min(53%, 28ch); }
-  .prose .definition:nth-of-type(3n+2) { width: min(58%, 31ch); }
-  .prose .definition:nth-of-type(3n+3) { width: min(55%, 26ch); }
-}
-.definition > * { position: relative; z-index: 1; }
-/* baked: the real torn Oats/cream card face + edge, with the printed file-card
-   rulings laid OVER the real Oats tooth. */
-html.baked .definition {
-  @include scrap-face(--bk-piece-oats, --bk-edge-oats, var(--bk-edge-oats-slice, 38));
-  background-color: var(--paper);
-  background-image:
-    linear-gradient(rgba(65, 77, 87, 0.5), rgba(65, 77, 87, 0.5)) no-repeat 0 2.6rem / 100% 1.4px,
-    repeating-linear-gradient(0deg, transparent 0 26px, rgba(65, 77, 87, 0.08) 26px 27px),
-    var(--bk-piece-oats);
-  background-size: 100% 1.4px, auto, 200px 200px;
-  color: var(--ink);
-}
-.definition-label {
-  font-family: var(--f-mono);
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.18em;
-  font-size: 0.7rem;
-  color: var(--lazuli);           /* Lazuli mono tab label on the cream card (matches the filed tab) */
-  display: block;
-  margin-bottom: 1.1rem;          /* clears the printed top ruling */
-}
-.definition-term {
-  font-family: var(--f-slab);
-  font-style: italic;
-  font-weight: 700;
-  line-height: 1.12;
-  letter-spacing: -0.01em;
-  font-size: clamp(1.4rem, 3.6vw, 1.8rem);
-  color: var(--ink);                  /* Sambas ink on the cream card — AA */
-  margin: 0 0 0.6rem;
-}
-.definition-term::after { content: none; }
-.definition-body {
-  font-family: var(--f-body);
-  font-weight: 400;
-  font-size: 1rem;
-  line-height: 1.62;
-  color: var(--ink);
-}
-.definition-body :last-child { margin-bottom: 0; }
-.definition-body p { margin: 0 0 0.7em; }
-.definition-body strong { color: var(--ink); font-weight: 600; }
-.definition-body em { font-style: italic; color: var(--ink); font-weight: 600; }
-.definition-body a {
-  color: var(--ink);              /* Sambas link w/ Lazuli underline — AA on cream */
-  background: none;
-  border-bottom: 1px solid var(--lazuli);
-}
-
-/* RARER full-saturation LAZULI dyed index-card — the original, reserved for the
-   occasional headline definition (markdown opts in via .definition--filed). Keeps
-   the saturated blue block OFF the default cadence so the column stays cream. */
-.definition--filed {
-  background-color: var(--lazuli);
-  background-image:
-    linear-gradient(rgba(254, 246, 228, 0.7), rgba(254, 246, 228, 0.7)) no-repeat 0 2.6rem / 100% 1.4px,
-    repeating-linear-gradient(0deg, transparent 0 26px, rgba(254, 246, 228, 0.14) 26px 27px);
-  border-left-color: var(--schoolbus);  /* the filed School-Bus edge tab */
-  color: var(--oats);
-}
-html.baked .definition--filed {
-  @include scrap-face(--bk-piece-lazuli, --bk-edge-lazuli, var(--bk-edge-lazuli-slice, 38));
-  background-color: var(--lazuli);
-  background-image:
-    linear-gradient(rgba(254, 246, 228, 0.7), rgba(254, 246, 228, 0.7)) no-repeat 0 2.6rem / 100% 1.4px,
-    repeating-linear-gradient(0deg, transparent 0 26px, rgba(254, 246, 228, 0.14) 26px 27px),
-    var(--bk-piece-lazuli);
-  background-size: 100% 1.4px, auto, 160px 160px;
-  color: var(--oats);
-}
-.definition--filed .definition-label {
-  color: var(--schoolbus);        /* School-Bus mono tab label on the blue card */
-  text-shadow: 0 1px 1px rgba(var(--sh-seam), 0.4);
-}
-.definition--filed .definition-term {
-  color: var(--oats);
-  text-shadow: 0 0.6px 0 rgba(var(--sh-seam), 0.42);
-}
-.definition--filed .definition-body {
-  color: var(--oats);
-  text-shadow: 0 0.5px 0 rgba(var(--sh-seam), 0.4);
-}
-.definition--filed .definition-body strong { color: var(--paper); }
-.definition--filed .definition-body em { color: var(--oats); }
-.definition--filed .definition-body a {
-  color: var(--oats);
-  border-bottom-color: rgba(254, 246, 228, 0.6);
-}
-
-/* ---------------------------------------------------------------------------
-   IN-PROSE FURNITURE LAYOUT — punctuate the calm Bitter sheet, don't band it.
-   On wide screens the colored scraps go NARROWER than the reading measure and
-   alternately FLOAT into the margin, bleeding off the column edge into the desk,
-   tilted by their seeded angle. Result: the running Bitter column visually
-   DOMINATES (legibility sacred) and the scraps read as clippings pinned beside
-   the page, NOT a metronome-even ladder of full-width saturated bands.
-
-   Gated to >=601px: at <=600px _mobile.scss already forces these full-width and
-   un-floated (no horizontal overflow on phones — sacred).
-   ------------------------------------------------------------------------- */
-@media (min-width: 601px) {
-  /* narrower than the 64ch measure + pulled toward / off the column edge */
-  .prose .callout,
-  .prose .definition,
-  .prose .scrap {
-    width: min(56%, 30ch);
-    max-width: 30ch;
-  }
-  /* ODD furniture pulls RIGHT, bleeding off the right column edge into the desk */
-  .prose .callout:nth-of-type(odd),
-  .prose .definition:nth-of-type(odd),
-  .prose .scrap:nth-of-type(odd) {
-    float: right;
-    margin-right: -8.5%;   /* negative right = hangs off the column onto the desk */
-    margin-left: 1.8rem;
-    shape-outside: margin-box;
-  }
-  /* EVEN furniture pulls LEFT, hanging off the left column edge onto the desk */
-  .prose .callout:nth-of-type(even),
-  .prose .definition:nth-of-type(even),
-  .prose .scrap:nth-of-type(even) {
-    float: left;
-    margin-left: -8.5%;
-    margin-right: 1.8rem;
-    shape-outside: margin-box;
-  }
-  /* SEEDED VERTICAL RHYTHM — vary top & bottom margins per instance so two
-     scraps in a row never leave the same gap (the old nth rules cycled rotation
-     only, NOT placement -> a visible metronome). Long irregular 5-cycle, offset
-     from the color/angle cycles; horizontal hang inherited from odd/even above. */
-  .prose .callout:nth-of-type(5n+1),
-  .prose .definition:nth-of-type(5n+1),
-  .prose .scrap:nth-of-type(5n+1) { margin-top: 0.2rem; margin-bottom: 2.1rem; }
-  .prose .callout:nth-of-type(5n+2),
-  .prose .definition:nth-of-type(5n+2),
-  .prose .scrap:nth-of-type(5n+2) { margin-top: 1.4rem; margin-bottom: 1.1rem; }
-  .prose .callout:nth-of-type(5n+3),
-  .prose .definition:nth-of-type(5n+3),
-  .prose .scrap:nth-of-type(5n+3) { margin-top: 0.6rem; margin-bottom: 2.6rem; }
-  .prose .callout:nth-of-type(5n+4),
-  .prose .definition:nth-of-type(5n+4),
-  .prose .scrap:nth-of-type(5n+4) { margin-top: 2.0rem; margin-bottom: 0.9rem; }
-  .prose .callout:nth-of-type(5n+5),
-  .prose .definition:nth-of-type(5n+5),
-  .prose .scrap:nth-of-type(5n+5) { margin-top: 0.9rem; margin-bottom: 1.7rem; }
-  /* the pull-quote pulls the OTHER way from a neighboring callout so adjacent
-     scraps never stack on the same side (breaks the vertical rhythm). It stays
-     its own width (min(30ch)) — just floats + hangs further off. */
-  .prose .pullquote:nth-of-type(odd) {
-    float: left;  margin-left: -7%; margin-right: 2rem;
-  }
-  .prose .pullquote:nth-of-type(even) {
-    float: right; margin-right: -7%; margin-left: 2rem;
-  }
-  /* pull-quote vertical rhythm on its own irregular cycle */
-  .prose .pullquote:nth-of-type(3n+1) { margin-top: 0.4rem; margin-bottom: 2.4rem; }
-  .prose .pullquote:nth-of-type(3n+2) { margin-top: 1.6rem; margin-bottom: 1.2rem; }
-  .prose .pullquote:nth-of-type(3n+3) { margin-top: 0.8rem; margin-bottom: 2.0rem; }
-  /* a paragraph or heading that follows a floated scrap clears it only if it's a
-     heading — so body text wraps AROUND the scrap (column dominates) but section
-     breaks start clean. */
-  .prose h2 { clear: both; }
-}
-/* NOTE: the scraps bleed OFF the column edge into the desk on purpose, so we do
-   NOT clip .prose (that would cut the bleed). The .post-stage wrapper already
-   carries overflow-x:clip so the bleed never pushes a horizontal scrollbar. */
-
-/* SEEDED REVEAL-STAGGER — when the scraps land on scroll (full-motion only),
-   nudge each one's entrance by a small seeded delay (+-40ms on an irregular
-   cycle) so adjacent furniture does NOT cascade in a uniform metronome — they
-   settle onto the desk slightly out of step, like hand-placed clippings. This
-   only delays the .reveal opacity/translate transition (set in _realism); it is
-   fully overridden by the reduced-motion floor there (animation:none, opacity:1)
-   and never affects the JS-off resting state. */
-body[data-motion="full"] .prose .callout:nth-of-type(5n+1),
-body[data-motion="full"] .prose .definition:nth-of-type(5n+1),
-body[data-motion="full"] .prose .pullquote:nth-of-type(5n+1),
-body[data-motion="full"] .prose .scrap:nth-of-type(5n+1) { transition-delay: 0ms; }
-body[data-motion="full"] .prose .callout:nth-of-type(5n+2),
-body[data-motion="full"] .prose .definition:nth-of-type(5n+2),
-body[data-motion="full"] .prose .pullquote:nth-of-type(5n+2),
-body[data-motion="full"] .prose .scrap:nth-of-type(5n+2) { transition-delay: 38ms; }
-body[data-motion="full"] .prose .callout:nth-of-type(5n+3),
-body[data-motion="full"] .prose .definition:nth-of-type(5n+3),
-body[data-motion="full"] .prose .pullquote:nth-of-type(5n+3),
-body[data-motion="full"] .prose .scrap:nth-of-type(5n+3) { transition-delay: 14ms; }
-body[data-motion="full"] .prose .callout:nth-of-type(5n+4),
-body[data-motion="full"] .prose .definition:nth-of-type(5n+4),
-body[data-motion="full"] .prose .pullquote:nth-of-type(5n+4),
-body[data-motion="full"] .prose .scrap:nth-of-type(5n+4) { transition-delay: 40ms; }
-body[data-motion="full"] .prose .callout:nth-of-type(5n+5),
-body[data-motion="full"] .prose .definition:nth-of-type(5n+5),
-body[data-motion="full"] .prose .pullquote:nth-of-type(5n+5),
-body[data-motion="full"] .prose .scrap:nth-of-type(5n+5) { transition-delay: 22ms; }
-
-/* ---- patterns.html : NUMBERED TORN SCRAPS pinned in a row (never-square) ----
-   Each numbered point is its own colored torn scrap, littered off-grid (.splay
-   resting tilts from _whimsy), lifted on hover. Cycles the §4.3 Oats-bg combo
-   (Colorado / Grass / Lazuli) so no two scraps are the same color. */
-.patterns {
-  margin: clamp(2rem, 4.5vw, 2.8rem) 0;
-}
-.patterns-title {
-  font-family: var(--f-hand);
-  font-size: 1.25rem;
-  color: var(--sambas);
-  transform: rotate(-1deg);
-  margin: 0 0 1.1rem;
-}
-.patterns-splay {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  gap: clamp(1.3rem, 3.5vw, 2rem);
-}
-.patterns-splay .pattern {
-  position: relative;
-  flex: 1 1 220px;
-  min-width: 0;
-  padding: 1.4rem 1.4rem 1.3rem;
-  border-radius: 8px 5px 10px 6px / 6px 10px 5px 8px; /* torn deckle fallback (varied per-instance below) */
-  box-shadow: var(--sh-contact), var(--sh-ambient);
-}
-/* SEEDED per-instance deckle, basis AND resting tilt so the row of scraps reads
-   as hand-littered clippings, never a metronome of equal-size equal-angle clones.
-   Long irregular cycle (offset from the 3n COLOR cycle so size/angle don't lock
-   to color). */
-.patterns-splay .pattern { transition: transform 0.18s ease, box-shadow 0.18s ease; }
-.patterns-splay .pattern:nth-child(5n+1) { flex-basis: 232px; border-radius: 8px 5px 11px 6px / 6px 11px 5px 8px;  transform: rotate(-1.4deg); }
-.patterns-splay .pattern:nth-child(5n+2) { flex-basis: 208px; border-radius: 6px 10px 5px 9px / 9px 5px 10px 6px;  transform: rotate(1.1deg); }
-.patterns-splay .pattern:nth-child(5n+3) { flex-basis: 244px; border-radius: 10px 6px 8px 5px / 5px 8px 6px 10px;  transform: rotate(-0.7deg); }
-.patterns-splay .pattern:nth-child(5n+4) { flex-basis: 216px; border-radius: 5px 9px 6px 11px / 11px 6px 9px 5px;  transform: rotate(1.7deg); }
-.patterns-splay .pattern:nth-child(5n+5) { flex-basis: 228px; border-radius: 9px 5px 10px 6px / 6px 10px 5px 9px;  transform: rotate(-1.0deg); }
-/* keep the splay hover (straighten + lift) working despite the higher-specificity
-   seeded resting tilts above — the scrap lifts off the desk on hover. */
-.patterns-splay .pattern:hover { transform: rotate(0) translateY(-7px); box-shadow: var(--sh-hover); z-index: 6; }
-/* BUDGET (v6 cream-breathing-room): the DEFAULT pattern tiles are OATS/cream cards
-   in Sambas ink with torn Oats edges — so the splay reads as a row of cream
-   clippings on the desk, not three full-saturation Grass/Lazuli/Colorado blocks in
-   a row. Only ONE tile (the first) carries a saturated GRASS accent for the colour
-   beat (§4.3 Oats-bg ground). */
-.patterns-splay .pattern { background-color: var(--paper); color: var(--ink); }
-html.baked .patterns-splay .pattern {
-  @include scrap-face(--bk-piece-oats, --bk-edge-oats, var(--bk-edge-oats-slice, 38));
-  background-color: var(--paper); color: var(--ink);
-}
-/* the single saturated GRASS accent tile (light Oats ink for AA). */
-.patterns-splay .pattern:first-child { background-color: var(--grass); color: var(--oats); }
-html.baked .patterns-splay .pattern:first-child {
-  @include scrap-face(--bk-piece-grass, --bk-edge-grass, var(--bk-edge-grass-slice, 38));
-  background-color: var(--grass); color: var(--oats);
-}
-/* AA: Oats-on-Grass is ~2.78:1 — below the floor for the .92rem body run. Deepen
-   the Grass field a few % UNDER the text (a soft multiply darkening, NOT a flat
-   block — reads as the stock in shadow under the print) so the Oats eyebrow/head/
-   body clear comfortable contrast on the green weave. Sits behind the content
-   (.pattern > * is z-index:1). Same device as .clip--grass .clip-body::before. */
-.patterns-splay .pattern:first-child::before {
-  content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
-  background: rgba(11, 77, 49, 0.20); mix-blend-mode: multiply;
-}
-.patterns-splay .pattern > * { position: relative; z-index: 1; }
-/* the pin holding each scrap (small steel-orb pin, alternating tints).
-   PALETTE NOTE: these four WARM-STEEL specular stops are a deliberate material
-   literal, not a brand colour — a faithful warm-metal ladder can't be derived from
-   the cool Sambas without losing its warm character, so (per the brand audit's own
-   "defensible as material shading") this 14px specular orb keeps hand-tuned tints. */
-.patterns-splay .pattern::after {
-  content: "";
-  position: absolute;
-  top: -8px; left: 50%;
-  width: 14px; height: 14px;
-  margin-left: -7px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 34% 30%, #FEFCF5 0%, #e7e0d2 35%, #b9b0a0 75%, #8b8270 100%);
-  box-shadow: 1px 2px 3px rgba(44, 36, 26, 0.4), inset 1px 1px 1.5px rgba(255,255,255,0.7);
-}
-/* DEFAULT cream tile: Sambas ink + a Colorado mono number accent. */
-.pattern-n {
-  font-family: var(--f-mono);
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  font-size: 0.72rem;
-  color: var(--colorado);         /* Colorado mono number — §4.3 Oats-bg accent */
-  display: block;
-  margin-bottom: 0.5rem;
-}
-.pattern-head {
-  font-family: var(--f-slab);
-  font-style: italic;
-  font-weight: 700;
-  line-height: 1.14;
-  font-size: 1.15rem;
-  color: var(--ink);              /* Sambas ink on the cream tile — AA */
-  display: block;
-  margin-bottom: 0.5rem;
-}
-.pattern-body {
-  font-family: var(--f-body);
-  font-weight: 400;
-  font-size: 0.92rem;
-  line-height: 1.55;
-  color: var(--ink);
-  display: block;
-}
-/* the single saturated GRASS accent tile: light Oats ink + warm seam shadow. */
-.patterns-splay .pattern:first-child .pattern-n {
-  color: var(--oats);
-  text-shadow: 0 1px 1px rgba(var(--sh-seam), 0.4);
-}
-.patterns-splay .pattern:first-child .pattern-head {
-  color: var(--oats);
-  text-shadow: 0 0.6px 0 rgba(var(--sh-seam), 0.42);
-}
-.patterns-splay .pattern:first-child .pattern-body {
-  color: var(--oats);
-  text-shadow: 0 0.5px 0 rgba(var(--sh-seam), 0.4);
-}
-
-/* ---- figure.html : a real POLAROID (v6 .b-photo + .cap) ----
-   .polaroid is the engine primitive (_whimsy.scss). Port v6's polaroid
-   touches: a printed chin shadow inside the well, a faint print sheen, and a
-   Birdie caption on a solid cream chip so it never loses contrast. */
-.figure.polaroid {
-  width: min(420px, 100%);
-  margin: clamp(2rem, 4.5vw, 2.8rem) auto;
-}
-.figure.polaroid .ph { aspect-ratio: auto; position: relative; }
-.figure.polaroid .ph img {
-  position: static;
-  width: 100%;
-  height: auto;
-  filter: saturate(0.92) contrast(1.02);
-}
-/* v6 photo-well: emulsion vignette + chin shadow + diagonal print gloss */
-.figure.polaroid .ph::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background:
-    linear-gradient(118deg, rgba(255,255,255,0.30) 0%, rgba(255,255,255,0.03) 26%, rgba(255,255,255,0) 46%),
-    radial-gradient(120% 90% at 50% 50%, rgba(0,0,0,0) 58%, rgba(20,24,22,0.26) 100%);
-  mix-blend-mode: screen;
-}
-.figure.polaroid > .tape {
-  left: 50%;
-  margin-left: -59px;
-  top: -15px;
-}
-/* the Birdie caption on a solid cream chip (v6 .cap) */
-.figure.polaroid .cap {
-  font-family: var(--f-hand);
-  text-align: center;
-  font-size: 1.05rem;
-  color: var(--sambas);
-  line-height: 1.2;
-  padding: 0.6rem 0.4rem 0.2rem;
-  display: block;
-}
-
-/* A POLAROID HUNG MID-ARTICLE — a real pinned photo clipping that breaks the
-   reading column. On wide screens a .figure.polaroid inside .prose floats into
-   the margin (alternating sides off the float order), rides its own tilt, and is
-   held by a red thumbtack so it reads as a snapshot pinned beside the page, not a
-   centered web figure. Gated >=601px; on phones it stays centered in normal flow
-   (no overflow — sacred). The .post-stage overflow-x:clip catches any bleed. */
-@media (min-width: 601px) {
-  .prose .figure.polaroid {
-    width: min(46%, 17rem);
-    margin-block: 0.4rem 1.6rem;
-    transform: rotate(-2.1deg);
-    --rest-rot: -2.1deg;
-  }
-  .prose .figure.polaroid:nth-of-type(odd) {
-    float: right; margin-right: -7%; margin-left: 1.8rem;
-    transform: rotate(2.4deg); --rest-rot: 2.4deg;
-  }
-  .prose .figure.polaroid:nth-of-type(even) {
-    float: left;  margin-left: -7%; margin-right: 1.8rem;
-    transform: rotate(-2.1deg); --rest-rot: -2.1deg;
-  }
-}
-/* the red thumbtack pinning the hung polaroid (faithful CSS pin: glossy orb +
-   steel stub + soft contact shadow; the baked .pin sprite is JS-owned). */
-.prose .figure.polaroid { position: relative; }
-.prose .figure.polaroid::before {
-  content: "";
-  position: absolute;
-  z-index: 6;
-  top: -8px; left: 18px;
-  width: 16px; height: 16px;
-  border-radius: 50%;
-  background:
-    radial-gradient(circle at 34% 30%,
-      color-mix(in srgb, var(--colorado) 26%, #fff) 0%,   /* glossy specular tint (≈#ffd9da) */
-      color-mix(in srgb, var(--colorado) 78%, #fff) 30%,  /* lit face (≈#f17a7d) */
-      color-mix(in srgb, var(--colorado) 85%, #000) 70%,  /* body shade (≈#d8383b) */
-      color-mix(in srgb, var(--colorado) 62%, #000) 100%); /* occluded rim (≈#a82a2d) — all derived from --colorado */
-  box-shadow: 0 0 0 1px rgba(120, 30, 32, 0.3),
-              1px 2px 3px rgba(44, 36, 26, 0.4),
-              inset 1px 1px 2px rgba(255, 255, 255, 0.6);
-}
-
-/* ---- cite.html : a CLIPPING with the source as a STAMPED CREDIT (v6 .b-credit)
-   A torn cream clipping carrying the quoted line; the attribution rides a
-   kraft byline strip with a stamped author initial — ported from v6's
-   .b-credit (kraft strip + baked avatar + stamped initial). */
-.cite {
-  position: relative;
-  margin: clamp(1.8rem, 4vw, 2.6rem) 0;
-  padding: clamp(1.2rem, 3vw, 1.5rem) clamp(1.3rem, 3vw, 1.6rem) clamp(1rem, 3vw, 1.3rem);
-  /* a torn cream clipping (Oats stock) lifted by the soft tinted cast. */
-  background-color: var(--paper);
-  border-radius: 6px 4px 8px 5px / 5px 8px 4px 6px;
-  box-shadow: var(--sh-contact), var(--sh-ambient);
-  transform: rotate(-0.5deg);
-}
-.cite > * { position: relative; z-index: 1; }
-/* cite-text is a <blockquote>; neutralize the bare-markdown .prose blockquote
-   styling so the clipping owns its look (the colorado quote-marks stay). */
-.prose .cite .cite-text {
-  margin: 0;
-  padding: 0;
-  border-left: 0;
-}
-/* baked: the real torn Oats clipping face + edge. */
-html.baked .cite {
-  @include scrap-face(--bk-piece-oats, --bk-edge-oats, var(--bk-edge-oats-slice, 38));
-  background-color: var(--paper);
-}
-.cite-text {
-  font-family: var(--f-body);
-  font-style: italic;
-  font-weight: 400;
-  font-size: 1.08rem;
-  line-height: 1.5;
-  color: var(--ink);
-  margin: 0;
-}
-.cite-text::before { content: "\201C"; color: var(--colorado); }
-.cite-text::after { content: "\201D"; color: var(--colorado); }
-/* the attribution sits on a KRAFT BYLINE STRIP with a stamped credit (v6) */
-.cite-attrib {
-  margin-top: 1rem;
-  padding: 0.5em 0.8em;
-  /* kraft byline strip (v6 .b-credit / bakeKraft base [214,196,160]) — a warm tan
-     derived from the palette (School-Bus dulled into an Oats/Sambas ground) so the
-     7-hex constitution holds and a palette change propagates. */
-  background-color: color-mix(in srgb, var(--schoolbus) 26%, color-mix(in srgb, var(--oats) 64%, var(--sambas) 36%));
-  border-radius: 4px 6px 3px 5px / 5px 3px 6px 4px;
-  box-shadow: var(--sh-contact);
-  font-family: var(--f-mono);
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  font-size: 0.72rem;
-  color: var(--sambas);
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0.5rem;
-}
-/* the source rendered as a STAMPED credit — patchy multiply ink, tilted (v6) */
-.cite-author {
-  color: var(--ink);   /* Sambas stamped ink: AA-safe on the kraft byline strip */
-  font-family: var(--f-slab);
-  font-style: italic;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  font-size: 0.95rem;
-  text-transform: none;
-  transform: rotate(-1.2deg);
-  mix-blend-mode: multiply;
-  opacity: 0.92;
-}
-.cite-sep { color: var(--colorado); font-weight: 700; }
-.cite-work { font-style: italic; text-transform: none; letter-spacing: 0.02em; color: var(--ink); }
-/* baked: the byline strip gets the real torn kraft face + edge. */
-html.baked .cite-attrib {
-  @include scrap-face(--bk-piece-kraft, --bk-edge-kraft, var(--bk-edge-kraft-slice, 38));
-  background-color: color-mix(in srgb, var(--schoolbus) 26%, color-mix(in srgb, var(--oats) 64%, var(--sambas) 36%));
-  box-shadow: var(--sh-contact);
-}
-
-/* ---- cutline.html : the .cutline scissors seam is styled in _whimsy.scss
-   (engine-owned primitive). cutline.html emits the matching markup. ---- */
-
-/* ---- stamp.html : the .stamp rubber-stamp mark is styled in _whimsy.scss
-   (engine-owned primitive). stamp.html emits <span class="stamp">. ---- */
-
-/* =============================================================================
-   4. POST FOOTER — tags, subscribe CTA, prev/next nav, back link.
-   Referenced by post.html. Soft tinted casts (one light); palette-pure.
-   ========================================================================== */
-.post-foot {
-  padding: clamp(2rem, 6vw, 3rem) 0;
-}
-
-.post-tags {
-  margin: 2rem 0;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-.chip {
-  display: inline-block;
-  background: var(--paper);
-  border: 2px solid var(--ink);
-  padding: 0.4em 0.7em;
-  font-family: var(--f-mono);
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-size: 0.8rem;
-  color: var(--ink);
-  text-decoration: none;
-  border-radius: 4px;
-  box-shadow: var(--sh-contact); /* a small paper chip hugging the desk under the one light */
-}
-
-.subscribe {
-  margin: clamp(2.5rem, 6vw, 4rem) 0;
-}
-.subscribe-title {
-  font-family: var(--f-slab);
-  font-style: italic;
-  font-weight: 700;
-  color: var(--ink);
-  font-size: var(--t-sub);
-  margin: 0 0 0.6rem;
-}
-
-.post-nav {
-  display: flex;
-  gap: 1.5rem;
-  margin: 2.5rem 0;
-  flex-wrap: wrap;
-}
-.post-nav-link {
-  flex: 1;
-  min-width: 240px;
-  display: block;
-  padding: 1.5rem;
-  background: var(--paper);
-  /* a torn-paper index TAB, not a bordered rounded card. The ragged deckle
-     silhouette (P2) reads as a hand-cut tab even before bakery.js; the soft
-     tinted cast seats it on the desk. */
-  border: 0;
-  border-radius: 0;
-  clip-path: polygon(0% 6%,10% 1%,32% 4%,60% 0%,88% 3%,100% 8%,98% 34%,100% 64%,
-                     97% 94%,100% 100%,70% 97%,40% 100%,16% 96%,2% 100%,1% 62%,3% 32%);
-  /* alpha-following cast (P3) that HUGS the torn tab silhouette — a box-shadow here
-     would ghost a rectangular halo around the clip-path, the exact web-slop the
-     desk-reset/sticker grammar avoids elsewhere. */
-  box-shadow: none;
-  filter: var(--df-lift);
-  color: var(--ink);
-  text-decoration: none;
-  transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
-}
-.post-nav-link:hover { transform: translateY(-4px); box-shadow: none; filter: var(--df-hover); }
-.post-nav-link:focus-visible {
-  outline: 3px solid var(--lazuli);
-  outline-offset: 2px;
-}
-.post-nav-title {
-  font-family: var(--f-slab);
-  font-style: italic;
-  font-weight: 700;
-  line-height: 1.12;
-  font-size: 1.1rem;
-  color: var(--ink);
-  margin: 0.3rem 0 0;
-}
-
-.back-link {
-  color: var(--ink);   /* Sambas link: AA-safe on the cream desk */
-  text-decoration: underline;
-}
-.back-link:focus-visible {
-  outline: 3px solid var(--lazuli);
-  outline-offset: 2px;
-}
-.back-line {
-  margin: clamp(2rem, 5vw, 3rem) 0 0;
-  font-family: var(--f-mono);
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  font-size: 0.78rem;
-  color: var(--ink);
-}
-
-/* =============================================================================
-   5. HOME PAGE POST CARDS — the newsstand index grid.
-   Referenced by home.html (<article class="paper card">). Flat ink offsets only.
-   (.card-title's tablet measure is set in the §1 768px block.)
-   ========================================================================== */
-.news-head {
-  margin-bottom: clamp(2rem, 5vw, 3rem);
-}
-.news-dek {
-  font-family: var(--f-body);
-  font-size: var(--t-lede);
-  line-height: 1.5;
-  max-width: 60ch;
-  color: var(--ink);
-}
-.news-splay {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.card {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  min-height: 280px;
-}
-.card-link {
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  z-index: 2;
-  color: inherit;
-  text-decoration: none;
-  height: 100%;
-}
-.card-link:focus-visible {
-  outline: 3px solid var(--lazuli);
-  outline-offset: 4px;
-  border-radius: 4px;
-}
-.card-eyebrow {
-  font-family: var(--f-hand);
-  color: var(--colorado);
-  display: block;
-  margin-bottom: 0.4rem;
-}
-.card-title {
-  font-family: var(--f-slab);
-  font-style: italic;
-  font-weight: 700;
-  font-size: clamp(1.2rem, 3.5vw, 1.6rem);
-  line-height: 1.1;
-  color: var(--ink);
-  margin: 0.5rem 0 0.5rem;
-}
-.card-dek {
-  font-family: var(--f-body);
-  font-size: 0.95rem;
-  line-height: 1.5;
-  color: var(--ink);
-  margin: 0 0 0.8rem;
-}
-.card-meta {
-  font-family: var(--f-mono);
-  font-weight: 500;
-  font-size: 0.75rem;
-  color: var(--ink); /* full Sambas — AA on Oats (no faded label in the index) */
-  margin: 0;
-}
-.card-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-  margin: 0.6rem 0 0;
-}
-.card-go {
-  font-family: var(--f-hand);
-  color: var(--ink);   /* Sambas affordance: AA-safe on the cream card */
-  margin-top: auto;
-  font-size: 1rem;
-}
+// paper-on-cream: the reply card lifts off the cream desk with a distinct warm
+// manila stock, and its tape fastens the TOP EDGE (was rendering 31px inside).
+.subscribe-card::before{background:var(--paper-raised)}
+.subscribe-card > .tape{top:-16px;left:50%;margin-left:-59px}

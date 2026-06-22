@@ -1,0 +1,14 @@
+---
+# Jekyll Sass entrypoint. The two lines of front matter are REQUIRED — they tell
+# Jekyll to run this file through the Sass converter (output: compressed, set in
+# _config.yml). Everything else lives in the _sass/ partials, imported below in
+# cascade order: tokens → base ground → shared components → post stage → home
+# board → responsive/reduced-motion last (it overrides).
+---
+@import "tokens";
+@import "base";
+@import "components";
+@import "post";
+@import "home";
+@import "desk-marginalia";
+@import "mobile";

@@ -1,209 +1,70 @@
 ---
 layout: default
 ---
-{%- comment -%}
-  THE BULLETIN BOARD / DESK — Chielo's notebook as colored torn-paper clippings
-  pinned & taped to the warm Oats desk under one soft top-left light. Each post
-  is a CLIPPING whose stock colour is SEEDED off its slug/date (never the loop
-  index) so adjacent clips never share a stock and the order varies post-to-post
-  — the board reads hand-arranged, not a tidy modulo grid. Off-grid, overlapping,
-  tilted, alive — yet fully navigable, legible, keyboard-accessible.
-
-  The desk is populated REGARDLESS of post count: persistent v6 furniture ported
-  from compose-v6.html (a Colorado quote scrap with a big quote-mark, a polaroid
-  of the studio with a chin shadow + Birdie caption, a Lazuli washi-taped slip, a
-  kraft/School-Bus byline strip with a green stamp, a stray pin + a hand-drawn
-  star) litters the board, so even at N=1 it is full, overlapping, off-grid — not
-  one lonely scrap.
-
-  Material: every clipping is a .scrap.piece (baked cardstock face + torn edge
-  from bakery.js). A .pin or .tape fastens it. Hover lifts it off the desk.
-{%- endcomment -%}
-<section class="board" aria-label="The notebook">
+<div class="board">
   {% include desk-marginalia.html context="board" %}
   <div class="wrap">
 
-    {%- comment -%} The board header — a Grass torn banner pinned to the desk.
-      Kicker + period set in Oats with a School-Bus accent (the §4.3 Grass-ground
-      foundation pairing); Happy is a dark-ink-text-only 5% accent, never the
-      headline color on a saturated Grass field. {%- endcomment -%}
-    <header class="board-head slam">
-      <span class="eyebrow">the correspondence, archived</span>
-      <h1 class="board-title slab">Chielo&rsquo;s notebook<span class="stop">.</span></h1>
-      <p class="board-lede">Drex runs <strong>Circles</strong> &mdash; small communities of
-        practice where you bring your gifts into the world, together. These are the letters
-        from that work.</p>
-      <p class="board-dek">Visionary essays, canon, and lore, set down the long way.
-        Pull up a chair; the room was already expecting you.</p>
+    {%- comment -%} BOARD HEADER — a Grass torn banner pinned to the desk. {%- endcomment -%}
+    <header class="board-head">
+      {%- comment -%} fastened to the desk like every other scrap; coral tape contrasts the green {%- endcomment -%}
+      <span class="tape c bh-tape bh-tape--l" aria-hidden="true"></span>
+      <span class="tape c bh-tape bh-tape--r" aria-hidden="true"></span>
+      <span class="eyebrow">the correspondence</span>
+      <h1 class="board-title slab">{{ site.title | replace: '.', '<span class="stop">.</span>' }}</h1>
+      <p class="board-lede">{{ page.lede | default: site.description }}</p>
     </header>
 
-    {%- comment -%} ===================================================================
-      PERSISTENT DESK FURNITURE — ported from compose-v6.html bakers. These are
-      decorative (aria-hidden) craft objects that litter the desk so the board is
-      never an empty void. They sit BEHIND/AROUND the pile via .board-litter.
-    =================================================================== {%- endcomment -%}
-    <div class="board-litter" aria-hidden="true">
-
-      {%- comment -%} v6 .b-quote — a Colorado torn quote scrap, big knocked-out
-        quote-mark, one of Chielo's lines, Sambas ink (high contrast on coral). {%- endcomment -%}
-      <figure class="litter litter--quote pullquote piece slam" data-mat="colorado" data-edge="torn">
-        <span class="tape" data-tape="happy"></span>
-        <p class="pq-text">Slow is a place, not a speed.</p>
-        <p class="pq-attrib">Chielo</p>
-      </figure>
-
-      {%- comment -%} v6 .b-photo — a placed-print polaroid of the studio with a
-        chin shadow under the image well and a Birdie caption on the cream lip. {%- endcomment -%}
-      <figure class="litter litter--photo figure polaroid piece slam" data-mat="oats" data-edge="cut">
-        <span class="tape" data-tape="lazuli"></span>
-        <div class="ph">
-          <img src="{{ '/assets/img/studio.jpg' | relative_url }}" alt=""
-               loading="lazy" decoding="async"
-               onerror="this.closest('.ph').classList.add('ph--empty');this.remove()">
-        </div>
-        <figcaption class="cap">the long way home &#10047;</figcaption>
-      </figure>
-
-      {%- comment -%} v6 washi-taped receipt slip — a small Lazuli slip held by a
-        torn piece of washi tape. {%- endcomment -%}
-      <div class="litter litter--slip scrap piece slam" data-mat="lazuli" data-edge="torn">
-        <span class="tape" data-tape="oats"></span>
-        <span class="slip-line">filed under: <em>communion</em></span>
-        <span class="slip-line">re: bringing your gifts</span>
-      </div>
-
-      {%- comment -%} v6 .b-credit — a kraft / School-Bus byline strip stamped with
-        a green author stamp. {%- endcomment -%}
-      <div class="litter litter--byline piece slam" data-mat="schoolbus" data-edge="cut">
-        <span class="stamp g">drex&middot;</span>
-        <span class="byline-who">
-          <span class="byline-by">written by</span>
-          <span class="byline-nm">Chielo Mbaezue</span>
-        </span>
-      </div>
-
-      {%- comment -%} F8 — SPARSE, ANCHORED, hand-drawn marginalia (NOT the removed
-        scribble field). Each doodle now belongs to a scrap / section element, lives
-        ONLY in the bare desk gutter, and is hidden below 1100px so it never crowds
-        the measure. A hand-drawn Grass star tucked at the BYLINE scrap's corner. {%- endcomment -%}
-      <svg class="litter litter--star doodle reveal" width="34" height="32" viewBox="0 0 64 56" fill="none">
-        <path d="M32.5 6 L45.4 46.2 L10.6 21 L53.8 21.4 L19 46.5 Z"
-              stroke="var(--grass)" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-
-      {%- comment -%} F8 — a looping CONNECTOR arrow sweeping from the hero banner
-        toward the first clip (the landing's hand-drawn 'this leads here' gesture),
-        in deep coral ink. Anchored top-left, sweeping right. Desktop-only. {%- endcomment -%}
-      <svg class="litter litter--connector doodle reveal" width="150" height="92" viewBox="0 0 150 92" fill="none" aria-hidden="true">
-        <path d="M8 20 C 40 4, 96 8, 120 36 C 134 52, 122 70, 104 72"
-              stroke="var(--coral-ink)" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-        <path d="M104 72 L116 60 M104 72 L118 76"
-              stroke="var(--coral-ink)" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-
-      {%- comment -%} F8 — a small 'read me first' caret pointing at the pile, in
-        deep coral. Sits in the bare gutter beside the first clip. Desktop-only. {%- endcomment -%}
-      <svg class="litter litter--caret doodle reveal" width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true">
-        <path d="M10 8 L28 20 L10 32"
-              stroke="var(--coral-ink)" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-      </svg>
-
-      {%- comment -%} a stray pin, just dropped on the desk. {%- endcomment -%}
-
-      {%- comment -%} ALWAYS-ON low-desk craft objects so even at N=1 the desk fills
-        down its full height: a faint coffee-ring decal, a steel paperclip, and a
-        torn admission ticket stub. Purely decorative (aria-hidden via the wrap). {%- endcomment -%}
-      <span class="litter litter--ring reveal" aria-hidden="true"></span>
-
-      <svg class="litter litter--clip-deco doodle reveal" width="26" height="58" viewBox="0 0 26 58" fill="none">
-        <path d="M13 53 C5 53 4 44 4 36 L4 14 C4 6 11 4 14 8 C17 12 16 20 16 28 L16 42
-                 C16 47 11 47 11 42 L11 18"
-              stroke="var(--sambas)" stroke-width="3" stroke-linecap="round"
-              stroke-linejoin="round" opacity="0.55"/>
-      </svg>
-
-      {%- comment -%} BUDGET — a torn admission-ticket stub. School-Bus is a 5%
-        dark-ink-only accent, and the kraft byline strip above is already the ONE
-        saffron piece on the desk (v6 has a single kraft byline), so this ticket
-        is demoted to an OATS torn stub: cream paper, with only the small "№ 001"
-        set in School-Bus INK (never a saffron fill). Keeps a single saffron
-        accent on the board, inside budget, and adds cream breathing room. {%- endcomment -%}
-      <div class="litter litter--ticket scrap piece slam" data-mat="oats" data-edge="torn">
-        <span class="ticket-no">№ 001</span>
-        <span class="ticket-lbl">admit one &middot; the studio</span>
-      </div>
-
+    {%- comment -%} the two crucial CTAs → the two Kit funnels (online Circle = form
+      f0604c333e on /join-online/ ; SF Circle = form 303c1aa9b2 on /join-sf/). Placed on
+      the bare desk (outside the tearable banner) so they always stay put. {%- endcomment -%}
+    <div class="board-cta">
+      <a class="btn" href="{{ '/join-online/' | relative_url }}">Join the online Circle <span class="arr">&rarr;</span></a>
+      <a class="btn ink" href="{{ '/join-sf/' | relative_url }}">Join the SF Circle <span class="arr">&rarr;</span></a>
     </div>
 
-    {% if site.posts.size > 0 %}
-    {%- comment -%} MOBILE-AUDIT: a tiny hand-scrawl kicker above the first card so a
-      first-time phone visitor instantly reads 'this is the list of letters'. Styled
-      (and only shown) on phones in _mobile.scss; harmless on desktop. {%- endcomment -%}
-    <span class="board-letters-kicker scrawl" aria-hidden="true">the letters</span>
+    {%- comment -%} PERSISTENT DESK FURNITURE — decorative, aria-hidden, desktop-only
+      (collapses below 1100px via _mobile/_home). Keeps the board from feeling empty. {%- endcomment -%}
+    <div class="board-litter" aria-hidden="true">
+      <span class="litter litter--slip"><span class="slip-line">filed under <em>everything that matters</em></span></span>
+      <span class="litter litter--ticket"><span class="ticket-no">№ 001</span><span class="ticket-lbl">admit one</span></span>
+      <span class="litter litter--ring"></span>
+    </div>
+
+    {%- comment -%} THE PILE — every post is a torn .clip scrap fastened with tape so
+      blog.js arms it as tearable furniture. Stock + resting tilt are SEEDED by
+      forloop.index so adjacent clips never share a stock or rake. {%- endcomment -%}
     <div class="board-pile">
       {% for post in site.posts %}
-      {%- comment -%} SEED the clipping STOCK off the post itself, NOT the loop
-        index — so adjacent clips never share a stock and the whole order varies
-        from post to post. Derive a per-post number from the date epoch (stable,
-        unique-ish) and fall back to slug length, then pick one of the 5 stocks.
-        We also offset by forloop.index so identical seeds in a single render
-        still diverge between neighbours. {%- endcomment -%}
-      {%- assign epoch = post.date | date: '%s' | plus: 0 -%}
-      {%- assign slugn = post.slug | size | times: 7 -%}
-      {%- assign seed = epoch | plus: slugn | plus: forloop.index0 -%}
-      {%- comment -%} FEW-POSTS RULE (compose-v6): a blog of a handful of posts is
-        NOT a 30-card quilt — each clipping is its OWN DISTINCT VIVID stock (v6: a
-        dark Sambas note, a Lazuli slip, a Colorado quote, a Grass banner, a kraft
-        byline) and the Oats desk breathes through the GRID GAPS, not through cream
-        clip faces. Cycle the supported vivid (stock,mat,fasten) tuples by post
-        index so adjacent clips never share a colour, and the budget stays balanced
-        (Sambas 20 / Lazuli 10 / Colorado 10 / Grass 25 / School-Bus 5). The hero
-        board banner already owns one Grass field, so Grass sits 4th in the cycle —
-        the first three posts land Sambas → Lazuli → Colorado, exactly v6's trio. {%- endcomment -%}
-      {%- assign stocks  = 'note,lazuli,coral,grass,kraft' | split: ',' -%}
-      {%- assign mats    = 'sambas,lazuli,colorado,grass,schoolbus' | split: ',' -%}
-      {%- assign fastens = 'pin,tape-oats,tape-happy,tape-lazuli,pin' | split: ',' -%}
-      {%- assign si = forloop.index0 | modulo: 5 -%}
-      {%- assign stock  = stocks[si] -%}
-      {%- assign mat    = mats[si] -%}
-      {%- assign fasten = fastens[si] -%}
-      {%- comment -%} CONTENT-MATCHED OVERRIDE: a post may name its own material via
-        front-matter `stock:` so the clipping's substance tells you what it's about
-        (correspondence → airmail; mending → cloth; vision memo → ledger; lore →
-        newsprint). The mat (face colour/dye) follows the stock. {%- endcomment -%}
-      {%- if post.stock -%}
-        {%- assign stock = post.stock -%}
-        {%- case post.stock -%}
-          {%- when 'cloth'     -%}{%- assign mat = 'sambas' -%}{%- assign fasten = 'pin' -%}
-          {%- when 'airmail'   -%}{%- assign mat = 'oats'   -%}{%- assign fasten = 'tape-c' -%}
-          {%- when 'ledger'    -%}{%- assign mat = 'oats'   -%}{%- assign fasten = 'pin' -%}
-          {%- when 'newsprint' -%}{%- assign mat = 'oats'   -%}{%- assign fasten = 'tape-oats' -%}
-          {%- else -%}{%- assign mat = post.mat | default: post.stock -%}
+        {%- assign tilt = forloop.index0 | modulo: 7 -%}
+        {%- comment -%} colored stocks only — never plain cream-on-cream {%- endcomment -%}
+        {%- assign stocki = forloop.index0 | modulo: 4 -%}
+        {%- case stocki -%}
+          {%- when 0 -%}{%- assign clipstock = 'lazuli' -%}
+          {%- when 1 -%}{%- assign clipstock = 'coral' -%}
+          {%- when 2 -%}{%- assign clipstock = 'grass' -%}
+          {%- else -%}{%- assign clipstock = 'kraft' -%}
         {%- endcase -%}
-      {%- endif -%}
-      {%- comment -%} seeded never-square tilt below; cream now lives in the gaps. {%- endcomment -%}
-      {%- comment -%} seeded never-square tilt: >5 distinct angles chosen off the
-        seed so the resting rake varies independently of the stock. {%- endcomment -%}
-      {%- assign t = seed | modulo: 7 -%}
+        {%- comment -%} tape = the OPPOSITE colour of the paper stock (contrast, never match).
+          tape variants: '' = happy/yellow · b = lazuli/blue · c = coral/red {%- endcomment -%}
+        {%- case clipstock -%}
+          {%- when 'lazuli' -%}{%- assign tc = '' -%}{%- comment -%}blue paper → yellow tape{%- endcomment -%}
+          {%- when 'coral'  -%}{%- assign tc = 'b' -%}{%- comment -%}red paper → blue tape{%- endcomment -%}
+          {%- when 'grass'  -%}{%- assign tc = 'c' -%}{%- comment -%}green paper → coral tape{%- endcomment -%}
+          {%- when 'kraft'  -%}{%- assign tc = 'b' -%}{%- comment -%}saffron paper → blue tape{%- endcomment -%}
+          {%- else          -%}{%- assign tc = 'c' -%}{%- comment -%}cream/oats → coral tape{%- endcomment -%}
+        {%- endcase -%}
 
-      <article class="clip clip--{{ stock }} piece slam tilt-{{ t }}" data-mat="{{ mat }}" data-edge="torn">
-        {%- comment -%} the fastener — a real pinned/taped object on TOP of the scrap {%- endcomment -%}
-        {%- if fasten == 'pin' -%}
-          <span class="pin" data-pin="red" aria-hidden="true"></span>
-        {%- elsif fasten == 'tape-lazuli' -%}
-          <span class="pin" data-pin="red" aria-hidden="true"></span>
-        {%- elsif fasten == 'tape-happy' -%}
-          <span class="tape" data-tape="happy" aria-hidden="true"></span>
-        {%- else -%}
-          <span class="tape" data-tape="oats" aria-hidden="true"></span>
-        {%- endif -%}
-
-        <a class="clip-link" href="{{ post.url | relative_url }}"
-           aria-label="Read: {{ post.title | strip_html }}">
+        <article class="clip tilt-{{ tilt }} clip--{{ clipstock }}">
+          <span class="tape {{ tc }}" aria-hidden="true"></span>
           <div class="clip-body">
-            {% if post.eyebrow %}<span class="clip-kicker">{{ post.eyebrow }}</span>{% endif %}
-            <h2 class="clip-title">{{ post.title }}</h2>
-            {% if post.dek %}<p class="clip-dek">{{ post.dek | strip_html | truncate: 150 }}</p>{% endif %}
+
+            {% if post.eyebrow %}<span class="eyebrow">{{ post.eyebrow }}</span>{% endif %}
+            {% if post.kicker %}<span class="clip-kicker">{{ post.kicker }}</span>{% endif %}
+
+            <h2 class="clip-title slab"><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h2>
+
+            {% if post.dek %}<p class="clip-dek">{{ post.dek }}</p>{% endif %}
 
             <div class="clip-meta">
               <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%b %-d, %Y" }}</time>
@@ -211,6 +72,8 @@ layout: default
               {% assign rt = words | divided_by: 240 | plus: 1 %}
               <span class="sep" aria-hidden="true">&middot;</span>
               <span>{{ rt }} min read</span>
+              {% assign a = site.data.authors[post.author] %}
+              {% if a %}<span class="sep" aria-hidden="true">&middot;</span><span>{{ a.name }}</span>{% endif %}
             </div>
 
             {% if post.tags.size > 0 %}
@@ -219,25 +82,12 @@ layout: default
             </div>
             {% endif %}
 
-            <span class="clip-go scrawl" aria-hidden="true">read</span>
+            <a class="clip-go" href="{{ post.url | relative_url }}">read this one &rarr;</a>
+
           </div>
-        </a>
-      </article>
+        </article>
       {% endfor %}
     </div>
-    {% else %}
-    <div class="board-pile">
-      <article class="clip clip--grass piece slam tilt-2" data-mat="grass" data-edge="torn">
-        <span class="pin" data-pin="red" aria-hidden="true"></span>
-        <div class="clip-body">
-          <span class="clip-kicker">soon</span>
-          <h2 class="clip-title">The first letter is being written.</h2>
-          <p class="clip-dek">Nothing pinned to the board yet &mdash; but the desk
-            is set, and the room is already expecting you.</p>
-        </div>
-      </article>
-    </div>
-    {% endif %}
 
   </div>
-</section>
+</div>

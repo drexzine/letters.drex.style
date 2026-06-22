@@ -1,7 +1,7 @@
 {%- comment -%}
   cutline.html — a scissors "cut here" section seam (dashed + torn ink rule with
-  scissors riding the line). A paper section break, never a plain <hr>.
-  Markup matches the .cutline util styled in _whimsy.scss (engine-owned).
+  scissors riding the line). A paper section break, never a plain <hr>. Purely
+  decorative → role="separator" aria-hidden. No tape.
   API:  {% include cutline.html %}
 {%- endcomment -%}
 <div class="cutline" role="separator" aria-hidden="true">

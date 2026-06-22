@@ -10,9 +10,10 @@
        uid    — REQUIRED Kit form uid.
        accent — grass (join, default) | coral | lazuli | bus — tape + stamp-button colour.
        kicker/title/dek — the card copy.
+       anchor — optional element id (default reply-card).
 {%- endcomment -%}
 {%- assign accent = include.accent | default: 'grass' -%}
-<aside id="{{ include.anchor | default: 'reply-card' }}" class="subscribe-card replycard piece slam subscribe--{{ accent }}" data-mat="oats" data-edge="torn">
+<aside id="{{ include.anchor | default: 'reply-card' }}" class="subscribe-card replycard piece slam subscribe--{{ accent }}">
   {%- if accent == 'coral' %}{%- assign tv = 'c' -%}{%- elsif accent == 'lazuli' %}{%- assign tv = 'b' -%}{%- else %}{%- assign tv = '' -%}{%- endif -%}
   <span class="tape {{ tv }}" aria-hidden="true"></span>
   <div class="replycard-body">

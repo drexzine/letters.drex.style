@@ -1,8 +1,4 @@
-<!-- SVG filters: torn paper edges + rough marker wobble.
-     Copied VERBATIM from the shipped landing (drex-landing/index.html).
-     #torn/#tornbig/#rough/#roughsm/#soft families + seed variants drive every
-     hand-cut edge, marker squiggle, and the SQUIGGLE-VISION boil keyframes.
-     Decorative: aria-hidden, zero-size, absolutely positioned out of flow. -->
+<!-- SVG filters: torn paper edges + rough marker wobble (copied verbatim from the landing site) -->
 <svg width="0" height="0" aria-hidden="true" style="position:absolute">
   <defs>
     <filter id="torn"><feTurbulence type="fractalNoise" baseFrequency="0.014 0.026" numOctaves="3" seed="7" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="12" xChannelSelector="R" yChannelSelector="G"/></filter>

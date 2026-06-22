@@ -1,0 +1,327 @@
+// ===================================================================
+// _components.scss — the shared scrapbook furniture, ported from
+// drex-landing/app.css VERBATIM where possible (buttons, cut-paper sheets,
+// washi tape, polaroids, inline marks, stamp, masthead nav chips, the full
+// hamburger-that-lies, tear-away, reveal/slam entrance physics).
+// Live SVG filters only. Flat solid ink-offset shadows only.
+// ===================================================================
+
+// ---------- the cut-paper sheet (base material) ----------
+.paper{position:relative;isolation:isolate}
+.paper>.sheet{
+  content:"";position:absolute;inset:0;z-index:0;
+  background:var(--paper);
+  border:2.6px solid var(--ink);border-radius:6px;
+  filter:url(#torn);                                /* torn / hand-cut edge */
+  box-shadow:8px 8px 0 0 var(--ink);                /* hard SOLID registration shadow — one light, equal offset */
+  animation:boil-torn var(--boil-paper) step-end infinite;
+}
+.paper>.sheet.ruled{
+  background:var(--paper) repeating-linear-gradient(0deg, transparent 0 27px, rgba(65,77,87,.07) 27px 28px);
+}
+.paper>.inner{position:relative;z-index:2;padding:clamp(1.5rem,4vw,3rem)}
+
+// ---------- washi / scotch tape ----------
+.tape{position:absolute;z-index:3;width:118px;height:32px;
+  background:linear-gradient(94deg,rgba(241,221,1,.52),rgba(241,221,1,.32) 55%,rgba(241,221,1,.48)); /* Happy washi */
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.22);
+  filter:url(#roughsm);
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 8px,#000 calc(100% - 8px),transparent 100%); /* feathered adhesive ends */
+  mask-image:linear-gradient(90deg,transparent 0,#000 8px,#000 calc(100% - 8px),transparent 100%);
+  transform:rotate(-5deg);}
+.tape.b{background:linear-gradient(94deg,rgba(36,150,201,.44),rgba(36,150,201,.26) 55%,rgba(36,150,201,.4))}   /* lazuli washi */
+.tape.c{background:linear-gradient(94deg,rgba(247,84,88,.44),rgba(247,84,88,.26) 55%,rgba(247,84,88,.4))}      /* colorado washi */
+.tape::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 11px,rgba(255,255,255,.10) 11px 12px)}
+// the furniture includes may emit tape via a data-tape token instead of .b/.c —
+// map them to the same washi palettes so either authoring form works.
+.tape[data-tape="lazuli"]{background:linear-gradient(94deg,rgba(36,150,201,.44),rgba(36,150,201,.26) 55%,rgba(36,150,201,.4))}
+.tape[data-tape="coral"],
+.tape[data-tape="colorado"]{background:linear-gradient(94deg,rgba(247,84,88,.44),rgba(247,84,88,.26) 55%,rgba(247,84,88,.4))}
+.tape[data-tape="oats"]{background:linear-gradient(94deg,rgba(254,246,228,.62),rgba(254,246,228,.4) 55%,rgba(254,246,228,.58))}
+
+// ---------- inline marks (boil-alive) ----------
+.eyebrow{font-family:var(--f-hand);font-size:clamp(1.15rem,2.4vw,1.6rem);color:var(--coral-ink);transform:rotate(-1.2deg);display:inline-block}
+
+// highlighter band — hand-swiped, tipped
+.hl{position:relative;display:inline;z-index:0}
+.hl::before{content:"";position:absolute;left:-.19em;right:-.24em;top:.08em;bottom:-.04em;z-index:-1;
+  background:var(--happy);mix-blend-mode:multiply;opacity:.95;transform:rotate(-.9deg) skewX(-5deg);filter:url(#rough);border-radius:2px;
+  animation:boil-rough calc(var(--boil-ink) * 2.1) step-end infinite}
+.hl.g::before{background:var(--grass);opacity:.9}
+
+// wobbly marker underline — INK
+.ul{position:relative;display:inline}
+.ul::after{content:"";position:absolute;left:-.04em;right:-.07em;bottom:-.05em;height:.16em;
+  background:var(--ink);filter:url(#rough);border-radius:3px;
+  animation:boil-rough var(--boil-ink) step-end infinite}
+
+// inline emphasis spans the author may hand-write inside prose. Marker underline,
+// highlighter, scribble-out, box, strike. All boil. Colors gated to the palette.
+.m-underline{position:relative;display:inline}
+.m-underline::after{content:"";position:absolute;left:-.04em;right:-.07em;bottom:-.06em;height:.16em;
+  background:var(--ink);filter:url(#rough);border-radius:3px;animation:boil-rough var(--boil-ink) step-end infinite}
+.m-hl{position:relative;display:inline;z-index:0}
+.m-hl::before{content:"";position:absolute;left:-.18em;right:-.22em;top:.06em;bottom:-.04em;z-index:-1;
+  background:var(--happy);mix-blend-mode:multiply;opacity:.9;transform:rotate(-.7deg) skewX(-4deg);filter:url(#rough);border-radius:2px;
+  animation:boil-rough calc(var(--boil-ink) * 2.1) step-end infinite}
+.m-strike{position:relative;display:inline}
+.m-strike::after{content:"";position:absolute;left:-.04em;right:-.04em;top:50%;height:.13em;
+  background:var(--colorado);filter:url(#rough);border-radius:3px}
+.m-box{position:relative;display:inline;padding:0 .12em}
+.m-box::before{content:"";position:absolute;inset:-.18em -.1em;border:2.4px solid var(--ink);border-radius:5px;
+  filter:url(#roughsm);z-index:-1}
+.m-scribble{position:relative;display:inline}
+.m-scribble::after{content:"";position:absolute;left:-.06em;right:-.06em;top:.05em;bottom:.05em;
+  background:repeating-linear-gradient(8deg,var(--ink) 0 1.5px,transparent 1.5px 4px);opacity:.85;filter:url(#rough)}
+// the per-mark color modifiers — bright fills recolor highlighter/box; ink-deep
+// values recolor marker text-rules so they stay AA over the cream sheet.
+.m-coral.m-underline::after,.m-coral.m-strike::after{background:var(--coral-ink)}
+.m-coral.m-hl::before,.m-coral.m-box::before{background:var(--colorado);border-color:var(--colorado)}
+.m-grass.m-underline::after{background:var(--grass-deep)}
+.m-grass.m-hl::before{background:var(--grass)}
+.m-grass.m-box::before{border-color:var(--grass-deep)}
+.m-lazuli.m-underline::after{background:var(--lazuli-deep)}
+.m-lazuli.m-hl::before{background:var(--lazuli)}
+.m-lazuli.m-box::before{border-color:var(--lazuli-deep)}
+.m-happy.m-hl::before{background:var(--happy)}
+.m-bus.m-hl::before{background:var(--schoolbus)}
+.m-ink.m-underline::after,.m-ink.m-strike::after{background:var(--ink)}
+
+// ---------- rubber-stamp ----------
+.stamp{
+  display:inline-block;font-family:var(--f-mono);font-weight:500;text-transform:uppercase;letter-spacing:.14em;
+  font-size:.78rem;color:var(--sambas);
+  border:2.4px solid var(--sambas);border-radius:6px;padding:.42em .8em;
+  transform:rotate(-3deg);filter:url(#roughsm);
+  animation:boil-roughsm var(--boil-stamp) step-end infinite}
+.stamp.g{color:var(--grass-deep);border-color:var(--grass-deep)}
+
+// ---------- rubber-stamp press-down button ----------
+.btn{
+  --bg:var(--grass-deep);--fg:var(--oats);   /* deep grass clears AA (oats label 5.9:1) */
+  font-family:var(--f-mono);font-weight:500;font-size:.86rem;letter-spacing:.12em;text-transform:uppercase;
+  display:inline-flex;align-items:center;gap:.5rem;text-decoration:none;cursor:pointer;
+  background:var(--bg);color:var(--fg);border:2.6px solid var(--ink);border-radius:6px;
+  padding:.85em 1.35em;min-height:46px;
+  box-shadow:5px 5px 0 0 var(--ink);transform:rotate(-1.4deg);
+  transition:transform .09s ease, box-shadow .09s ease;}
+.btn:hover{transform:rotate(0)}
+.btn:active{transform:translate(5px,5px) rotate(0);box-shadow:0 0 0 0 var(--ink)}  /* press INTO the shadow */
+.btn:focus-visible{outline:3px solid var(--lazuli);outline-offset:3px}
+.btn.ink{--bg:var(--paper);--fg:var(--ink)}
+.btn .arr{font-family:var(--f-mono)}
+
+// ---------- polaroid (figure) ----------
+.polaroid{position:relative;width:min(244px,76%);padding:11px 11px 0;transition:transform .18s ease}
+.polaroid::before{content:"";position:absolute;inset:0;z-index:0;background:var(--paper);
+  border:2.6px solid var(--ink);border-radius:5px;box-shadow:8px 8px 0 0 var(--ink);
+  filter:url(#soft);animation:boil-soft var(--boil-paper) step-end infinite;transition:box-shadow .18s ease}
+.polaroid>.ph,.polaroid>.cap{position:relative;z-index:1}
+.polaroid .ph{position:relative;width:100%;aspect-ratio:5/6;overflow:hidden;background:var(--sambas);border:1.5px solid rgba(65,77,87,.28)}
+.polaroid .ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;filter:saturate(.94) contrast(1.03)}
+.polaroid .ph--empty{background:repeating-linear-gradient(-45deg,rgba(65,77,87,.16) 0 8px,transparent 8px 16px),var(--sambas)}
+.polaroid .cap{font-family:var(--f-hand);text-align:center;padding:.6rem .2rem .75rem;line-height:1.1;color:var(--ink);font-size:1.15rem}
+.polaroid:hover{transform:rotate(0) translateY(-7px);z-index:6}
+.polaroid:hover::before{box-shadow:11px 12px 0 0 var(--ink)}
+
+// ===================================================================
+// THE HAMBURGER THAT LIES — ported VERBATIM from drex-landing/app.css (the M5
+// block). Tap the burger: it flops onto a string and a torn slit opens where it
+// sat; the nav strand feeds out as you drag (--pull). Yank past DANGER and the
+// string tears. Keyboard / reduced-motion get a plain dropdown ([data-state=
+// "plain"]). The burger IS the nav, on every viewport. Markup id="hb" etc. is
+// emitted by the masthead include; initHamburgerJoy (blog.js) drives the states.
+// ===================================================================
+.mast .wrap{position:relative}
+.hb{position:relative;--pull:0;z-index:40;display:inline-flex}
+
+// NAV SWITCH — mobile-first: the hamburger-that-lies IS the nav on phones (<=720px),
+// where its whimsy lives. On desktop (>=721px) we show a real, clickable, keyboard-
+// and screen-reader-friendly chip nav and hide the burger (matches drex-landing).
+.mast > .wrap > nav{display:none}
+@media(min-width:721px){
+  .mast > .wrap > nav{display:flex;align-items:center;gap:clamp(.4rem,1.4vw,.9rem)}
+  .hb{display:none}
+}
+.mast > .wrap > nav a:not(.btn){font-family:var(--f-mono);font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;
+  color:var(--ink);display:inline-flex;align-items:center;min-height:44px;border:2px solid var(--ink);border-radius:6px;padding:.4em .8em;
+  background:var(--paper);box-shadow:2px 2px 0 0 var(--ink);transition:transform .08s,box-shadow .08s}
+.mast > .wrap > nav a:not(.btn):nth-of-type(2){transform:rotate(1.2deg)}
+.mast > .wrap > nav a:not(.btn):nth-of-type(3){transform:rotate(-1.1deg)}
+.mast > .wrap > nav a:not(.btn):hover{transform:rotate(0) translate(-1px,-1px);box-shadow:3px 3px 0 0 var(--grass)}
+.mast > .wrap > nav a:not(.btn):focus-visible{outline:3px solid var(--lazuli);outline-offset:3px}
+.mast > .wrap > nav .btn{padding:.55em .95em;min-height:44px}
+
+.burger{display:inline-flex!important;align-items:center;justify-content:center;width:48px;height:44px;
+  background:var(--paper);border:2.6px solid var(--ink);border-radius:7px;box-shadow:3px 3px 0 0 var(--ink);
+  cursor:pointer;transition:opacity .2s ease, transform .1s, box-shadow .1s;transform:rotate(-1.5deg)}
+.burger:hover{transform:rotate(0)}
+.burger:active{transform:translate(3px,3px) rotate(0);box-shadow:0 0 0 0 var(--ink)}
+.burger:focus-visible{outline:3px solid var(--lazuli);outline-offset:3px}
+.bars{display:flex;flex-direction:column;gap:4.5px;width:22px}
+.bars i{height:2.8px;background:var(--ink);border-radius:2px;display:block}
+.hb[data-state="fallen"] .burger,.hb[data-state="open"] .burger,.hb[data-state="torn"] .burger{opacity:0;pointer-events:none}
+
+/* hanging rig — interactive parts only (mouth area stays click-through) */
+.hb-rig{position:absolute;top:40px;right:0;width:320px;opacity:0;pointer-events:none;transition:opacity .2s ease}
+.hb[data-state="fallen"] .hb-rig,.hb[data-state="open"] .hb-rig,.hb[data-state="torn"] .hb-rig,.hb[data-state="plain"] .hb-rig{opacity:1}
+.hb-mouth{position:absolute;top:0;right:-32px;width:352px;height:480px;overflow:clip;pointer-events:none}
+.hb-sway{transform-origin:calc(100% - 32px) top;will-change:transform}
+.hb[data-state="fallen"]:not(.is-dragging) .hb-sway{animation:hbdropin .5s cubic-bezier(.34,1.4,.5,1), hbsway 2.8s ease-in-out infinite}
+@keyframes hbsway{0%,100%{transform:rotate(var(--hb-amp,3.5deg))}50%{transform:rotate(calc(-1 * var(--hb-amp,3.5deg)))}}
+@media(max-width:520px){.hb{--hb-amp:2.2deg}}
+@keyframes hbdropin{from{translate:0 -52px}60%{translate:0 7px}to{translate:0 0}}
+
+/* ONE strand: links + string + dangling burger move together with --pull */
+.hb-strand{position:relative;display:flex;flex-direction:column;align-items:flex-end;gap:15px;padding:44px 35px 0 0;
+  transform:translateY(calc((var(--pull) - 1) * 260px))}
+.hb[data-state="fallen"] .hb-strand,.hb[data-state="open"] .hb-strand{transition:transform .08s linear}
+.hb-tray{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;align-items:flex-end;gap:15px;position:relative;z-index:1;pointer-events:none}
+.hb-tray li{display:block}
+.hb-tray a{font-family:var(--f-mono);font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;
+  color:var(--ink);background:var(--paper);border:2.4px solid var(--ink);border-radius:6px;box-shadow:3px 3px 0 0 var(--ink);
+  padding:.5em .85em;display:inline-block;white-space:nowrap;pointer-events:none}
+.hb[data-state="open"] .hb-tray,.hb[data-state="open"] .hb-tray a,.hb[data-state="plain"] .hb-tray a{pointer-events:auto}
+.hb-tray li:nth-child(odd) a{transform:rotate(-1.6deg)}
+.hb-tray li:nth-child(even) a{transform:rotate(1.4deg)}
+.hb-tray a:hover{transform:rotate(0) translate(-1px,-1px);box-shadow:4px 4px 0 0 var(--grass)}
+.hb-tray a:focus-visible{outline:3px solid var(--lazuli);outline-offset:3px}
+.hb-tray .hb-cta .btn{font-size:.72rem;pointer-events:none}
+.hb[data-state="open"] .hb-tray .hb-cta .btn,.hb[data-state="plain"] .hb-tray .hb-cta .btn{pointer-events:auto}
+/* string is ROOTED at the slit and STRETCHES as you over-pull */
+.hb-thread{position:absolute;top:calc((1 - var(--pull)) * 260px);bottom:0;right:57px;width:4px;border-radius:3px;z-index:0;
+  background:repeating-linear-gradient(48deg, var(--lazuli) 0 4px, #1b6f97 4px 8px);filter:url(#roughsm)}
+.hb-fallen{position:relative;z-index:1;margin-top:22px;width:48px;height:44px;display:inline-flex;align-items:center;justify-content:center;
+  background:var(--paper);border:2.6px solid var(--ink);border-radius:7px;box-shadow:3px 3px 0 0 var(--ink);
+  cursor:grab;touch-action:none;pointer-events:auto}
+.hb.is-dragging .hb-fallen{cursor:grabbing}
+.hb.pulled .hb-fallen{margin-top:44px}
+
+/* the cut, drawn ON TOP so the strand reads as emerging from the paper */
+.hb-pocket{display:block;position:absolute;top:-3px;right:-6px;width:150px;height:24px;pointer-events:none;z-index:2;
+  background:linear-gradient(to bottom, rgba(34,36,41,.16), rgba(34,36,41,0))}
+.hb[data-state="rest"] .hb-pocket,.hb[data-state="plain"] .hb-pocket{opacity:0}
+.hb-slit{position:absolute;top:-1px;right:0;width:132px;height:0;border-top:3px solid var(--ink);filter:url(#roughsm);z-index:3;pointer-events:none}
+.hb[data-state="rest"] .hb-slit,.hb[data-state="plain"] .hb-slit{opacity:0}
+
+/* danger: string reddens + stretches as you over-pull */
+.hb.is-straining .hb-thread{background:repeating-linear-gradient(48deg, var(--colorado) 0 4px, #c4393d 4px 8px)}
+.hb.is-straining .hb-strand{transition:none}
+.hb.is-straining .hb-fallen{margin-top:52px}
+.hb.is-straining .hb-tray a{border-color:var(--colorado)}
+
+/* TORN: the strand drops away */
+.hb[data-state="torn"] .hb-strand{animation:hbdrop .85s cubic-bezier(.4,0,.7,1) forwards}
+@keyframes hbdrop{to{transform:translateY(470px) rotate(26deg);opacity:0}}
+
+/* keyboard / reduced-motion / no-JS: an honest dropdown */
+.hb[data-state="plain"] .hb-mouth{position:static;overflow:visible;width:auto;height:auto;pointer-events:auto}
+.hb[data-state="plain"] .hb-sway,.hb[data-state="plain"] .hb-strand{transform:none;animation:none!important}
+.hb[data-state="plain"] .hb-thread,.hb[data-state="plain"] .hb-fallen{display:none}
+.hb.respawning .hb-rig{opacity:0!important;transition:none!important}
+@media(prefers-reduced-motion:reduce){ .hb-sway{animation:none!important} }
+
+// ===================================================================
+// MASTHEAD — a printed broadsheet band with a torn bottom edge. The brand
+// logo (one solid Grass, upright, no filter/shadow/tilt) lives at left; the
+// hamburger nav at right. Ported from drex-landing/app.css (.mast).
+// ===================================================================
+.mast{position:relative;background:var(--oats);border-bottom:0;z-index:30}
+.mast::after{content:"";position:absolute;left:0;right:0;bottom:-15px;height:30px;background:var(--oats);filter:url(#tornbig);z-index:1}
+.mast .wrap{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding-block:1rem;position:relative;z-index:2}
+.mast .brand{display:flex;align-items:center;gap:.5rem;text-decoration:none}
+.mast .lg-icon{width:30px;display:block}
+.mast .lg-word{width:62px;display:block}
+.mast .lg-icon svg,.mast .lg-word svg{display:block;width:100%;height:auto}
+
+// ===================================================================
+// REVEAL / SLAM entrance physics — ported VERBATIM from drex-landing/app.css.
+// Gated on body[data-motion="full"] so reduced-motion / calm never hide content.
+// translate/scale (not transform) compose with each piece's resting tilt.
+// ===================================================================
+body[data-motion="full"] .reveal{opacity:0;translate:0 16px;
+  transition:opacity .24s ease, translate .52s cubic-bezier(.2,.85,.3,1.12)}
+body[data-motion="full"] .reveal.in{opacity:1;translate:0 0}
+
+body[data-motion="full"] .slam{opacity:0;translate:0 -96px;scale:1.04}
+body[data-motion="full"] .slam.in{animation:slamin .44s cubic-bezier(.5,0,.8,.45) both}
+@keyframes slamin{
+  0%  {opacity:0; translate:0 -96px; scale:1.04}
+  58% {opacity:1; translate:0 0;     scale:1.04}
+  70% {translate:0 1px; scale:1.09 .86}
+  84% {translate:0 0;   scale:.98 1.05}
+  100%{translate:0 0;   scale:1}}
+/* the washi tape then SWINGS down and slaps on to stick it */
+body[data-motion="full"] .slam .tape{opacity:0;translate:0 -18px;rotate:16deg}
+body[data-motion="full"] .slam.in .tape{animation:tapeslap .32s cubic-bezier(.34,1.4,.5,1) .4s both}
+@keyframes tapeslap{0%{opacity:0;translate:0 -18px;rotate:16deg}55%{opacity:1}100%{opacity:1;translate:0 0;rotate:0}}
+
+/* highlighter / marker draw-on (.draw) — composes with the skew */
+body[data-motion="full"] .hl.draw::before{scale:0 1;transform-origin:left center;
+  transition:scale .55s cubic-bezier(.2,.7,.2,1)}
+body[data-motion="full"] .hl.draw.in::before{scale:1 1}
+body[data-motion="full"] .ul.draw::after{scale:0 1;transform-origin:left center;
+  transition:scale .5s cubic-bezier(.2,.7,.2,1) .12s}
+body[data-motion="full"] .ul.draw.in::after{scale:1 1}
+
+// ===================================================================
+// TEAR-AWAY — pull a taped piece free; the washi flutters down. ARMED ONLY on
+// DECORATIVE furniture that has a direct .tape child (the .prose column never
+// has one, so the essay is never tearable). Ported from drex-landing/app.css.
+// ===================================================================
+[data-tearable]{cursor:grab;touch-action:pan-y}
+[data-tearable].tearing{cursor:grabbing;position:relative;z-index:60;user-select:none}
+[data-tearable] img{-webkit-user-drag:none;user-select:none;-webkit-touch-callout:none}
+.paper.tearing>.sheet,
+.polaroid.tearing{
+  box-shadow:calc(8px + var(--pull,0)*16px) calc(8px + var(--pull,0)*20px) 0 0 var(--ink);
+}
+.tape-fall{position:fixed;z-index:90;pointer-events:none;will-change:transform,opacity;
+  animation:tapefalldown 2.7s cubic-bezier(.37,.13,.5,.92) forwards}
+.tape-fall>.tape{position:absolute;inset:auto}
+@keyframes tapefalldown{
+  0%  {transform:translate(0,0)        rotate(0deg)   scale(1);   opacity:1}
+  12% {transform:translate(-13px,7vh)  rotate(-15deg)}
+  30% {transform:translate(15px,21vh)  rotate(13deg)}
+  48% {transform:translate(-13px,37vh) rotate(-12deg)}
+  66% {transform:translate(12px,55vh)  rotate(11deg);  opacity:.92}
+  84% {transform:translate(-9px,74vh)  rotate(-8deg);  opacity:.5}
+  100%{transform:translate(6px,96vh)   rotate(5deg)    scale(.96); opacity:0}
+}
+
+// ===================================================================
+// FOOTER — a torn deep-Grass band. Oats text clears AA on the band. Ported.
+// ===================================================================
+footer{position:relative;background:var(--grass-deep);margin-top:clamp(2.5rem,6vw,4.5rem);
+  padding:clamp(2.6rem,6vw,4.2rem) 0 clamp(1.8rem,4vw,2.6rem);color:var(--oats)}
+footer::before{content:"";position:absolute;left:0;right:0;top:-15px;height:30px;background:var(--grass-deep);filter:url(#tornbig2)}
+footer .top{display:flex;justify-content:space-between;align-items:flex-start;gap:2rem;flex-wrap:wrap}
+footer .ft-word{width:clamp(150px,24vw,240px);display:block}
+footer .ft-word svg{display:block;width:100%;height:auto}
+footer .tagline{font-family:var(--f-slab);font-style:italic;font-weight:700;font-size:clamp(1.5rem,3.4vw,2.3rem);color:var(--oats);max-width:13ch;margin:.8rem 0 0;line-height:1.05}
+footer .links{display:flex;flex-direction:column;gap:.35rem}
+footer .links a{font-family:var(--f-mono);font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--oats);
+  display:inline-flex;align-items:center;min-height:44px;
+  text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:4px;text-decoration-color:rgba(254,246,228,.55)}
+footer .links a:hover,footer .links a:focus-visible{text-decoration-color:var(--oats)}
+footer .links a:focus-visible{outline:2px solid var(--oats);outline-offset:2px}
+footer .stamp{display:inline-block;margin-top:1.4rem;color:rgba(254,246,228,.85);border-color:rgba(254,246,228,.7)}
+footer .legal{margin-top:2rem;border-top:1.6px solid rgba(254,246,228,.4);padding-top:1.1rem;display:flex;
+  justify-content:space-between;gap:1rem;flex-wrap:wrap;font-family:var(--f-mono);font-size:.72rem;letter-spacing:.05em;color:rgba(254,246,228,.9)}
+/* footer opt-in sound toggle */
+footer .legal .snd{font-family:var(--f-mono);font-size:.72rem;letter-spacing:.05em;text-transform:lowercase;
+  color:var(--oats);background:none;border:1.6px solid rgba(254,246,228,.5);border-radius:5px;
+  display:inline-flex;align-items:center;min-height:44px;padding:.28em .8em;cursor:pointer;
+  transition:border-color .12s, color .12s}
+footer .legal .snd:hover,
+footer .legal .snd[aria-pressed="true"]{border-color:var(--oats);color:var(--oats)}
+footer .legal .snd:focus-visible{outline:2px solid var(--oats);outline-offset:2px}
+
+// draw-on for AUTHORED inline marks (mirrors .hl/.ul) so the marker-draws-itself
+// motion fires on m-hl / m-underline used throughout the posts. initHighlighter
+// adds .draw then .in on scroll.
+body[data-motion="full"] .m-hl.draw::before,
+body[data-motion="full"] .m-underline.draw::after{scale:0 1;transform-origin:left center;transition:scale .5s cubic-bezier(.2,.7,.3,1)}
+body[data-motion="full"] .m-hl.draw.in::before,
+body[data-motion="full"] .m-underline.draw.in::after{scale:1 1}
+@media(prefers-reduced-motion:reduce){.m-hl.draw::before,.m-underline.draw::after{scale:1 1!important}}

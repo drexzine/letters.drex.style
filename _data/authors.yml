@@ -1,0 +1,32 @@
+# ===================================================================
+# authors.yml — the byline registry for the correspondence.
+#
+# Each post's front matter carries `author: <key>` (e.g. author: chielo).
+# byline.html looks that key up here to render the author chip(s):
+# photo + name + role, linking to /authors/<slug>/.
+# If a post has no `author` key, byline.html falls back to site.author.
+#
+# To add a GUEST WRITER:
+#   1. add an entry below (copy the `guest` example's shape);
+#   2. create _authors/<key>.md (copy _authors/_TEMPLATE.md);
+#   3. drop a square headshot at the `photo:` path;
+#   4. set `author: <key>` in the guest's post front matter.
+# Allowed accent colors: grass, coral, lazuli, bus, happy, ink.
+# ===================================================================
+
+chielo:
+  name: "Chielo Mbaezue"
+  role: "Co-founder"
+  accent: grass
+  photo: /assets/img/team/chielo.jpg
+  bio: "Founder of Drex. Writes the correspondence — essays on bringing your gifts into the world, together. A place for communion."
+
+# --- example GUEST WRITER entry (documented template) -------------------------
+# Duplicate this block, rename the key (e.g. `ada`), and fill it in. The key is
+# what you put in a post's front matter as `author: ada`.
+guest:
+  name: "Guest Writer"           # full display name on the byline + author page
+  role: "Guest contributor"      # short role line under the name
+  accent: lazuli                 # chip accent: grass | coral | lazuli | bus | happy | ink
+  photo: /assets/img/team/uko.jpg  # square headshot; ~600x600 looks best
+  bio: "One or two sentences introducing the guest and why they're writing for the correspondence."

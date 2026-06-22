@@ -1,11 +1,13 @@
 {%- comment -%}
-  definition.html — a ruled INDEX CARD defining a term of art: cream cardstock
-  with a printed red top rule + faint blue body rules and a Grass filed edge tab
-  (the canon's definition-block as a real card).
+  definition.html — a ruled INDEX CARD defining a term of art (cream cardstock,
+  printed top rule + faint body rules, a filed edge tab). Tearable (direct .tape).
   API:  {% include definition.html term="Hub correspondent" body="..." %}
+        term — the defined term (required).
+        body — the definition (markdownified; may carry inline m-* spans).
 {%- endcomment -%}
-<aside class="definition reveal" role="note" data-desk-id="definition">
+<aside class="definition slam" role="note">
+  <span class="tape b" aria-hidden="true"></span>
   <span class="definition-label">Definition</span>
-  <h3 class="definition-term" data-text>{{ include.term }}</h3>
-  <div class="definition-body" data-text>{{ include.body | markdownify }}</div>
+  <h3 class="definition-term">{{ include.term }}</h3>
+  <div class="definition-body">{{ include.body | markdownify }}</div>
 </aside>

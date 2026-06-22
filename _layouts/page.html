@@ -1,34 +1,18 @@
 ---
 layout: default
 ---
-<article class="post page-doc">
-
-  <header class="post-head">
+<article class="page">
+  <header class="page-head">
     <div class="wrap">
-      {% if page.eyebrow %}
-      <span class="post-eyebrow scrap-kicker piece" data-mat="oats" data-edge="cut">
-        <span class="eyebrow">{{ page.eyebrow }}</span>
-      </span>
-      {% endif %}
-      <div class="post-banner piece" data-mat="grass" data-edge="torn">
-        <span class="pin" data-pin="red" aria-hidden="true"></span>
-        <h1 class="post-title slab">{{ page.title }}</h1>
-      </div>
-      {% if page.dek %}<p class="post-dek">{{ page.dek }}</p>{% endif %}
+      {% if page.eyebrow %}<span class="eyebrow">{{ page.eyebrow }}</span>{% endif %}
+      <h1 class="slab">{{ page.title }}</h1>
+      {% if page.dek %}<p class="page-dek">{{ page.dek }}</p>{% endif %}
     </div>
   </header>
 
-  <div class="post-stage">
-    {% include desk-marginalia.html context="post" %}
+  <div class="wrap">
     <div class="prose">
       {{ content }}
     </div>
   </div>
-
-  <div class="post-foot">
-    <div class="wrap">
-      <p class="back-line"><a class="back-link" href="{{ '/' | relative_url }}">&larr; back to the notebook</a></p>
-    </div>
-  </div>
-
 </article>

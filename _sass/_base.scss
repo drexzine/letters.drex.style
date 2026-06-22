@@ -1,0 +1,82 @@
+// ===================================================================
+// _base.scss — the ground + base typography + the boil engine keyframes.
+// Ported from drex-landing/app.css (body background, .wrap, boil @keyframes).
+// The 3-layer handmade ground (dot grid + faint notebook rules + feTurbulence
+// paper grain, multiply-blended over Oats) is the brand's table; every sheet
+// lifts off it. No texture is ever painted UNDER the .prose reading column
+// (that exclusion lives in _post.scss).
+// ===================================================================
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;overflow-x:clip}
+
+body{
+  margin:0;color:var(--ink);font-family:var(--f-body);font-weight:300;line-height:1.6;
+  font-size:clamp(1rem,calc(.97rem + .25vw),1.13rem);overflow-x:hidden;-webkit-font-smoothing:antialiased;
+  /* the table: dot grid + faint notebook rules + paper grain over Oats */
+  background-color:var(--oats);
+  background-image:
+    radial-gradient(rgba(65,77,87,.10) 1.1px, transparent 1.2px),
+    repeating-linear-gradient(0deg, transparent 0 33px, rgba(36,150,201,.09) 33px 34px),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.45'/%3E%3C/svg%3E");
+  background-size:23px 23px, auto, 220px 220px;
+  background-blend-mode:normal, normal, multiply;
+}
+a{color:inherit}
+
+/* the content rail — fluid inline padding, capped column */
+.wrap{max-width:1150px;margin:0 auto;padding-inline:clamp(1rem,4.5vw,3.5rem)}
+
+/* ---------- shared type helpers (ported) ---------- */
+.scrawl{font-family:var(--f-hand);font-weight:400;line-height:1.15}
+.label{font-family:var(--f-mono);font-weight:500;text-transform:uppercase;letter-spacing:.14em;font-size:.74rem}
+.dot{color:var(--grass-deep);font-weight:700}
+.slab{font-family:var(--f-slab);font-style:italic;font-weight:700;line-height:.98;letter-spacing:-.02em}
+.stop{color:var(--grass-deep)}
+
+:focus-visible{outline:3px solid var(--lazuli);outline-offset:3px}
+
+// ===================================================================
+// SQUIGGLE VISION — the boil engine. The same live filters cycle 3 seed frames
+// with step-end so the torn/marker edges redraw a few times a second (a
+// stop-motion hand). Copied VERBATIM from drex-landing/app.css. The LOGO and the
+// running .prose text are deliberately never boiled.
+// ===================================================================
+@keyframes boil-rough  {0%{filter:url(#rough)}  33%{filter:url(#rough2)}  66%{filter:url(#rough3)}}
+@keyframes boil-torn   {0%{filter:url(#torn)}   33%{filter:url(#torn2)}   66%{filter:url(#torn3)}}
+@keyframes boil-roughsm{0%{filter:url(#roughsm)}33%{filter:url(#roughsm2)}66%{filter:url(#roughsm3)}}
+@keyframes boil-soft   {0%{filter:url(#soft)}   33%{filter:url(#soft2)}   66%{filter:url(#soft3)}}
+
+// ===================================================================
+// PAPER-FACE MIXIN — the ONE legal way to give a TEXT-BEARING surface a torn
+// edge. A CSS filter:url() rasterizes + WARPS its entire subtree, including
+// text; a child's filter:none does NOT undo an ancestor's filter. So the edge
+// (border + bg + flat ink offset + the torn filter) lives on a ::before "paper
+// face" pinned BEHIND the content (inset:0; z-index:0), and the element's real
+// children ride at z-index:1 on a transparent box. The element keeps its own
+// position/transform/padding; it just stops carrying any paint or filter.
+//   $boil: a boil-* keyframe name for a gently breathing edge, or `none` for a
+//          DEAD-STILL edge (the reading sheet — calmest, longest dwell).
+//   $cadence: the boil token (default --boil-paper for furniture faces).
+// Usage: include paper-face on the element; then style .face-bg if the face
+// needs a special background (ruled lines, stock color) via &::before.
+// ===================================================================
+@mixin paper-face(
+  $filter: torn, $radius: 7px, $boil: boil-torn, $cadence: var(--boil-paper),
+  $bg: var(--paper), $border: 2.6px solid var(--ink), $shadow: 8px 8px 0 0 var(--ink)
+) {
+  position:relative;
+  // the box itself carries NO paint and NO filter — text stays crisp.
+  background:transparent;border:0;box-shadow:none;filter:none;
+  &::before{
+    content:"";position:absolute;inset:0;z-index:0;
+    background:$bg;
+    border:$border;border-radius:$radius;
+    box-shadow:$shadow;
+    filter:url(##{$filter});
+    @if $boil != none { animation:#{$boil} #{$cadence} step-end infinite; }
+  }
+  // real children paint flat, ABOVE the face.
+  > *{position:relative;z-index:1}
+  > .tape{position:absolute;z-index:3}
+}

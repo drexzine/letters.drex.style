@@ -1,13 +1,13 @@
 # ===================================================================
-# Drex blog — letters.drex.style (Chielo's correspondence, archived)
-# Chielo's visionary / canon / lore essays, in the Drex zine aesthetic.
+# Drex blog — letters.drex.style ("the correspondence")
+# Chielo's founder/CEO essays + guest writers, in the Drex zine aesthetic.
 # GitHub-Pages-native Jekyll build. Only Pages-whitelisted plugins.
 # ===================================================================
 
 title: "drex."
 tagline: "The correspondence, made public."
 description: >-
-  Chielo's notebook for Drex — visionary essays, canon, and lore on
+  The Drex correspondence — founder essays, canon, and lore on
   bringing your gifts into the world together. A place for communion.
 author: "Chielo Mbaezue"
 
@@ -28,6 +28,12 @@ kramdown:
   hard_wrap: false
   smart_quotes: ["lsquo", "rsquo", "ldquo", "rdquo"]
 
+# --- collections ---
+collections:
+  authors:
+    output: true
+    permalink: /authors/:path/
+
 # --- collections / defaults ---
 defaults:
   - scope:
@@ -35,6 +41,11 @@ defaults:
       type: posts
     values:
       layout: post
+  - scope:
+      path: ""
+      type: authors
+    values:
+      layout: author
   - scope:
       path: ""
     values:
@@ -68,7 +79,6 @@ exclude:
   - PLAN.md
   - CLAUDE.md
   - BRAND-AND-UX.md
-  - .build-workflow.js
   - .jekyll-cache
   - node_modules
 

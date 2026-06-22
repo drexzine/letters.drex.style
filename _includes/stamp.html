@@ -1,5 +1,11 @@
 {%- comment -%}
-  stamp.html — a rubber stamp pressed onto the page (tilted mono caps, ink frame).
+  stamp.html — a rubber stamp pressed onto the page (tilted DM-Mono caps, ink
+  frame, wobbled via filter:url(#roughsm)). Tearable: emits a direct .tape child
+  so blog.js arms it.
   API:  {% include stamp.html text="CANON" %}
+        text — short CAPS label (required). attrib/accent are not used here.
 {%- endcomment -%}
-<span class="stamp" role="img" aria-label="Stamped: {{ include.text }}">{{ include.text }}</span>
+<span class="stamp" role="img" aria-label="Stamped: {{ include.text }}">
+  <span class="tape" aria-hidden="true"></span>
+  {{ include.text }}
+</span>

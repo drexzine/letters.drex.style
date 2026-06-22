@@ -1,14 +1,15 @@
 {%- comment -%}
-  pullquote.html — the v6 COLORADO TORN QUOTE-SCRAP (.b-quote): a red torn
-  cardstock scrap with a big knocked-out opening quote-mark, the line set in
-  Pitch-italic, pinned with a red thumbtack and tilted. The quote-mark renders
-  as the .pq-text ::before; the pin + tear are CSS.
+  pullquote.html — a torn-paper pull-quote scrap: a big knocked-out opening
+  quote-mark, the line set in Courier-Prime italic, an optional attribution, a
+  .tape child, tilted and slammed in. Tearable (direct .tape child).
   API:  {% include pullquote.html text="..." attrib="Lave & Wenger" %}
-        attrib is optional.
+        text   — the quoted line (required).
+        attrib — optional attribution / source line.
 {%- endcomment -%}
-<figure class="pullquote slam" data-desk-id="pullquote">
-  <blockquote class="pq-text" data-text>{{ include.text }}</blockquote>
+<figure class="pullquote slam">
+  <span class="tape c" aria-hidden="true"></span>
+  <blockquote class="pq-text">{{ include.text }}</blockquote>
   {%- if include.attrib -%}
-  <figcaption class="pq-attrib" data-text>{{ include.attrib }}</figcaption>
+  <figcaption class="pq-attrib">{{ include.attrib }}</figcaption>
   {%- endif -%}
 </figure>

@@ -1,141 +1,48 @@
 // ===================================================================
-// _tokens.scss — the single source of truth for the blog's design tokens.
-//
-// MATERIAL OVERHAUL (v6 desk standard). The flat solid-ink-offset shadow
-// language was the FAILURE. This file now carries the v6 SOFT TINTED LAYERED
-// shadow vocabulary: every cast takes its surface hue, stacks contact +
-// ambient layers, and never reads as neutral black, a hard zero-blur offset,
-// or an outer glow. Material surfaces themselves are BAKED RASTER sprites
-// injected by bakery.js into the --bk-* vars declared here as slots.
-//
-// SUPREME AUTHORITY 1 — BRAND LAW (the PDF): palette §4 exact, NO #000 / #fff
-// ("ink" = Sambas, "light"/"paper" = Oats), golden-ratio type scale, 4 type
-// roles kept distinct (slab / mono / body / hand).
+// _tokens.scss — design tokens. The palette + four type roles + boil dials are
+// copied VERBATIM from drex-landing/app.css :root{} (the single source of truth
+// for the brand look). A few AA-deepened INK accents are added for small text on
+// the Oats desk (the running blog needs them; the landing did not). NO --bk-*
+// raster slots, NO soft tinted --sh-* shadow language, NO --df-* drop-shadow
+// twins: this build is live SVG filters + FLAT solid ink-offset shadows only.
 // ===================================================================
+
+// ---- VERBATIM from drex-landing/app.css :root (palette + fonts) ----
 :root{
-  // ---- palette §4 EXACT (brand constitution) ----
   --grass:#1CAB5B; --oats:#FEF6E4; --sambas:#414D57; --colorado:#F75458;
   --lazuli:#2496C9; --schoolbus:#ECAF21; --happy:#F1DD01;
-  --grass-deep:#0C6E39;      // AA-safe dark Grass for button/key fills with Oats text
-  --coral-ink:#C9343A;       // Colorado deepened for small text on Oats (4.84:1 AA)
-  --bus-ink:#7A5A12;         // School-Bus deepened to dark saffron ink on cream (5.92:1)
-  --lazuli-deep:#1C6F94;     // Lazuli deepened for small text on Oats (5.2:1)
-  --ink:#414D57;             // Sambas doubles as ink (NO pure black)
-  --paper:#FEF6E4;           // Oats — palette-pure card/page ground (NO pure white)
+  --grass-deep:#0C6E39;      /* AA-safe grass: oats text clears 4.5:1 — for the primary button fill + footer band */
+  --ink:#414D57;
+  --paper:#FEF6E4;--paper-raised:#F3E6C8;            /* Oats — palette-pure; cards lift off the textured ground via torn ink border + hard shadow */
+  --f-slab:"Courier Prime",ui-monospace,monospace;  /* Pitch (display) */
+  --f-mono:"DM Mono",ui-monospace,monospace;         /* Pitch Sans (labels) */
+  --f-body:"Bitter",Georgia,serif;
+  --f-hand:"Patrick Hand",cursive;                   /* Birdie (scrawl) */
+}
 
-  // ---- the four type roles (golden-ratio scale) ----
-  --f-slab:"Courier Prime",ui-monospace,monospace;  // Pitch — display / headlines (ITALIC 700)
-  --f-mono:"DM Mono",ui-monospace,monospace;         // Pitch Sans — labels / buttons / eyebrows-mono
-  --f-body:"Bitter",Georgia,serif;                   // body — running prose (300/400)
-  --f-hand:"Patrick Hand",cursive;                   // Birdie — scrawl eyebrows / captions
+// ---- VERBATIM from drex-landing/app.css :root (SQUIGGLE VISION boil dials) ----
+:root{
+  --boil-ink:.5s;     /* underlines + highlighter — smallest, pure marker, liveliest */
+  --boil-paper:1.5s;  /* section sheet edges + photo borders/shadows — calm breathing */
+  --boil-stamp:1.1s;  /* footer rubber stamp */
+}
 
-  // ---- φ type scale (ratio ≈ 1.618), fluid via clamp() for mobile-first ----
-  --t-base:1rem;
-  --t-lede:clamp(1.2rem, calc(1.05rem + .8vw), 1.7rem);   // standfirst / dek — φ¹
-  --t-sub: clamp(1.5rem, calc(1.2rem + 1.6vw), 2.6rem);   // subheads / h2 — φ²
-  --t-hero:clamp(2.1rem, calc(1.35rem + 3.2vw), 5.2rem);  // display / post title — φ³+
-  --t-eyebrow:clamp(1.05rem, calc(.95rem + .7vw), 1.5rem);// Patrick-Hand eyebrow — never tiny
-  --t-label:.74rem;                                       // DM Mono label cap size
+// ---- blog-only additions (NOT on the landing) ----
+:root{
+  // AA-deepened INK accents — palette colors pushed darker so SMALL TEXT clears
+  // 4.5:1 on the Oats desk. The bright palette hues stay for fills/marks; these
+  // are text-on-cream only. (Same values the old _tokens carried.)
+  --coral-ink:#C9343A;       // Colorado deepened — 4.84:1 on Oats
+  --bus-ink:#7A5A12;         // School-Bus deepened — 5.92:1 on Oats
+  --lazuli-deep:#1C6F94;     // Lazuli deepened — 5.2:1 on Oats
 
-  // ---- spacing scale (φ-leaning, fluid where it frames the page) ----
-  --sp-1:.35rem; --sp-2:.6rem; --sp-3:1rem; --sp-4:1.6rem;
-  --sp-5:2.6rem; --sp-6:clamp(2.5rem,6vw,4.5rem); --sp-7:clamp(3.5rem,9vw,7rem);
-
-  // ---- reading measure ----
+  // reading measure for the .prose column
   --measure:64ch;
 
-  // ===================================================================
-  // SOFT TINTED LAYERED SHADOW VOCABULARY (v6 / REFS 1–8)
-  // One sun, upper-left key: down-right cast, vertical ≈ 2× horizontal.
-  // Tones are WARM UMBER-GREY (the v6 desk-shadow tone '58,49,38' /
-  // '44,36,26'), never cool slate, never neutral black. Each surface also
-  // carries a hue-tinted variant so the cast keeps a breath of the surface
-  // colour (REFS 5 LIGHT-TINTED-SHADOW).
-  // ===================================================================
-  --sh-warm:58,49,38;        // warm umber-grey ambient (v6 SH)
-  --sh-seam:44,36,26;        // warm dark occlusion / crease (v6 SEAM)
-
-  // REFS 2 — contact core: tight 1px offset/blur, higher first-layer opacity so
-  // each scrap reads as SEATED on the desk (was too faint to seat). Tinted umber
-  // (--sh-seam), never neutral black, + a short ambient kiss.
-  --sh-contact:
-    0 1px 1px   rgba(var(--sh-seam),.40),
-    0 2px 3px   rgba(var(--sh-warm),.18);
-
-  // REFS 3 — layered ambient falloff: 2–3 stacked ≤10% layers (nonlinear penumbra)
-  --sh-ambient:
-    0 2px 4px  rgba(var(--sh-warm),.10),
-    0 5px 10px rgba(var(--sh-warm),.09),
-    0 9px 18px rgba(var(--sh-warm),.07);
-
-  // REFS 4 — thickness code for a RAISED object (cardstock/print): contact + ambient
-  --sh-lift:
-    0 2px 2px  rgba(var(--sh-seam),.30),
-    0 6px 12px rgba(var(--sh-warm),.14),
-    0 14px 26px rgba(var(--sh-warm),.10);
-
-  // the HOVER state — the cast grows (object lifts off the desk; blur opens up)
-  --sh-hover:
-    0 4px 4px   rgba(var(--sh-seam),.26),
-    0 12px 22px rgba(var(--sh-warm),.16),
-    0 24px 44px rgba(var(--sh-warm),.11);
-
-  // tight occlusion seam for tape pressed flat (REFS 19 / 7) — barely-there
-  --sh-seamline:0 1px 1px rgba(var(--sh-seam),.18);
-
-  // ---- ALPHA-FOLLOWING DROP-SHADOW TWINS (for TORN-silhouette objects) ----
-  // box-shadow is computed from the rectangular border-box and ghosts a square
-  // halo behind a torn border-image rim. filter:drop-shadow() rasterises against
-  // the element's real alpha, so the cast HUGS the torn teeth. Same warm-umber
-  // tints (--sh-seam/--sh-warm), palette-pure, no #000/#fff. Chains kept to 2–3
-  // functions to keep the GPU filter pass cheap. Used ONLY on torn .scrap/.sheet/
-  // banners/clips — rectangular cards keep box-shadow.
-  --df-contact: drop-shadow(0 1px 1px rgba(var(--sh-seam),.40)) drop-shadow(0 2px 3px rgba(var(--sh-warm),.18));
-  --df-ambient: drop-shadow(0 2px 4px rgba(var(--sh-warm),.10)) drop-shadow(0 5px 10px rgba(var(--sh-warm),.07));
-  --df-lift:    drop-shadow(0 2px 2px rgba(var(--sh-seam),.30)) drop-shadow(0 6px 12px rgba(var(--sh-warm),.14)) drop-shadow(0 14px 26px rgba(var(--sh-warm),.10));
-  --df-hover:   drop-shadow(0 4px 4px rgba(var(--sh-seam),.26)) drop-shadow(0 12px 22px rgba(var(--sh-warm),.16)) drop-shadow(0 24px 44px rgba(var(--sh-warm),.11));
-
-  // ---- LEGACY shadow aliases (contract stability) ----
-  // _grounds.scss / _post.scss / _whimsy.scss (some not owned by this engine)
-  // still reference these names. They now map to the SOFT TINTED language so the
-  // whole site obeys one-soft-light desk realism — even before/without JS.
-  // (The old values were FLAT solid-ink hard offsets — the documented failure.)
-  --shadow-sheet:var(--sh-lift);    // big flat sheet sitting up off the desk
-  --shadow-chip:var(--sh-contact);  // small chip hugging the desk
-  --shadow-btn:var(--sh-lift);      // rubber-stamp button at rest
-  --shadow-lift:var(--sh-hover);    // hover lift on splayed cards
-
-  // ---- BAKED SPRITE SLOTS (filled by bakery.js → data-URI) ----
-  // Declared empty so SCSS resolves; JS overwrites at boot. var() fallbacks in
-  // _realism.scss keep the page legible if JS is off.
-  --bk-desk:none;            // the continuous Oats desk (tooth + grain + faint cutting-mat grid)
-  --bk-light:none;           // one soft tinted scene-light wash
-  --bk-grain:none;           // generic paper tooth tile (Oats)
-  --bk-piece-oats:none;      // torn Oats scrap face
-  --bk-piece-grass:none;     // torn Grass scrap face
-  --bk-piece-sambas:none;    // torn Sambas scrap face
-  --bk-piece-coral:none;     // torn Colorado scrap face
-  --bk-piece-lazuli:none;    // torn Lazuli scrap face
-  --bk-piece-kraft:none;     // torn kraft/School-Bus strip face
-  --bk-tape-happy:none;      // translucent washi (Happy)
-  --bk-tape-lazuli:none;     // translucent washi (Lazuli)
-  --bk-tape-coral:none;      // translucent washi (Colorado)
-  --bk-tape-oats:none;       // translucent masking tape (warm cream)
-  --bk-pin:none;             // glossy pushpin sprite
-  --bk-stamp:none;           // patchy baked ink stamp ring
-
-  // ---- motion dials (paper physics, FEEL.md §C) ----
-  --t-micro:120ms;           // micro 80–150ms
-  --t-trans:260ms;           // transitions 200–300ms
-  --ease-settle:cubic-bezier(.2,.85,.3,1.12);  // overshoot ~6%, one oscillation
-  --ease-slam:cubic-bezier(.5,0,.8,.45);       // gravity-in (accelerate down)
-
-  // ---- squigglevision BOIL cadence (step-end seed-swap redraw rate) ----
-  // These were referenced bare (no fallback) in _whimsy.scss / the kit boil but
-  // NEVER defined in :root — so every animation keyed off them shipped INERT
-  // (an animation with an invalid/empty duration does not run). Defining them
-  // here revives the intended boil. ~1fps so the line "breathes" without shimmer.
-  --boil-paper:1.6s;         // torn-edge / paper redraw
-  --boil-ink:0.9s;           // fine marker stroke redraw
-  --boil-stamp:1.2s;         // stamp / heavier mark redraw
+  // ONE light, ONE equal offset — the brand shadow is a flat solid ink stamp,
+  // never blurred, never a gradient (BRAND LAW §4).
+  --shadow-sheet:8px 8px 0 0 var(--ink);   // section sheets / cards at rest
+  --shadow-chip:3px 3px 0 0 var(--ink);    // small chips: tags, nav, m-link
+  --shadow-btn:5px 5px 0 0 var(--ink);     // buttons
+  --shadow-lift:13px 14px 0 0 var(--ink);  // hover-lifted card
 }

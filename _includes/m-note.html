@@ -1,22 +1,22 @@
 {%- comment -%}
-  m-note.html — a Patrick-Hand scrawl pinned in the DESK MARGIN beside the
-  reading column, tilted, with a thin hand-drawn LEADER pointing back to the
-  text. Place the include right AFTER the line it annotates.
+  m-note.html — a Patrick-Hand marker scrawl pinned in the desk margin beside the
+  reading column, tilted, with a thin hand-drawn leader. Place the include right
+  AFTER the line it annotates. Tearable (direct .tape child).
 
   API:  {% include m-note.html text="the key move →" color="coral" side="right" %}
     text  — the note text (required; real, selectable, AA on the desk).
     color — grass | coral | lazuli | bus | happy | ink   (default: coral)
     side  — left | right   (which gutter to pin into; default: right)
 
-  Desktop: absolutely pinned into the bare desk margin (never overlaps body
-  text). Mobile (<=900px / no gutter): reflows to a small inline scrawl just
-  under the line. The text is a real <span> (a11y: readable, selectable); the
-  leader is decorative pseudo-paint.
-
+  Desktop: pinned into the bare desk margin (never overlaps body text). Mobile
+  (<=900px / no gutter): reflows to a small inline scrawl under the line.
   NOTE: yellow inks (bus/happy) are reserved for highlighters/marks, not small
   text on the light desk — if passed here they fall back to coral for AA.
 {%- endcomment -%}
 {%- assign color = include.color | default: "coral" -%}
 {%- if color == "happy" or color == "bus" -%}{%- assign color = "coral" -%}{%- endif -%}
 {%- assign side = include.side | default: "right" -%}
-<span class="m-note m-note--{{ side }} m-{{ color }}" role="note"><span class="m-note__slip">{{ include.text }}</span></span>
+<span class="m-note m-note--{{ side }} m-{{ color }}" role="note">
+  <span class="tape" aria-hidden="true"></span>
+  <span class="m-note__slip">{{ include.text }}</span>
+</span>

@@ -1,10 +1,11 @@
 {%- comment -%}
-  cite.html — a torn cream CLIPPING carrying the quoted line, with the source as a
-  STAMPED CREDIT on a kraft byline strip (ported from v6 .b-credit).
+  cite.html — a source / credit line carrying a quoted line with its attribution
+  (author · work). NOT tearable (no .tape). Sits quietly in flow.
   API:  {% include cite.html author="Seth Godin" work="Permission Marketing" text="..." %}
-        author — optional. work — optional. text — the quote (required).
+        text   — the quote (required).
+        author — optional. work — optional.
 {%- endcomment -%}
-<figure class="cite reveal">
+<figure class="cite">
   <blockquote class="cite-text">{{ include.text }}</blockquote>
   {%- if include.author or include.work -%}
   <figcaption class="cite-attrib">
