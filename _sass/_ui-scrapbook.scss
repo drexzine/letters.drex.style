@@ -113,9 +113,8 @@ html.baked .post-tag:nth-of-type(3n+3){background-color:var(--grass)!important;
 
 // ---- HANDLE-DRAG affordances (blog.js makeDraggable) ----
 // THE HANDLE IS THE FASTENER: you move a paper by grabbing the washi TAPE (or pin) that
-// holds it down. Hover the fastener → grab cursor + the whole paper LIGHTS UP (.grip-hot)
-// so you see what you'll move, and text selection turns off (move mode). The paper BODY
-// stays read/selectable/clickable — the fastener doesn't cover it. Mouse/pen only.
+// holds it down. The fastener shows a grab cursor; the paper BODY stays read/selectable/
+// clickable. NO hover glow (removed by request). Mouse/pen only — phones read, never drag.
 @media (hover:hover) and (pointer:fine){
   // the fastener is the grab handle — and it must receive pointer events even inside the
   // pointer-events:none litter layer.
@@ -124,21 +123,11 @@ html.baked .post-tag:nth-of-type(3n+3){background-color:var(--grass)!important;
   .prose .pullquote > .tape, .prose .callout > .tape, .prose .figure.polaroid > .tape{
     pointer-events:auto; cursor:grab;
   }
-  .grip-hot{
-    position:relative; z-index:60;                        // rise above neighbours so the glow shows
-    user-select:none; -webkit-user-select:none;          // move mode = no text selection
-    // OBVIOUS bright grass glow (a tight core + a wide halo) so the paper unmistakably
-    // "lights up". Alpha-following — hugs the torn silhouette, never a rect halo.
-    filter:drop-shadow(0 0 2px rgba(28,171,91,.95))
-           drop-shadow(0 0 10px rgba(28,171,91,.80))
-           drop-shadow(0 2px 3px rgba(var(--sh-seam),.32));
-  }
-  // while dragging — the glow stays, lifted, selection stays off, deeper contact cast.
+  // while dragging — lifted above the desk with a deeper contact cast (no green glow).
   .is-dragging{
     cursor:grabbing!important; z-index:80!important;
     user-select:none!important; -webkit-user-select:none!important;
-    filter:drop-shadow(0 0 2px rgba(28,171,91,.9))
-           drop-shadow(3px 8px 12px rgba(20,16,12,.26))!important;
+    filter:drop-shadow(3px 8px 12px rgba(20,16,12,.26))!important;
   }
   .is-dragging > .tape, .is-dragging > .pin{ cursor:grabbing!important; }
 }

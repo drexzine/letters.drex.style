@@ -534,6 +534,10 @@ window.__DREX_BLOG_SRC__ = (document.currentScript && document.currentScript.src
     });
     el.addEventListener("pointermove", function (ev) {
       if (!armed || ev.pointerId !== pid) return;
+      // JANK GUARD: if the primary button is NOT actually held, a pointerup/leave was
+      // missed and the drag is stuck — the element would keep following the bare cursor.
+      // Bail out and release immediately so the paper never moves without a held button.
+      if (ev.buttons === 0) { release(ev); return; }
       var dx = ev.clientX - startX, dy = ev.clientY - startY;
       if (!dragging) {
         if (Math.abs(dx) + Math.abs(dy) < 6) return;   // below threshold = click, not drag
@@ -616,6 +620,7 @@ window.__DREX_BLOG_SRC__ = (document.currentScript && document.currentScript.src
     }
     el.addEventListener("pointerup", release);
     el.addEventListener("pointercancel", release);
+    el.addEventListener("lostpointercapture", release);   // capture yanked away → release too
     if (isLink) el.addEventListener("click", function (ev) {   // a real drag must not navigate
       if (moved) { ev.preventDefault(); ev.stopPropagation(); moved = false; }
     }, true);
@@ -686,15 +691,6 @@ window.__DREX_BLOG_SRC__ = (document.currentScript && document.currentScript.src
           },
           isLink: isLink, moveVia: "translate"
         });
-        // the paper glows while the pointer is over its fastener — the "grab here" cue.
-        for (var k = 0; k < fasteners.length; k++) {
-          fasteners[k].addEventListener("pointerenter", function (ev) {
-            if (ev.pointerType !== "touch") el.classList.add("grip-hot");
-          });
-          fasteners[k].addEventListener("pointerleave", function () {
-            el.classList.remove("grip-hot");
-          });
-        }
       })(papers[i]);
     }
 
