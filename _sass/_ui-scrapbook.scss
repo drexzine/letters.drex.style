@@ -112,23 +112,23 @@ html.baked .post-tag:nth-of-type(3n+3){background-color:var(--grass)!important;
 }
 
 // ---- HANDLE-DRAG affordances (blog.js makeDraggable) ----
-// TWO CLEAR MODES per paper object, decided by where the pointer is:
-//   • READ MODE (pointer over the inner content) — normal cursor, text selectable.
-//   • MOVE MODE (pointer over the OUTER border band) — blog.js sets .grip-hot: the paper
-//     lights up with an OBVIOUS grass glow, the cursor becomes a grab hand, AND text
-//     selection is turned OFF — so a drag can NEVER turn into a text-select. The glow IS
-//     the contract: if it's glowing, you're moving paper; if it's not, you're reading.
-// Drag is mouse/pen; touch always scrolls/taps/selects (never drags).
+// THE HANDLE IS THE FASTENER: you move a paper by grabbing the washi TAPE (or pin) that
+// holds it down. Hover the fastener → grab cursor + the whole paper LIGHTS UP (.grip-hot)
+// so you see what you'll move, and text selection turns off (move mode). The paper BODY
+// stays read/selectable/clickable — the fastener doesn't cover it. Mouse/pen only.
 @media (hover:hover) and (pointer:fine){
+  // the fastener is the grab handle — and it must receive pointer events even inside the
+  // pointer-events:none litter layer.
+  .board-litter .litter > .tape, .board-litter .litter > .pin,
+  .board-pile .clip > .tape,     .board-pile .clip > .pin,
+  .prose .pullquote > .tape, .prose .callout > .tape, .prose .figure.polaroid > .tape{
+    pointer-events:auto; cursor:grab;
+  }
   .grip-hot{
-    cursor:grab;
-    position:relative; z-index:60;                        // rise above neighbours so the
-                                                          // glow is never hidden behind an
-                                                          // overlapping scrap (the "green
-                                                          // doesn't show" bug)
+    position:relative; z-index:60;                        // rise above neighbours so the glow shows
     user-select:none; -webkit-user-select:none;          // move mode = no text selection
-    // OBVIOUS bright grass glow (a tight core + a wide halo) so the grabbable paper
-    // unmistakably "lights up". Alpha-following — hugs the torn silhouette, no rect halo.
+    // OBVIOUS bright grass glow (a tight core + a wide halo) so the paper unmistakably
+    // "lights up". Alpha-following — hugs the torn silhouette, never a rect halo.
     filter:drop-shadow(0 0 2px rgba(28,171,91,.95))
            drop-shadow(0 0 10px rgba(28,171,91,.80))
            drop-shadow(0 2px 3px rgba(var(--sh-seam),.32));
@@ -140,6 +140,7 @@ html.baked .post-tag:nth-of-type(3n+3){background-color:var(--grass)!important;
     filter:drop-shadow(0 0 2px rgba(28,171,91,.9))
            drop-shadow(3px 8px 12px rgba(20,16,12,.26))!important;
   }
+  .is-dragging > .tape, .is-dragging > .pin{ cursor:grabbing!important; }
 }
 
 // pin/tape never start a text range when they initiate a drag.

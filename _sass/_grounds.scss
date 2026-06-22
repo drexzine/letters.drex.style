@@ -968,7 +968,7 @@ html.baked .clip>.pin{filter:drop-shadow(0 2px 2px rgba(var(--sh-seam),.3))}
 // alternate the pinned clips' pin a touch off-centre for a hand-arranged feel
 .board-pile>.clip:nth-child(5n+5)>.pin{left:auto;right:18%;margin-left:0;transform:rotate(6deg)}
 
-.clip>.tape{position:absolute;z-index:8;left:50%;top:-13px;margin-left:-42px;
+.clip>.tape{position:absolute;z-index:8;left:50%;top:-19px;margin-left:-42px;
   // 84px wide (was 60) + cover (was 100% 100%) so the baked 120px washi sprite's
   // asymmetric torn ends aren't squashed flat — reads as a real strip, not a bar.
   width:84px;height:24px;pointer-events:none;
@@ -1073,7 +1073,7 @@ html.baked .clip>.tape[data-tape="oats"]  {background-image:var(--bk-tape-oats)}
 
 // each litter piece's washi tape, poking above its top edge (data-tape variants,
 // mirroring the .clip>.tape contract — the .tape primitive defaults to Happy).
-.litter>.tape{position:absolute;z-index:8;left:50%;top:-12px;margin-left:-30px;
+.litter>.tape{position:absolute;z-index:8;left:50%;top:-18px;margin-left:-30px;
   width:60px;height:24px;pointer-events:none;transform:rotate(-9deg)}
 .litter--photo>.tape{left:auto;right:16%;margin-left:0;transform:rotate(11deg)}
 // pre-bake washi fallbacks so an unbaked tape is on-brand, not stuck on Happy

@@ -661,44 +661,41 @@ window.__DREX_BLOG_SRC__ = (document.currentScript && document.currentScript.src
   }
 
   function initDrag() {
-    // ONE consistent model for EVERY paper object: you PICK IT UP BY ITS OUTER BORDER
-    // BAND (the torn-paper frame, ~22px). That band GLOWS on hover so it's obviously
-    // the handle; the INNER content stays readable and text-selectable. Same grip,
-    // same glow, same move for litter paper, clippings, AND in-prose scraps. Touch
-    // never drags (bailed in makeDraggable) so phones scroll / tap / select normally.
+    // THE HANDLE IS THE FASTENER — you move a paper by grabbing the washi TAPE (or pin)
+    // that holds it down. Obvious, skeuomorphic, and it never steals text selection or a
+    // link click (those live in the paper BODY, which the fastener doesn't cover). Hover
+    // the fastener → the whole paper GLOWS so you see what you'll move. Touch never drags.
     root.classList.add("js-drag");
-    var GRIP = 26;   // px — the grabbable frame width (generous so the band is easy to hit)
 
-    // inBand: is the pointer over the outer GRIP-px frame of el (not its inner body)?
-    function inBand(ev, el) {
-      var r = el.getBoundingClientRect();
-      var x = ev.clientX, y = ev.clientY;
-      if (x < r.left || x > r.right || y < r.top || y > r.bottom) return false;
-      return (x - r.left) < GRIP || (r.right - x) < GRIP ||
-             (y - r.top) < GRIP || (r.bottom - y) < GRIP;
-    }
-
-    var draggables = [].slice.call(doc.querySelectorAll(
-      ".board-litter .litter--photo, .board-litter .litter--slip, " +
-      ".board-litter .litter--ticket, .board-litter .litter--quote, " +
-      ".board-litter .litter--byline, .board-pile .clip, " +
-      ".prose .pullquote, .prose .callout, .prose .definition, .prose .figure.polaroid"
+    var papers = [].slice.call(doc.querySelectorAll(
+      ".board-litter .litter, .board-pile .clip, " +
+      ".prose .pullquote, .prose .callout, .prose .figure.polaroid"
     ));
-    for (var i = 0; i < draggables.length; i++) {
+    var draggables = [];
+    for (var i = 0; i < papers.length; i++) {
       (function (el) {
-        // clippings are links — isLink suppresses navigation on a real drag; a plain
-        // click still opens the post. Drag arms ONLY from the border band (gripTest).
+        // only FASTENED papers are movable, and only the fastener arms the drag.
+        var fasteners = el.querySelectorAll(":scope > .tape, :scope > .pin");
+        if (!fasteners.length) return;
+        draggables.push(el);
         var isLink = !!(el.classList && el.classList.contains("clip"));
-        makeDraggable(el, { gripTest: inBand, isLink: isLink, moveVia: "translate" });
-        // light the grabbable frame on hover (only when the pointer is on the band,
-        // never on the inner text) so the handle is legible.
-        el.addEventListener("pointermove", function (ev) {
-          if (ev.pointerType === "touch") return;
-          if (el.classList.contains("is-dragging")) return;
-          el.classList.toggle("grip-hot", inBand(ev, el));
+        makeDraggable(el, {
+          gripTest: function (ev) {
+            var f = ev.target.closest && ev.target.closest(".tape, .pin");
+            return !!(f && el.contains(f));
+          },
+          isLink: isLink, moveVia: "translate"
         });
-        el.addEventListener("pointerleave", function () { el.classList.remove("grip-hot"); });
-      })(draggables[i]);
+        // the paper glows while the pointer is over its fastener — the "grab here" cue.
+        for (var k = 0; k < fasteners.length; k++) {
+          fasteners[k].addEventListener("pointerenter", function (ev) {
+            if (ev.pointerType !== "touch") el.classList.add("grip-hot");
+          });
+          fasteners[k].addEventListener("pointerleave", function () {
+            el.classList.remove("grip-hot");
+          });
+        }
+      })(papers[i]);
     }
 
     // "RESET THE DESK" — one gesture, every page: snap every object home by clearing

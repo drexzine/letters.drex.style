@@ -19,11 +19,11 @@
   position:absolute; inset:0; z-index:0;
   pointer-events:none; overflow:clip;
   contain:layout paint style; isolation:isolate;
-  opacity:.78;                                 // present + colourful — it's the bare desk, not text
-  filter:url(#roughsm);                        // hand-wobble the whole field at once
-  animation:dm-boil 1.5s step-end infinite;    // squigglevision: redrawn by a different hand each step
+  opacity:.8;                                  // present + colourful — it's the bare desk, not text
+  // NO displacement filter: these are RECOGNISABLE little drawings (cup, sprout, book…);
+  // the boil distorted them into unintelligible scribble. The hand-drawn charm lives in
+  // the line-art itself, drawn clean.
 }
-@keyframes dm-boil{ 0%{filter:url(#roughsm)} 33%{filter:url(#roughsm2)} 66%{filter:url(#roughsm3)} }
 
 .dm{
   position:absolute; left:var(--x); top:var(--y);
@@ -31,7 +31,7 @@
   // colour is set INLINE per doodle (the span's `color`); the glyph paths use
   // stroke="currentColor", so nothing in the cascade can grey them out.
 }
-.dm svg{ display:block; width:2.9em; height:2.9em; overflow:visible; }
+.dm svg{ display:block; width:3.2em; height:3.2em; overflow:visible; }
 
 // REDUCED MOTION — freeze the boil (static rough is fine).
 @media (prefers-reduced-motion:reduce){ .desk-marg{ animation:none!important; } }
