@@ -140,21 +140,35 @@ html.baked .post-tag:nth-of-type(3n+3){background-color:var(--grass)!important;
 // pin/tape never start a text range when they initiate a drag.
 .pin, .tape{ user-select:none; -webkit-user-select:none; }
 
-// ---- PUSHPIN look — a glossy domed head seen from above (the baked sprite read as a flat
-//      red dot). Drawn as centred radial gradients sized to the head, so the element box +
-//      its positioning margins are untouched. data-pin picks the head colour. ----
+// ---- PUSHPIN — a proper thumbtack: a glossy colour DOME on top of a little metal SHAFT
+//      stuck into the board, bigger so it's obviously a grab handle. Drawn with pseudo-
+//      elements centred in the existing box, so positioning margins are untouched. ----
 .pin{ --pin-c:#F75458; }
 .pin[data-pin="grass"]{ --pin-c:#1CAB5B }
 .pin[data-pin="lazuli"]{ --pin-c:#2496C9 }
 .pin[data-pin="bus"]{ --pin-c:#ECAF21 }
 .pin[data-pin="ink"]{ --pin-c:#414D57 }
 .pin, html.baked .pin{
+  background:none !important;
+  overflow:visible; animation:none !important;
+  filter:drop-shadow(1px 3px 2px rgba(var(--sh-seam),.45));
+}
+// the metal shaft, angled into the desk (sits behind the head)
+.pin::after{
+  content:""; position:absolute; left:50%; top:44%; margin-left:-2px; z-index:1;
+  width:4px; height:14px; border-radius:0 0 2px 2px;
+  background:linear-gradient(90deg,#cfd3d8 0 35%,#9aa0a8 60%,#6b7079);
+  transform:rotate(15deg); transform-origin:top center;
+}
+// the glossy colour dome (bigger — ~24px), the obvious thing you grab
+.pin::before{
+  content:""; position:absolute; left:50%; top:6%; margin-left:-12px; z-index:2;
+  width:24px; height:24px; border-radius:50%;
   background:
-    radial-gradient(circle at 38% 33%, rgba(255,255,255,.85), rgba(255,255,255,0) 30%) center / 17px 17px no-repeat,
-    radial-gradient(circle, var(--pin-c) 0 46%, rgba(36,20,16,.32) 47% 50%, transparent 51%) center / 19px 19px no-repeat
-    !important;
-  filter:drop-shadow(.5px 2px 2px rgba(var(--sh-seam),.5));
-  animation:none !important;
+    radial-gradient(circle at 36% 30%, rgba(255,255,255,.92), rgba(255,255,255,0) 34%),
+    radial-gradient(circle at 64% 74%, rgba(0,0,0,.30), rgba(0,0,0,0) 52%),
+    var(--pin-c);
+  box-shadow:inset 0 -2px 3px rgba(0,0,0,.20), inset 0 2px 2px rgba(255,255,255,.35);
 }
 
 // ---- "RESET THE DESK" kraft tab — a real, keyboard-reachable <button> that

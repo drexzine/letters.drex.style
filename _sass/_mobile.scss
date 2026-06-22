@@ -380,18 +380,20 @@ pre {
   // ---- Burger drawer (.mob-nav): sibling of .wrap, drops below the bar ----
   // Closed = max-height 0 / clipped; JS toggles .open. Flat Oats, no blur.
   .mast > .mob-nav {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
+    position: fixed;                    // FULL drawer pinned to the bar — covers the page
+    top: var(--mast-h, 56px);
+    left: 0; right: 0; bottom: 0;
     max-height: 0;
     overflow: hidden;
-    background: var(--oats);
+    background: var(--oats);            // opaque warm sheet — no content bleeds through
     z-index: 40;
-    transition: max-height 0.3s ease;
-    box-shadow: var(--sh-lift);         // soft tinted drop (drawer sits off the mast)
+    transition: max-height 0.28s ease;
+    box-shadow: inset 0 8px 14px -10px rgba(var(--sh-seam), 0.4);
+    border-top: 2px solid rgba(28, 171, 91, 0.18);
   }
-  .mast > .mob-nav.open { max-height: 70vh; overflow-y: auto; }
+  // open = the full remaining viewport, so the menu reads as ONE clean cream panel
+  // (was a half-height drawer with the desk + scraps bleeding through below it).
+  .mast > .mob-nav.open { max-height: 100vh; max-height: 100dvh; overflow-y: auto; padding-bottom: 2rem; }
 
   // the "string-pull" thread above the drawer items (decorative, hand-feel)
   .mob-thread {
