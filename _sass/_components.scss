@@ -228,10 +228,10 @@
 // ===================================================================
 .mast{position:relative;background:var(--oats);border-bottom:0;z-index:30}
 .mast::after{content:"";position:absolute;left:0;right:0;bottom:-15px;height:30px;background:var(--oats);filter:url(#tornbig);z-index:1}
-.mast .wrap{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding-block:1rem;position:relative;z-index:2}
-.mast .brand{display:flex;align-items:center;gap:.5rem;text-decoration:none}
-.mast .lg-icon{width:30px;display:block}
-.mast .lg-word{width:62px;display:block}
+.mast .wrap{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding-block:1.15rem;position:relative;z-index:2}
+.mast .brand{display:flex;align-items:center;gap:.62rem;text-decoration:none}
+.mast .lg-icon{width:36px;display:block}
+.mast .lg-word{width:76px;display:block}
 .mast .lg-icon svg,.mast .lg-word svg{display:block;width:100%;height:auto}
 
 // ===================================================================

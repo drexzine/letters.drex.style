@@ -13,7 +13,7 @@
 // BOARD HEADER — a Grass torn banner pinned to the desk.
 // ---------------------------------------------------------------
 .board-head{z-index:2;max-width:46rem;margin:0 0 clamp(2rem,5vw,3.5rem);
-  @include paper-face($filter:torn, $radius:8px, $boil:boil-torn, $bg:var(--grass-deep));
+  @include paper-face($filter:torn, $radius:8px, $boil:boil-torn, $bg:var(--paper));
   padding:clamp(1.6rem,4vw,2.6rem) clamp(1.6rem,4.5vw,2.8rem);transform:rotate(-.7deg)}
 .board-head .eyebrow{color:var(--oats);transform:rotate(-1.4deg);
   text-shadow:1px 1px 0 rgba(12,110,57,.5)}
@@ -182,3 +182,21 @@
 .clip--note,.clip--cloth,.clip--lazuli,.clip--coral,.clip--grass{
   .eyebrow,.clip-kicker{color:var(--oats)}
 }
+
+// "the correspondence" hero = a WHITE RULED notebook page (was the green banner).
+// Light paper face + faint blue horizontal rules + a colorado margin line; ink text.
+// The torn edge + hard ink offset shadow (from paper-face) still lift it off the desk.
+.board-head::before{
+  background:
+    linear-gradient(90deg, transparent 0 30px, rgba(247,84,88,.45) 30px 31px, transparent 31px),
+    repeating-linear-gradient(0deg, transparent 0 31px, rgba(36,150,201,.16) 31px 32px),
+    var(--paper);
+}
+.board-head .eyebrow{color:var(--coral-ink);text-shadow:none}
+.board-title{color:var(--ink);text-shadow:none}
+.board-title .stop{color:var(--grass-deep)}
+.board-lede{color:var(--sambas)}
+.board-dek{color:var(--sambas)}
+
+// kraft (School Bus) clip: labels in ink, not coral-ink, for contrast on saffron
+.clip--kraft .eyebrow,.clip--kraft .clip-kicker{color:var(--ink)}

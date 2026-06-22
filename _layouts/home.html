@@ -41,9 +41,9 @@ layout: default
         {%- assign stocki = forloop.index0 | modulo: 4 -%}
         {%- case stocki -%}
           {%- when 0 -%}{%- assign clipstock = 'lazuli' -%}
-          {%- when 1 -%}{%- assign clipstock = 'coral' -%}
-          {%- when 2 -%}{%- assign clipstock = 'grass' -%}
-          {%- else -%}{%- assign clipstock = 'kraft' -%}
+          {%- when 1 -%}{%- assign clipstock = 'kraft' -%}
+          {%- when 2 -%}{%- assign clipstock = 'coral' -%}
+          {%- else -%}{%- assign clipstock = 'grass' -%}
         {%- endcase -%}
         {%- comment -%} tape = the OPPOSITE colour of the paper stock (contrast, never match).
           tape variants: '' = happy/yellow · b = lazuli/blue · c = coral/red {%- endcomment -%}
