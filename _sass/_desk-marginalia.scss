@@ -45,9 +45,24 @@
 // LITE TIER (FPS governor) — drop the live filter cost, keep the colourful strokes.
 html[data-tier="lite"] .desk-marg{ filter:none!important; animation:none!important; }
 
-// MOBILE — thin it HARD (legibility + perf on a single-column measure): keep a sparse
-// scatter of corner/gutter doodles, drop the inner ones, kill the displacement cost.
+// MOBILE — thin it (legibility + perf on a single-column measure): keep a sparse
+// scatter of corner/gutter doodles, drop most inner ones, kill the displacement cost.
+// MOBILE-AUDIT FIX: a couple sat so faint (.5) they read as smudges rather than the
+// real little drawings that are the whole hook. Lift to .62 so the sprout/cup/envelope
+// still register as DRAWN OBJECTS, and let the FIRST TWO inner doodles keep their
+// line-art (vw-capped, clipped in the bare margin) so at least two read as real things
+// behind the opaque reading column — charming, never crowding the SACRED measure.
 @media (max-width:900px){
-  .desk-marg{ opacity:.5; filter:none; animation:none; }
+  .desk-marg{ opacity:.62; filter:none; animation:none; }
   .desk-marg .dm--inner{ display:none; }
+  // keep the first two inner doodles as recognisable objects, capped small so they
+  // never crowd the column (they sit BEHIND the opaque reading sheet regardless).
+  .desk-marg .dm--inner:nth-of-type(1),
+  .desk-marg .dm--inner:nth-of-type(2){ display:block; }
+  .desk-marg .dm--inner:nth-of-type(1) svg,
+  .desk-marg .dm--inner:nth-of-type(2) svg{ width:min(2.4em,9vw); height:min(2.4em,9vw); }
+  // EDGE-HUGGING outer doodles: nudge the faint ones a touch further into the desk
+  // gutter feel by dropping their opacity a step so each reads as a whole object
+  // (coffee, sprout, envelope) rather than a clipped sliver at the column edge.
+  .desk-marg .dm:not(.dm--inner){ opacity:.85; }
 }

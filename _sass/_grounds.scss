@@ -478,6 +478,15 @@ html.baked .board-head{
   max-width:42ch;margin:.9rem 0 .15rem;
   text-shadow:0 1px 1px rgba(var(--sh-seam),.5)}
 .board-lede strong{font-weight:800}        // "Circles" — the noun a stranger needs
+// MOBILE-AUDIT FIX: this is the single most important comprehension sentence (core
+// job #1: get what Drex is fast) and it's reversed cream on saturated Grass — the
+// lowest-contrast body block on a phone. On the narrow panel make it the CRISPEST
+// thing: nudge weight up + deepen the occlusion seam so the Oats ink clears AA. Full
+// Oats at full opacity already (no tinted alpha); the green hero stays.
+@media (max-width:600px){
+  .board-lede{font-weight:600;
+    text-shadow:0 1px 1px rgba(var(--sh-seam),.6), 0 0 1px rgba(var(--sh-seam),.4)}
+}
 .board-dek{
   font-family:var(--f-body);font-style:italic;font-weight:400;
   font-size:clamp(1rem,2vw,1.18rem);line-height:1.5;color:var(--oats);

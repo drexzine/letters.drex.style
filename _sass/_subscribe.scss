@@ -76,7 +76,11 @@ html.baked .page-doc .subscribe-card{
   padding:.7em .8em!important; min-height:46px!important; height:auto!important;
   box-shadow:inset 0 -1px 0 rgba(255,255,255,.45)!important; margin:0!important;
 }
-.kit-embed .formkit-input::placeholder{color:rgba(65,77,87,.55)!important; font-style:italic}
+// MOBILE-AUDIT FIX: the empty card could read as a faint decorative line rather than
+// a tap-to-type box. Raise the placeholder alpha .55→.64 and weight it a touch so the
+// cream slip clearly INVITES a finger (the dashed baseline + cream fill above already
+// read as a writable slot). Palette-pure — just a denser slate placeholder.
+.kit-embed .formkit-input::placeholder{color:rgba(65,77,87,.64)!important; font-style:italic; font-weight:500}
 .kit-embed .formkit-input:focus,
 .kit-embed .formkit-select:focus,
 .kit-embed select[name="tags[]"]:focus{
@@ -157,6 +161,20 @@ html.baked .kit-embed .formkit-submit{
   .kit-embed select[name="tags[]"]{
     font-size:.82rem!important; letter-spacing:-.01em!important;
     padding-right:1.9em!important; background-position:right .6em center!important;
+  }
+}
+// MOBILE-AUDIT FIX: at 360px the closed select still ellipsised the long Kit-owned
+// survey option mid-word ('How much do you docume…'), so the visitor can't read what
+// they're choosing. Kit owns the option TEXT remotely; the only lever is the closed
+// select's metrics. On the narrowest decks shrink the closed-state label a hair more
+// + reclaim the caret padding so the full short question survives the narrow column.
+// (The hand-cut chevron stays.) The OPEN option list uses the OS font size, unaffected.
+@media (max-width:400px){
+  .kit-embed .formkit-select,
+  .kit-embed select[name="tags[]"]{
+    font-size:.76rem!important; letter-spacing:-.015em!important;
+    padding-left:.6em!important; padding-right:1.7em!important;
+    background-position:right .5em center!important;
   }
 }
 @media (prefers-reduced-motion:reduce){

@@ -609,6 +609,136 @@ button:focus-visible,
 
 
 // =====================================================================
+//  5b. PHONE READING + AFFORDANCE POLISH  (<=600px)  — mobile-audit fixes.
+//     Phone is the MAIN audience: reading + the look + subscribing. Each rule
+//     below targets a specific audit ding without stripping the craft. Palette
+//     only, >=44px taps, no overflow. Whimsy stays; legibility wins the gate.
+// =====================================================================
+
+// Phone-only affordances — hidden on desktop, shown in the <=600px block below.
+// Declared BEFORE the phone block so the phone `display` wins on phones.
+//  - the 'the letters' orientation kicker (the board header reads as a list on desktop)
+//  - the mid-letter subscribe nudge (desktop has a shorter perceived scroll + the
+//    draggable polaroid; the end-of-post reply card is enough there).
+.board-letters-kicker { display: none; }
+.mid-sub { display: none; }
+
+@media (max-width: 600px) {
+
+  // ---- 5b-1. HOME CARDS: the italic teaser was the weakest-legibility text a
+  //  phone visitor scans. Bump it to ~0.95rem, clamp to 2 lines so it stays a
+  //  crisp teaser (not a dense italic block), keep the hand-italic voice. ----
+  .clip-dek {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  // ---- 5b-2. HOME 'the letters' KICKER above the first card — a tiny hand
+  //  scrawl that signals 'this is the list of letters' so a first-time phone
+  //  visitor locks onto the reading list fast. Tilted Patrick-Hand, coral ink.
+  //  Phone-only orientation cue (hidden >600px via the base rule below). ----
+  .board-letters-kicker {
+    display: block;
+    font-family: var(--f-hand);
+    font-size: 1.15rem;
+    line-height: 1.1;
+    color: var(--coral-ink);
+    transform: rotate(-1.6deg);
+    margin: 0 0 0.5rem 0.2rem;
+  }
+  .board-letters-kicker::after { content: " \2192"; }
+
+  // ---- 5b-3. HOME decorative stickies: give the quote + slip a touch more
+  //  separation from the post-card stack and drop their opacity a hair so the
+  //  cards stay the clear primary scan path. (Below 601px the litter is in flow.)
+  .board-litter .litter--quote,
+  .board-litter .litter--slip {
+    opacity: 0.88;
+    margin-bottom: 0.8rem;
+  }
+
+  // ---- 5b-4. THE 'FOR DREX' DARK CALLOUT: it set its body smaller + tighter
+  //  than the prose and carries the brand-meaning payload as light-on-dark — the
+  //  hardest passage to read. Match the prose body size + add line-height. ----
+  .callout--for-drex .callout-body,
+  .callout--answer .callout-body {
+    font-size: var(--t-body);
+    line-height: 1.6;
+  }
+
+  // ---- 5b-5. MID-LETTER SUBSCRIBE NUDGE: a small taped slip so a reader who
+  //  drops off mid-essay still meets a subscribe prompt. A scrap, not a sticky
+  //  bar — it anchor-jumps to the reply card without breaking the column. ----
+  .mid-sub {
+    display: block;
+    margin: clamp(2rem, 6vw, 3rem) auto;
+    max-width: 30ch;
+    text-align: center;
+  }
+  .mid-sub a {
+    display: inline-block;
+    font-family: var(--f-hand);
+    font-size: 1.12rem;
+    line-height: 1.2;
+    color: var(--ink);
+    text-decoration: none;
+    background-image: none;            // drop the inherited .prose-link green gradient
+    background-color: var(--paper);
+    padding: 0.65rem 1rem;
+    min-height: 44px;
+    border: 0;
+    border-bottom: 2px dashed var(--grass);
+    border-radius: 6px 5px 7px 4px;
+    box-shadow: var(--sh-contact);
+    transform: rotate(-1.2deg);
+  }
+  .mid-sub a::after { content: " \2193"; color: var(--grass); }
+  .mid-sub a:focus-visible { outline: 3px solid var(--lazuli); outline-offset: 2px; }
+
+  // ---- 5b-6. SUBSCRIBE INLINE LINKS (newsstand / feed / email): underline-only
+  //  text targets sat sub-44px and close together. Pad the touchable area + bump
+  //  line-height so wrapped links don't stack tighter than a thumb. Keep the
+  //  hand-scrawled underline look. (.prose a is reset to inline in §4b; this
+  //  re-arms a tall hit area only for the page-foot link paragraph.) ----
+  .page-doc .prose > p:last-of-type a,
+  .sub-foot-links a {
+    display: inline-block;
+    min-height: 44px;
+    padding-block: 0.35rem;
+    line-height: 1.7;
+  }
+
+  // ---- 5b-7. BACK-TO-THE-NOTEBOOK return slip: a small all-caps text link that
+  //  read as a thin sub-44px line. Give it a thumb-sized inline-block hit area
+  //  with the ticket/return-slip styling kept. ----
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0.4rem 0.8rem 0.4rem 0;
+  }
+}
+
+// ---- 5b-8. FOOTER washi/sticker NAV links: stacked tight (~0.25rem gap) and
+//  each near the 44px floor. Bump the stacked gap + add vertical padding so each
+//  strip clears a comfortable 44px row. The tape/sticker aesthetic is unchanged.
+//  (Runs to 720px to cover the burger-band footer too.) ----
+@media (max-width: 720px) {
+  footer .links {
+    gap: 0.8rem;
+  }
+  footer .links a {
+    min-height: 44px;
+    padding-block: 0.5em;
+  }
+}
+
+
+// =====================================================================
 //  6. REDUCED MOTION — THE FINAL AUTHORITY
 //     This is the ONLY place the craft is fully flattened: every tilt to
 //     0deg, every boil/keyframe/transition off, reveal/slam settled to
@@ -633,6 +763,8 @@ button:focus-visible,
   .burger, .burger .burger-tab, .burger .burger-label,
   .burger .burger-ico, .burger .burger-ico--x,
   .prose p > img:only-child,
+  // audit-fix scraps: the mid-letter nudge + the home 'letters' kicker settle flat
+  .mid-sub a, .board-letters-kicker,
   // home desk: clips, seeded tilts, and the persistent litter furniture
   .board-pile > .clip, .board-head, .board-head > .pin,
   .board-litter .litter, .board-litter .litter--quote,

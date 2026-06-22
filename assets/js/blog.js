@@ -372,338 +372,82 @@ window.__DREX_BLOG_SRC__ = (document.currentScript && document.currentScript.src
     }, { passive: true });
   }
 
-  /* ---- 3c. text-selection-safe DRAG-SHUFFLE (the 'pick it up' promise) --
-     SHUFFLE the desk without ever stealing text selection, link clicks, or page
-     scroll, and without clobbering the entrance physics / resting tilt / live 3D
-     tilt. Two grip models share ONE makeDraggable:
-       • litter / clips  — old behaviour: free drag (litter) or selector grip
-         (clip pin/tape), moved via the independent `translate` LONGHAND so it
-         composes with their `transform:rotate(...)` rake. No entrance-translate
-         conflict for these (litter REVEAL/clip lands at translate 0 0).
-       • in-prose reading objects (.pullquote/.callout/.definition/.figure.polaroid)
-         — these carry slam/reveal whose keyframes animate the `translate`
-         LONGHAND, so movement must NOT use `translate`. They move via the
-         --drag-x/--drag-y custom props consumed in a transform chain (BUG-1 fix),
-         and grip is decided by gripBand(): never-grip bail (links/controls/tags),
-         a [data-text] bail to native selection (authoritative), then a geometric
-         padding-band + caret test for the bare torn edge.
-     A 6px threshold separates click from drag; preventDefault + setPointerCapture
-     only AFTER threshold, so a band tap passes through and a text tap selects.
-     reduced-motion: drag still tracks (direct manipulation) but the velocity lean
-     / settle wobble are JS-gated off. Persistence: {x,y} per object per page in
-     localStorage, restored by writing --drag-x/--drag-y. */
 
-  // never-grip: links, form controls, and the sticker tags always win the pointer.
-  var NEVER_GRIP = "a, button, input, textarea, select, summary, label, " +
-    "[contenteditable], .clip-link, .clip-tag, .post-tag, [data-no-drag]";
+  /* ---- 3c. DRAG-SHUFFLE (clean rewrite) — move a paper by grabbing its FASTENER
+     (washi tape or pin). The element tracks the pointer 1:1 while the button is held,
+     never moves without a held button, and stays where it's dropped. Touch never drags
+     (phones read/scroll). The body stays selectable and links still navigate on a tap. */
+  function bindDrag(el) {
+    var handles = el.querySelectorAll(":scope > .tape, :scope > .pin");
+    if (!handles.length || !el.setPointerCapture) return;
 
-  // computed inner-inset cache (border+padding+grip-band), keyed per element;
-  // invalidated wholesale on resize / orientationchange / font change.
-  var gripInsetCache = new WeakMap();
-  function clearGripCache() { gripInsetCache = new WeakMap(); }
-  (function bindCacheInvalidate() {
-    var clear = function () { clearGripCache(); };
-    window.addEventListener("resize", clear);
-    window.addEventListener("orientationchange", clear);
-    if (doc.fonts && doc.fonts.addEventListener) {
-      doc.fonts.addEventListener("loadingdone", clear);
-    }
-  })();
-  function gripInset(el) {
-    var cached = gripInsetCache.get(el);
-    if (cached) return cached;
-    var cs = window.getComputedStyle(el);
-    var band = parseFloat(cs.getPropertyValue("--grip-band")) || 14;
-    var px = function (v) { return parseFloat(v) || 0; };
-    var inset = {
-      top:    px(cs.borderTopWidth) + px(cs.paddingTop) + band,
-      right:  px(cs.borderRightWidth) + px(cs.paddingRight) + band,
-      bottom: px(cs.borderBottomWidth) + px(cs.paddingBottom) + band,
-      left:   px(cs.borderLeftWidth) + px(cs.paddingLeft) + band
-    };
-    gripInsetCache.set(el, inset);
-    return inset;
-  }
-  function caretHitsText(x, y) {
-    // feature-detected caret probe: does this point land on a non-empty TEXT node?
-    var node = null;
-    if (doc.caretRangeFromPoint) {
-      var r = doc.caretRangeFromPoint(x, y);
-      node = r && r.startContainer;
-    } else if (doc.caretPositionFromPoint) {
-      var p = doc.caretPositionFromPoint(x, y);
-      node = p && p.offsetNode;
-    } else {
-      return null; // no caret API: caller decides (conservative)
-    }
-    if (node && node.nodeType === 3 && node.textContent && node.textContent.trim() !== "") {
-      return true;
-    }
-    return false;
-  }
-  // gripBand: returns true only if the pointer is on draggable CHROME (the torn
-  // band / fastener / .drag-grip border), never on text/links/controls.
-  function gripBand(ev, el) {
-    var t = ev.target;
-    if (t.closest && t.closest(NEVER_GRIP)) return false;        // links/controls/tags
-    if (t.closest && t.closest("[data-text]")) return false;     // PRIMARY: native selection
-    // geometry: inside the inner (text) rect? then only the caret decides.
-    var rect = el.getBoundingClientRect();
-    var ins = gripInset(el);
-    var inX = ev.clientX > rect.left + ins.left && ev.clientX < rect.right - ins.right;
-    var inY = ev.clientY > rect.top + ins.top && ev.clientY < rect.bottom - ins.bottom;
-    if (inX && inY) {
-      var hit = caretHitsText(ev.clientX, ev.clientY);
-      if (hit === true) return false;     // real text under the pointer → select
-      if (hit === null) return false;     // no caret API → conservative: never steal
-      // caret API exists and found no text → it's a bare inner gap; allow grip.
-      return true;
-    }
-    return true;   // outer torn band / fastener / .drag-grip border → ARM
-  }
+    var dragging = false, pid = -1, sx = 0, sy = 0, baseX = 0, baseY = 0, moved = false;
+    var rest = "", restCaptured = false;
 
-  // makeDraggable(el, opts) — opts = {gripTest, isLink, moveVia, deskId}.
-  // Back-compat: if arg2 is a STRING, it's the old handleSel (selector grip),
-  // and arg3 is isLink (the .clip call site is unchanged).
-  function makeDraggable(el, opts, isLinkArg) {
-    if (!el || !el.setPointerCapture) return;
-    // DEFAULT moveVia = "translate" so the back-compat null path (loose desk
-    // litter: makeDraggable(el, null, false)) moves via the `translate` longhand,
-    // which composes with its resting rotate. Only the explicit object path opts
-    // into "transform-var" (in-prose objects, consumed by _realism.scss). Writing
-    // --drag-x/--drag-y on litter did nothing — no CSS reads them there.
-    var gripTest = null, isLink = false, moveVia = "translate", deskId = null;
-    if (typeof opts === "string") {
-      var handleSel = opts;
-      gripTest = function (ev) {
-        return !!(ev.target.closest && ev.target.closest(handleSel));
-      };
-      isLink = !!isLinkArg;
-      moveVia = "translate";
-    } else if (opts && typeof opts === "object") {
-      gripTest = opts.gripTest || null;
-      isLink = !!opts.isLink;
-      moveVia = opts.moveVia || "transform-var";
-      deskId = opts.deskId || null;
+    function render() {
+      el.style.setProperty("transform",
+        "translate(" + baseX.toFixed(1) + "px," + baseY.toFixed(1) + "px)" + rest, "important");
     }
-
-    var armed = false, dragging = false, moved = false, raf = 0, pid = null;
-    var startX = 0, startY = 0, originX = 0, originY = 0;
-    var curX = 0, curY = 0, tgtX = 0, tgtY = 0;
-    var lastMoveX = 0, lastT = 0, dragRot = 0, dragBase = "", baseCaptured = false;
-    var settleRaf = 0;
-    var canLean = !reduceMQ.matches;
-
-    function write() {
-      if (moveVia === "translate") {
-        // Move via inline TRANSFORM, composed OVER the resting transform (dragBase,
-        // captured at grab) so the card KEEPS its tilt instead of snapping flat. The
-        // drag translate is outermost = pure screen-space motion, so the rect moves by
-        // exactly the drag delta (no un-rotation jump that fought the drag before).
-        // Inline + !important + animation cancelled = beats every competing rule.
-        el.style.setProperty("transform",
-          "translate(" + curX.toFixed(1) + "px," + curY.toFixed(1) + "px)" + dragBase, "important");
-      } else {
-        el.style.setProperty("--drag-x", curX.toFixed(1) + "px");
-        el.style.setProperty("--drag-y", curY.toFixed(1) + "px");
+    function start(ev) {
+      if (ev.button !== 0 || ev.pointerType === "touch") return;   // left button, mouse/pen only
+      dragging = true; moved = false; pid = ev.pointerId;
+      sx = ev.clientX - baseX; sy = ev.clientY - baseY;            // pointer origin, offset-relative
+      if (!restCaptured) {                                         // resting transform (tilt), once
+        restCaptured = true;
+        var m = ""; try { m = getComputedStyle(el).transform; } catch (e) {}
+        rest = (m && m !== "none") ? (" " + m) : "";
       }
-    }
-    function loop() {
-      raf = 0;
-      // 1:1 TRACKING — the object sticks to the pointer (no floaty spring-lag).
-      // The drag felt "unreliable/weird" because it lerped at 0.30/frame and
-      // trailed the cursor; direct assignment frame-batched by rAF is crisp.
-      curX = tgtX; curY = tgtY; write();
-    }
-
-    // restore persisted position (transform-var objects only).
-    if (deskId) {
-      var saved = deskLoad(deskId);
-      if (saved) { curX = tgtX = saved.x; curY = tgtY = saved.y; write(); }
-    }
-
-    el.addEventListener("pointerdown", function (ev) {
-      if (ev.button && ev.button !== 0) return;
-      if (ev.pointerType === "touch") return;          // touch scrolls/taps/selects — never drags
-      if (gripTest && !gripTest(ev, el)) return;       // grip arbiter (selector or band)
-      armed = true; moved = false; pid = ev.pointerId;
-      startX = ev.clientX; startY = ev.clientY; originX = tgtX; originY = tgtY;
-      lastMoveX = ev.clientX; lastT = ev.timeStamp || performance.now();
-      // a fresh grab cancels any in-flight settle so it doesn't fight the drag.
-      if (settleRaf) { cancelAnimationFrame(settleRaf); settleRaf = 0; }
-    });
-    el.addEventListener("pointermove", function (ev) {
-      if (!armed || ev.pointerId !== pid) return;
-      // JANK GUARD: if the primary button is NOT actually held, a pointerup/leave was
-      // missed and the drag is stuck — the element would keep following the bare cursor.
-      // Bail out and release immediately so the paper never moves without a held button.
-      if (ev.buttons === 0) { release(ev); return; }
-      var dx = ev.clientX - startX, dy = ev.clientY - startY;
-      if (!dragging) {
-        if (Math.abs(dx) + Math.abs(dy) < 6) return;   // below threshold = click, not drag
-        dragging = true; moved = true; el.classList.add("is-dragging");
-        try { el.setPointerCapture(pid); } catch (e) {}
-        // CRITICAL: cancel the entrance animation (slam/reveal animate the translate/
-        // scale longhands with `both` fill, which override inline styles) AND any
-        // transition, then for the inline-transform move path capture the element's
-        // current resting transform as the base. Writing inline `transform` then
-        // wins over every stylesheet transform (seeded tilt, :hover, nth-child) and
-        // the cancelled animation — so the card actually tracks the pointer.
-        el.style.animation = "none";
-        el.style.transition = "none";
-        if (moveVia === "translate" && !baseCaptured) {
-          // snapshot the resting transform (tilt) ONCE, on the first grab — before any
-          // inline drag transform exists. Capturing every grab would re-read the
-          // already-translated value and double-count on the second drag. tgtX/tgtY
-          // accumulate the absolute offset; dragBase stays the constant resting tilt.
-          baseCaptured = true;
-          var cm = "";
-          try { cm = getComputedStyle(el).transform; } catch (e) {}
-          dragBase = (cm && cm !== "none") ? (" " + cm) : "";
-        }
-        // clear any stray selection born in the sub-6px window (one shot).
-        try { if (window.getSelection) getSelection().removeAllRanges(); } catch (e) {}
-        // kill the hover-tilt lean so the object doesn't wobble WHILE it drags
-        // (initPointerTilt binds the same elements; it now bails on .is-dragging,
-        // and we zero the residual lean here so the grab starts flat).
-        el.style.setProperty("--tilt-x", "0deg");
-        el.style.setProperty("--tilt-y", "0deg");
-        Foley.pickup();
-      }
-      tgtX = originX + dx; tgtY = originY + dy;
-      // velocity-driven lean (decorative; OFF under reduced motion).
-      if (canLean && moveVia === "transform-var") {
-        var now = ev.timeStamp || performance.now();
-        var dt = now - lastT;
-        if (dt > 0) {
-          var vx = (ev.clientX - lastMoveX) / dt;            // px/ms
-          var target = Math.max(-5, Math.min(5, vx * 26));   // clamp ±5deg
-          dragRot += (target - dragRot) * 0.35;
-          el.style.setProperty("--drag-rot", dragRot.toFixed(2) + "deg");
-          el.style.setProperty("--drag-scale", "0.99");
-        }
-        lastMoveX = ev.clientX; lastT = now;
-      }
-      if (!raf) raf = requestAnimationFrame(loop);
+      el.style.animation = "none";
+      el.style.transition = "none";
+      el.classList.add("is-dragging");
+      try { el.setPointerCapture(pid); } catch (e) {}
+      try { if (window.getSelection) getSelection().removeAllRanges(); } catch (e) {}
+      Foley.pickup();
       ev.preventDefault();
-    });
-    function settle() {
-      // one-channel decaying-sine wobble on --drag-rot back to 0, + scale recover.
-      var t0 = performance.now(), dur = 260, from = dragRot;
-      function step(t) {
-        var k = Math.min(1, (t - t0) / dur);
-        var damp = Math.exp(-4.2 * k);
-        var rot = from * damp * Math.cos(k * Math.PI * 2.2);
-        var sc = 0.99 + 0.01 * k;
-        el.style.setProperty("--drag-rot", rot.toFixed(2) + "deg");
-        el.style.setProperty("--drag-scale", sc.toFixed(3));
-        if (k < 1) { settleRaf = requestAnimationFrame(step); }
-        else {
-          dragRot = 0; settleRaf = 0;
-          el.style.setProperty("--drag-rot", "0deg");
-          el.style.setProperty("--drag-scale", "1");
-        }
-      }
-      settleRaf = requestAnimationFrame(step);
     }
-    function release(ev) {
-      if (pid !== null && ev.pointerId !== pid) return;
-      armed = false; pid = null;
-      if (dragging) {                       // STAYS where dropped — no snap-home
-        dragging = false; el.classList.remove("is-dragging");
-        try { el.releasePointerCapture(ev.pointerId); } catch (e) {}
-        if (canLean && moveVia === "transform-var") settle();
-        else { el.style.setProperty && el.style.setProperty("--drag-rot", "0deg"); }
-        if (deskId) deskSave(deskId, { x: tgtX, y: tgtY });
-        Foley.drop();
-      }
+    function move(ev) {
+      if (!dragging || ev.pointerId !== pid) return;
+      if (ev.buttons === 0) { end(); return; }                    // button not held → stop (no jank)
+      baseX = ev.clientX - sx; baseY = ev.clientY - sy;
+      if (!moved && (Math.abs(baseX) + Math.abs(baseY) > 3)) moved = true;
+      render();
+      ev.preventDefault();
     }
-    el.addEventListener("pointerup", release);
-    el.addEventListener("pointercancel", release);
-    el.addEventListener("lostpointercapture", release);   // capture yanked away → release too
-    if (isLink) el.addEventListener("click", function (ev) {   // a real drag must not navigate
+    function end() {
+      if (!dragging) return;
+      dragging = false;
+      try { el.releasePointerCapture(pid); } catch (e) {}
+      pid = -1;
+      el.classList.remove("is-dragging");
+      if (moved) Foley.drop();
+    }
+
+    for (var i = 0; i < handles.length; i++) handles[i].addEventListener("pointerdown", start);
+    el.addEventListener("pointermove", move);
+    el.addEventListener("pointerup", end);
+    el.addEventListener("pointercancel", end);
+    el.addEventListener("lostpointercapture", end);
+    el.addEventListener("click", function (ev) {                  // a real drag must not navigate
       if (moved) { ev.preventDefault(); ev.stopPropagation(); moved = false; }
     }, true);
 
-    // expose a home-reset hook for the "reset desk" button.
-    if (deskId) {
-      el.__deskReset = function () {
-        tgtX = tgtY = 0; curX = curY = 0; dragRot = 0;
-        // .is-homing adds a CSS transition on `transform` so writing the drag
-        // vars to 0 slides the object home with --ease-settle (BUG-4 safe: the
-        // settle never writes the transform PROPERTY).
-        el.classList.add("is-homing");
-        el.style.setProperty("--drag-x", "0px");
-        el.style.setProperty("--drag-y", "0px");
-        el.style.setProperty("--drag-rot", "0deg");
-        el.style.setProperty("--drag-scale", "1");
-        window.setTimeout(function () { el.classList.remove("is-homing"); }, 360);
-      };
-    }
-  }
-
-  /* ---- localStorage persistence (per page per stable id) — all try/catch ---- */
-  function deskKey(id) {
-    var path = (location && location.pathname) || "/";
-    return "drex:desk:" + path + ":" + id;
-  }
-  function deskLoad(id) {
-    try {
-      var raw = window.localStorage.getItem(deskKey(id));
-      if (!raw) return null;
-      var o = JSON.parse(raw);
-      if (o && typeof o.x === "number" && typeof o.y === "number") return o;
-    } catch (e) {}
-    return null;
-  }
-  function deskSave(id, pos) {
-    try { window.localStorage.setItem(deskKey(id), JSON.stringify(pos)); } catch (e) {}
-  }
-  function deskClear(ids) {
-    try {
-      for (var i = 0; i < ids.length; i++) window.localStorage.removeItem(deskKey(ids[i]));
-    } catch (e) {}
+    el.__resetDrag = function () {
+      baseX = 0; baseY = 0; el.style.transform = ""; el.style.transition = ""; el.style.animation = "";
+    };
   }
 
   function initDrag() {
-    // THE HANDLE IS THE FASTENER — you move a paper by grabbing the washi TAPE (or pin)
-    // that holds it down. Obvious, skeuomorphic, and it never steals text selection or a
-    // link click (those live in the paper BODY, which the fastener doesn't cover). Hover
-    // the fastener → the whole paper GLOWS so you see what you'll move. Touch never drags.
     root.classList.add("js-drag");
-
     var papers = [].slice.call(doc.querySelectorAll(
       ".board-litter .litter, .board-pile .clip, " +
       ".prose .pullquote, .prose .callout, .prose .figure.polaroid"
     ));
-    var draggables = [];
-    for (var i = 0; i < papers.length; i++) {
-      (function (el) {
-        // only FASTENED papers are movable, and only the fastener arms the drag.
-        var fasteners = el.querySelectorAll(":scope > .tape, :scope > .pin");
-        if (!fasteners.length) return;
-        draggables.push(el);
-        var isLink = !!(el.classList && el.classList.contains("clip"));
-        makeDraggable(el, {
-          gripTest: function (ev) {
-            var f = ev.target.closest && ev.target.closest(".tape, .pin");
-            return !!(f && el.contains(f));
-          },
-          isLink: isLink, moveVia: "translate"
-        });
-      })(papers[i]);
-    }
+    for (var i = 0; i < papers.length; i++) bindDrag(papers[i]);
 
-    // "RESET THE DESK" — one gesture, every page: snap every object home by clearing
-    // its inline drag transform so the CSS resting tilt returns.
     var resets = doc.querySelectorAll("[data-desk-reset]");
     for (var r = 0; r < resets.length; r++) {
       resets[r].addEventListener("click", function () {
-        for (var m = 0; m < draggables.length; m++) {
-          draggables[m].style.transform = "";
-          draggables[m].style.transition = "";
-          draggables[m].style.animation = "";
-        }
+        for (var k = 0; k < papers.length; k++) if (papers[k].__resetDrag) papers[k].__resetDrag();
         Foley.drop();
       });
     }

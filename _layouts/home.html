@@ -28,7 +28,6 @@ layout: default
       foundation pairing); Happy is a dark-ink-text-only 5% accent, never the
       headline color on a saturated Grass field. {%- endcomment -%}
     <header class="board-head slam">
-      <span class="pin" data-pin="red" aria-hidden="true"></span>
       <span class="eyebrow">the correspondence, archived</span>
       <h1 class="board-title slab">Chielo&rsquo;s notebook<span class="stop">.</span></h1>
       <p class="board-lede">Drex runs <strong>Circles</strong> &mdash; small communities of
@@ -110,7 +109,6 @@ layout: default
       </svg>
 
       {%- comment -%} a stray pin, just dropped on the desk. {%- endcomment -%}
-      <span class="litter litter--pin pin reveal" data-pin="red"></span>
 
       {%- comment -%} ALWAYS-ON low-desk craft objects so even at N=1 the desk fills
         down its full height: a faint coffee-ring decal, a steel paperclip, and a
@@ -138,6 +136,10 @@ layout: default
     </div>
 
     {% if site.posts.size > 0 %}
+    {%- comment -%} MOBILE-AUDIT: a tiny hand-scrawl kicker above the first card so a
+      first-time phone visitor instantly reads 'this is the list of letters'. Styled
+      (and only shown) on phones in _mobile.scss; harmless on desktop. {%- endcomment -%}
+    <span class="board-letters-kicker scrawl" aria-hidden="true">the letters</span>
     <div class="board-pile">
       {% for post in site.posts %}
       {%- comment -%} SEED the clipping STOCK off the post itself, NOT the loop
@@ -187,7 +189,7 @@ layout: default
       <article class="clip clip--{{ stock }} piece slam tilt-{{ t }}" data-mat="{{ mat }}" data-edge="torn">
         {%- comment -%} the fastener — a real pinned/taped object on TOP of the scrap {%- endcomment -%}
         {%- if fasten == 'pin' -%}
-          <span class="pin" data-pin="red" aria-hidden="true"></span>
+          <span class="tape" data-tape="happy" aria-hidden="true"></span>
         {%- elsif fasten == 'tape-lazuli' -%}
           <span class="tape" data-tape="lazuli" aria-hidden="true"></span>
         {%- elsif fasten == 'tape-happy' -%}
@@ -226,7 +228,7 @@ layout: default
     {% else %}
     <div class="board-pile">
       <article class="clip clip--grass piece slam tilt-2" data-mat="grass" data-edge="torn">
-        <span class="pin" data-pin="red" aria-hidden="true"></span>
+        <span class="tape" data-tape="lazuli" aria-hidden="true"></span>
         <div class="clip-body">
           <span class="clip-kicker">soon</span>
           <h2 class="clip-title">The first letter is being written.</h2>

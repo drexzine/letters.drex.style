@@ -41,7 +41,6 @@ layout: default
         {%- else -%}{%- assign bmat = 'grass' -%}{%- assign bpin = 'red' -%}
       {%- endcase -%}
       <div class="post-banner post-banner--{{ bstock }} piece slam" data-mat="{{ bmat }}" data-edge="torn">
-        <span class="pin" data-pin="{{ bpin }}" aria-hidden="true"></span>
         <h1 class="post-title slab">{{ page.title }}</h1>
       </div>
 
@@ -129,6 +128,7 @@ layout: default
     {%- comment -%} split on the section rule; the leading "" chunk before the
         first heading is the intro sheet, each following chunk re-grows its <h2 {%- endcomment -%}
     {% assign sections = content | split: '<h2' %}
+    {%- assign shown = 0 -%}
     {% for section in sections %}
       {%- if forloop.first -%}
         {%- assign chunk = section -%}
@@ -141,6 +141,15 @@ layout: default
       <div class="prose sheet-leaf">
         {{ chunk }}
       </div>
+      {%- assign shown = shown | plus: 1 -%}
+      {%- comment -%} MOBILE-AUDIT: the page is long and the reply card sits at the very
+        bottom, so a phone reader who drops off mid-letter never sees a subscribe prompt.
+        Drop ONE lightweight taped slip into the body — after the second sheet (well into
+        the read, not at the masthead) — that anchor-jumps to the reply card. A scrap,
+        NOT a sticky bar, styled phone-only in _mobile.scss so it never breaks the column. {%- endcomment -%}
+      {%- if shown == 2 -%}
+      <p class="mid-sub" aria-hidden="false"><a href="#reply-card">more letters land in the inbox</a></p>
+      {%- endif -%}
       {%- endif -%}
     {% endfor %}
   </div>

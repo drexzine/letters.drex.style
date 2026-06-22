@@ -473,8 +473,22 @@ html[data-tier="lite"] {
   // Force the slip TEXT to the AA slate ink (~8:1) regardless of authored hue, and
   // express the authored colour ONLY on the leader dash + the leader glyph so the
   // note still reads hand-annotated, just legibly.
-  .m-note__slip { color: var(--ink); }
+  // MOBILE-AUDIT FIX: on the single-column phone there is no true margin for the
+  // note to sit in, so a green hand-sentence can blur into the prose. Read the slip
+  // as a DELIBERATE aside: AA slate ink (not the low-contrast hue), a hair more
+  // line-height so the script doesn't tangle, a faint left pencil-rule in the
+  // authored hue + a small indent so it's clearly a margin note, not an orphan line.
+  .m-note__slip {
+    color: var(--ink);
+    line-height: 1.32;                 // a hair more leading — confident pencil note
+    padding-left: 0.7rem;
+    border-left: 2px solid var(--m-ink);  // faint hand-rule in the authored hue
+  }
   .m-note__slip::before { color: var(--m-ink); }   // the ↳ leader keeps the hue
+  // the leader hue itself: nudge a low-contrast green toward grass-deep so the tick
+  // + dash read as a confident pencil mark on cream, not a faint scribble.
+  .m-grass .m-note__slip,
+  .m-grass.m-note .m-note__slip { --m-ink: var(--grass-deep); }
   // doodle glyphs authored in yellow (bus/happy) vanish on cream — remap any
   // standalone m-mark glyph stroke to the AA coral ink so it reads as a crafted
   // mark, not a faint smudge. (Yellow stays vivid only as the m-hl highlighter band.)
