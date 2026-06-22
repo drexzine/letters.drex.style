@@ -27,14 +27,21 @@
 
 .dm{
   position:absolute; left:var(--x); top:var(--y);
-  transform:rotate(var(--r,-4deg)) scale(var(--s,1));
+  transform:rotate(var(--r,-4deg)) scale(var(--s,1));   // resting (reduced-motion fallback)
+  // FLOATY — each doodle gently bobs + sways on its own cadence (--fdur/--fdel set inline)
+  // so the field drifts like the landing's doodles. GPU-cheap (compositor transform).
+  animation:dm-float var(--fdur,5s) ease-in-out var(--fdel,0s) infinite;
   // colour is set INLINE per doodle (the span's `color`); the glyph paths use
   // stroke="currentColor", so nothing in the cascade can grey them out.
 }
+@keyframes dm-float{
+  0%,100%{ transform:translateY(0)    rotate(var(--r,-4deg)) scale(var(--s,1)); }
+  50%    { transform:translateY(-7px) rotate(calc(var(--r,-4deg) + 2.5deg)) scale(var(--s,1)); }
+}
 .dm svg{ display:block; width:3.2em; height:3.2em; overflow:visible; }
 
-// REDUCED MOTION — freeze the boil (static rough is fine).
-@media (prefers-reduced-motion:reduce){ .desk-marg{ animation:none!important; } }
+// REDUCED MOTION — no floating.
+@media (prefers-reduced-motion:reduce){ .desk-marg, .dm{ animation:none!important; } }
 // LITE TIER (FPS governor) — drop the live filter cost, keep the colourful strokes.
 html[data-tier="lite"] .desk-marg{ filter:none!important; animation:none!important; }
 

@@ -22,24 +22,30 @@
 {%- endcapture -%}
 {%- assign gl = GLYPHS | strip | split: "~~" -%}
 {%- comment -%} colour set INLINE per doodle (currentColor) so nothing in the cascade can grey them out {%- endcomment -%}
-{%- assign cols = "#1CAB5B,#F75458,#2496C9,#1CAB5B,#F75458,#2496C9,#ECAF21,#F75458,#1CAB5B,#414D57" | split: "," -%}
-{%- assign N = 46 -%}
+{%- assign cset = "#1CAB5B,#F75458,#2496C9,#1CAB5B,#F75458,#2496C9,#ECAF21,#F75458,#1CAB5B,#414D57" | split: "," -%}
+{%- assign GC = 6 -%}{%- assign N = 54 -%}
 <div class="desk-marg desk-marg--{{ ctx }}" aria-hidden="true">
 {%- for i in (1..N) -%}
-  {%- assign ii = i | times: i -%}
-  {%- comment -%} 3 is coprime with 14, so gi cycles through ALL 14 glyphs (i*7 mod 14 only hit 0 and 7). {%- endcomment -%}
+  {%- comment -%} JITTERED GRID — one doodle per cell of a 6-column grid + a jitter, so the
+    density is EVEN top-to-bottom and side-to-side (no clusters, no bare bands). {%- endcomment -%}
+  {%- assign i0 = i | minus: 1 -%}
+  {%- assign cxn = i0 | modulo: GC -%}
+  {%- assign cyn = i0 | divided_by: GC -%}
+  {%- assign jx = i | times: 37 | modulo: 15 | minus: 7 -%}
+  {%- assign jy = i | times: 53 | modulo: 13 | minus: 6 -%}
+  {%- assign xx = cxn | times: 16 | plus: 8 | plus: jx -%}
+  {%- assign yy = cyn | times: 11 | plus: 6 | plus: jy -%}
   {%- assign gi = i | times: 3 | modulo: 14 -%}
-  {%- assign xa = ii | times: 19 -%}{%- assign xb = i | times: 43 -%}
-  {%- assign xx = xa | plus: xb | modulo: 92 | plus: 3 -%}
-  {%- assign ya = ii | times: 29 -%}{%- assign yb = i | times: 61 -%}
-  {%- assign yy = ya | plus: yb | modulo: 92 | plus: 3 -%}
-  {%- assign ra = ii | times: 11 -%}{%- assign rb = i | times: 17 -%}
-  {%- assign rr = ra | plus: rb | modulo: 31 | minus: 15 -%}
-  {%- assign sraw = ii | times: 7 | plus: i | times: 23 | modulo: 95 -%}
-  {%- assign sval = sraw | plus: 58 | divided_by: 100.0 -%}
+  {%- assign rr = i | times: 13 | modulo: 30 | minus: 15 -%}
+  {%- assign sraw = i | times: 17 | modulo: 70 -%}
+  {%- assign sval = sraw | plus: 72 | divided_by: 100.0 -%}
   {%- assign ci = i | modulo: 10 -%}
+  {%- comment -%} per-doodle float cadence so they bob independently (floaty, like the landing) {%- endcomment -%}
+  {%- assign fdur = i | modulo: 5 | plus: 4 -%}
+  {%- assign fdraw = i | times: 7 | modulo: 40 -%}
+  {%- assign fdel = fdraw | divided_by: 10.0 -%}
   {%- assign inner = "" -%}
   {%- if xx >= 28 and xx <= 72 -%}{%- assign inner = " dm--inner" -%}{%- endif -%}
-  <span class="dm{{ inner }}" style="--x:{{ xx }}%;--y:{{ yy }}%;--r:{{ rr }}deg;--s:{{ sval }};color:{{ cols[ci] }}">{{ gl[gi] }}</span>
+  <span class="dm{{ inner }}" style="--x:{{ xx }}%;--y:{{ yy }}%;--r:{{ rr }}deg;--s:{{ sval }};color:{{ cset[ci] }};--fdur:{{ fdur }}s;--fdel:{{ fdel }}s">{{ gl[gi] }}</span>
 {%- endfor -%}
 </div>
