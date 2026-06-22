@@ -66,6 +66,8 @@ exclude:
   - vendor
   - README.md
   - PLAN.md
+  - CLAUDE.md
+  - BRAND-AND-UX.md
   - .build-workflow.js
   - .jekyll-cache
   - node_modules

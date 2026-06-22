@@ -429,10 +429,19 @@ html.baked .board-head{
   transform:rotate(-1.2deg);transform-origin:left center;
 }
 .board-title .stop{color:var(--schoolbus)}
+// the LEDE = the plain-language value prop (what Drex IS), the one line a stranger
+// must read in 5s. Deliberately NOT italic, NOT tiny, NOT low-contrast: upright,
+// larger, heavier, with a seam-shadow so Oats stays AA-legible on the Grass hero.
+.board-lede{
+  font-family:var(--f-body);font-style:normal;font-weight:500;
+  font-size:clamp(1.12rem,2.4vw,1.42rem);line-height:1.45;color:var(--oats);
+  max-width:42ch;margin:.9rem 0 .15rem;
+  text-shadow:0 1px 1px rgba(var(--sh-seam),.5)}
+.board-lede strong{font-weight:800}        // "Circles" — the noun a stranger needs
 .board-dek{
   font-family:var(--f-body);font-style:italic;font-weight:400;
   font-size:clamp(1rem,2vw,1.18rem);line-height:1.5;color:var(--oats);
-  max-width:34ch;margin:.9rem 0 0;text-shadow:0 .6px 0 rgba(var(--sh-seam),.32)}
+  max-width:34ch;margin:.45rem 0 0;text-shadow:0 .6px 0 rgba(var(--sh-seam),.32)}
 
 // the pile — a HAND-ARRANGED desk of a FEW colored scraps floating on a vast warm
 // Oats field (compose-v6: ~65-70% cream visible). NOT a packed quilt of negative-
