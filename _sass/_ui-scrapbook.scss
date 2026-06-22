@@ -115,14 +115,19 @@ html.baked .post-tag:nth-of-type(3n+3){background-color:var(--grass)!important;
 // THE HANDLE IS THE FASTENER: you move a paper by grabbing the washi TAPE (or pin) that
 // holds it down. The fastener shows a grab cursor; the paper BODY stays read/selectable/
 // clickable. NO hover glow (removed by request). Mouse/pen only — phones read, never drag.
+// the fastener is the grab handle — ALWAYS grabbable (mouse/pen); touch is bailed in JS,
+// so this never blocks phone scroll. UNCONDITIONAL (not media-gated) so the pin/tape are
+// reliably pickable — the earlier hover:fine gate left the pin pointer-events:none = "buggy".
+.board-litter .litter > .tape, .board-litter .litter > .pin,
+.board-pile .clip > .tape,     .board-pile .clip > .pin,
+.prose .pullquote > .tape, .prose .callout > .tape, .prose .figure.polaroid > .tape{
+  pointer-events:auto; cursor:grab;
+}
+// a generous invisible HIT AREA so the small pin is easy to grab (the head is only ~18px).
+.board-litter .litter > .pin::before, .board-pile .clip > .pin::before{
+  content:""; position:absolute; inset:-12px;
+}
 @media (hover:hover) and (pointer:fine){
-  // the fastener is the grab handle — and it must receive pointer events even inside the
-  // pointer-events:none litter layer.
-  .board-litter .litter > .tape, .board-litter .litter > .pin,
-  .board-pile .clip > .tape,     .board-pile .clip > .pin,
-  .prose .pullquote > .tape, .prose .callout > .tape, .prose .figure.polaroid > .tape{
-    pointer-events:auto; cursor:grab;
-  }
   // while dragging — lifted above the desk with a deeper contact cast (no green glow).
   .is-dragging{
     cursor:grabbing!important; z-index:80!important;
@@ -134,6 +139,23 @@ html.baked .post-tag:nth-of-type(3n+3){background-color:var(--grass)!important;
 
 // pin/tape never start a text range when they initiate a drag.
 .pin, .tape{ user-select:none; -webkit-user-select:none; }
+
+// ---- PUSHPIN look — a glossy domed head seen from above (the baked sprite read as a flat
+//      red dot). Drawn as centred radial gradients sized to the head, so the element box +
+//      its positioning margins are untouched. data-pin picks the head colour. ----
+.pin{ --pin-c:#F75458; }
+.pin[data-pin="grass"]{ --pin-c:#1CAB5B }
+.pin[data-pin="lazuli"]{ --pin-c:#2496C9 }
+.pin[data-pin="bus"]{ --pin-c:#ECAF21 }
+.pin[data-pin="ink"]{ --pin-c:#414D57 }
+.pin, html.baked .pin{
+  background:
+    radial-gradient(circle at 38% 33%, rgba(255,255,255,.85), rgba(255,255,255,0) 30%) center / 17px 17px no-repeat,
+    radial-gradient(circle, var(--pin-c) 0 46%, rgba(36,20,16,.32) 47% 50%, transparent 51%) center / 19px 19px no-repeat
+    !important;
+  filter:drop-shadow(.5px 2px 2px rgba(var(--sh-seam),.5));
+  animation:none !important;
+}
 
 // ---- "RESET THE DESK" kraft tab — a real, keyboard-reachable <button> that
 // clears persisted card positions and slides the reading furniture home.
