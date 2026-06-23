@@ -44,14 +44,9 @@ the list is the home of this whole practice — pull up a chair below, or subscr
 ## Already running a practice?
 
 If you gather a community around a craft and want the Drex way inside it, invite me in. I'll
-help you run a Circle for the people you already have.
-
-{% include subscribe.html
-   uid="f0604c333e"
-   accent="coral"
-   kicker="bring Drex to your people"
-   title="Invite me to help."
-   dek="Tell me about your community's practice and I'll help you start a Circle inside it." %}
+help you run a Circle for the people you already have. Write to me at
+[hi@drex.style](mailto:hi@drex.style) — or [subscribe to the newsletter](/join-online/) and
+reply to the first letter, and tell me about your practice.
 
 You belong here because you showed up. That's enough.
 
