@@ -19,6 +19,14 @@
 
 {%- comment -%} GoatCounter — privacy-friendly analytics, no cookies/consent banner. QR
      attribution rides on the ?ref= query param (GoatCounter's built-in campaign
-     tag): e.g. drex.style/?ref=qr-poster-cafe shows up under Referrers. {%- endcomment -%}
+     tag): e.g. drex.style/?ref=qr-poster-cafe shows up under Referrers.
+     The config prefixes each recorded path with location.host so this site
+     (letters.drex.style/…), the main site (drex.style/…) and the app
+     (demo.drex.style/…) share the drex dashboard but stay distinguishable.
+     It preserves location.search, so ?ref= still registers. Inline config
+     must precede count.js. {%- endcomment -%}
+<script>
+    window.goatcounter = { path: function (p) { return location.host + p } }
+</script>
 <script data-goatcounter="https://drex.goatcounter.com/count"
         async src="//gc.zgo.at/count.js"></script>
