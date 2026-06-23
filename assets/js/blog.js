@@ -103,7 +103,8 @@ function boot() {
   initCollage();                    // littered collage scraps + scroll entrance + parallax
   initHamburgerJoy(audio);          // the hamburger that lies — flop, slit, pull-out nav
   initResetDesk();                  // re-show torn pieces without a reload
-  initFinale();                     // tear off EVERY piece → the site crumples → "we love people like you"
+  // initFinale();                  // DISABLED (per request): tear-off-everything finale
+                                    // ("we love people like you" crumple). Re-enable by uncommenting.
   // Hovering a card/polaroid grows its hard shadow under a live SVG filter — a
   // burst of quick re-rasters of a big sheet. Known, brief, self-inflicted stall:
   // don't let it latch tier=lite and kill squigglevision for the rest of the session.

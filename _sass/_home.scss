@@ -176,6 +176,9 @@
 .board-cta{display:flex;flex-wrap:wrap;gap:clamp(.6rem,1.6vw,1rem);position:relative;z-index:2;
   margin:0 0 clamp(2rem,5vw,3.2rem)}
 .board-cta .btn{font-size:.82rem}
+// CTA lives INSIDE the banner box: separate it from the lede, and let the box's own
+// padding handle the bottom (no extra bottom margin → no wonky whitespace).
+.board-head .board-cta{margin:clamp(1.1rem,3vw,1.7rem) 0 0}
 
 // AA: eyebrow + kicker labels on the DEEP vivid clip faces ride in cream (the base
 // .eyebrow coral-ink and the old happy kicker fell below AA on saturated stocks).
