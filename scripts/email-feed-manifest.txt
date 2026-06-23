@@ -1,0 +1,3 @@
+# Approved emailable letters (guids) for the Kit email feed.
+# Managed by scripts/check-email-feed.rb --bless. Commit changes here
+# deliberately — each line is a letter approved to go out via Kit.

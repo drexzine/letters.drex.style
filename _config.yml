@@ -63,6 +63,15 @@ plugins:
 feed:
   path: /feed.xml
 
+# --- Email newsletter feed (Kit RSS-to-email) ---
+# A letter appears in /email-feed.xml ONLY if BOTH gates pass:
+#   1. its front matter sets `newsletter: true`, AND
+#   2. its date is on/after `start_date` below.
+# Two independent gates = defense against an accidental send. See PLAN.md Track 0.
+# Bump start_date to your real launch date when ready.
+email:
+  start_date: 2026-06-23
+
 # --- social / SEO ---
 social:
   name: "Drex"
@@ -77,7 +86,10 @@ exclude:
   - vendor
   - README.md
   - PLAN.md
+  - FOR-CHIELO.md
   - CLAUDE.md
+  - scripts
+  - .githooks
   - BRAND-AND-UX.md
   - .jekyll-cache
   - node_modules

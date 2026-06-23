@@ -1,0 +1,97 @@
+---
+# email-feed.xml — the feed Kit's RSS-to-email reads to DRAFT newsletters.
+# Separate from /feed.xml (which jekyll-feed generates for RSS readers). NEVER
+# merge the two. A letter appears here ONLY if BOTH safety gates pass:
+#   1. front matter `newsletter: true`, AND  2. date >= site.email.start_date.
+# Right now NO post is flagged, so this feed is intentionally EMPTY = nothing to send.
+# Body = the FULL letter, email-safe (inline-styled wrapper, prose inherits; furniture
+# degrades to text; images/links rewritten to ABSOLUTE urls). <!--more--> (if present)
+# splits into content + a "Continue reading" link. Our framing links carry
+# ?ref=newsletter for GoatCounter attribution.
+layout: null
+permalink: /email-feed.xml
+---
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"
+     xmlns:content="http://purl.org/rss/1.0/modules/content/"
+     xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>{{ site.title | escape }} — letters</title>
+    <link>{{ site.url }}{{ site.baseurl }}/</link>
+    <description>{{ site.description | strip_newlines | escape }}</description>
+    <language>{{ site.lang | default: "en" }}</language>
+    <atom:link href="{{ site.url }}/email-feed.xml" rel="self" type="application/rss+xml" />
+
+    {%- comment -%} GATE 2: cutoff date as an integer (epoch seconds). {%- endcomment -%}
+    {%- assign cutoff = site.email.start_date | date: "%s" | plus: 0 -%}
+
+    {%- for post in site.posts -%}
+      {%- comment -%} GATE 1: must be explicitly opted in. {%- endcomment -%}
+      {%- if post.newsletter == true -%}
+        {%- assign pdate = post.date | date: "%s" | plus: 0 -%}
+        {%- if pdate >= cutoff -%}
+    <item>
+      <title>{{ post.title | escape }}</title>
+      <link>{{ site.url }}{{ post.url }}</link>
+      {%- comment -%} Stable identity: guid = canonical permalink. NEVER changes for a
+        published post (changing it would make Kit re-draft). {%- endcomment -%}
+      <guid isPermaLink="true">{{ site.url }}{{ post.url }}</guid>
+      <pubDate>{{ post.date | date_to_rfc822 }}</pubDate>
+      {%- if post.author -%}<dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">{{ post.author | escape }}</dc:creator>{%- endif -%}
+      {%- comment -%} EMAIL BODY — the FULL letter, email-safe. Inline-styled wrapper
+        (the running prose inherits font/colour); furniture degrades to plain text;
+        images + internal links rewritten to ABSOLUTE urls. <!--more--> (if present)
+        splits the body and adds a "Continue reading" link. Framing links carry
+        ?ref=newsletter. Kit appends the unsubscribe footer at send time. {%- endcomment -%}
+      {%- assign who = site.data.authors[post.author].name | default: site.author -%}
+      {%- assign refurl = site.url | append: post.url | append: '?ref=newsletter' -%}
+      {%- assign parts = post.content | split: '<!--more-->' -%}
+      {%- assign body = parts[0] -%}
+      {%- capture src_abs %}src="{{ site.url }}/{% endcapture -%}
+      {%- capture href_abs %}href="{{ site.url }}/{% endcapture -%}
+      {%- assign body = body | replace: 'src="/', src_abs | replace: 'href="/', href_abs -%}
+      <content:encoded><![CDATA[
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#FEF6E4;margin:0;padding:0;">
+  <tr><td align="center" style="padding:28px 16px;">
+    <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;">
+      <tr><td style="font-family:Georgia,'Times New Roman',serif;color:#414D57;font-size:18px;line-height:1.65;">
+
+        <p style="margin:0 0 24px;font-family:'Courier New',Courier,monospace;font-size:12px;letter-spacing:.04em;color:#7A5A12;">
+          <a href="{{ refurl }}" style="color:#7A5A12;">Read this letter in your browser &rarr;</a>
+        </p>
+
+        {%- if post.eyebrow %}
+        <p style="margin:0 0 10px;font-family:'Courier New',Courier,monospace;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#0C6E39;">{{ post.eyebrow }}</p>
+        {%- endif %}
+
+        <h1 style="margin:0 0 6px;font-family:'Courier New',Courier,monospace;font-size:27px;line-height:1.25;font-weight:700;color:#414D57;">
+          <a href="{{ refurl }}" style="color:#414D57;text-decoration:none;">{{ post.title | escape }}</a>
+        </h1>
+
+        <p style="margin:0 0 24px;font-family:'Courier New',Courier,monospace;font-size:13px;color:#7A5A12;">{{ post.date | date: "%B %-d, %Y" }} &nbsp;&middot;&nbsp; a letter from {{ who }}</p>
+
+        <hr style="border:none;border-top:1px solid #E3D6B8;margin:0 0 24px;" />
+
+        {{ body }}
+
+        {%- if parts.size > 1 %}
+        <p style="margin:28px 0 8px;">
+          <a href="{{ refurl }}" style="display:inline-block;background:#0C6E39;color:#FEF6E4;text-decoration:none;padding:13px 24px;font-family:'Courier New',Courier,monospace;font-size:15px;font-weight:700;border-radius:2px;">Continue reading &rarr;</a>
+        </p>
+        {%- endif %}
+
+        <hr style="border:none;border-top:1px solid #E3D6B8;margin:32px 0 20px;" />
+        <p style="margin:0 0 4px;color:#414D57;">Pull up a chair.</p>
+        <p style="margin:0;color:#414D57;">&mdash; {{ who }}</p>
+
+      </td></tr>
+    </table>
+  </td></tr>
+</table>
+      ]]></content:encoded>
+    </item>
+        {%- endif -%}
+      {%- endif -%}
+    {%- endfor -%}
+  </channel>
+</rss>

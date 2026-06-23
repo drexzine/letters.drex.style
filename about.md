@@ -47,7 +47,7 @@ If you gather a community around a craft and want the Drex way inside it, invite
 help you run a Circle for the people you already have.
 
 {% include subscribe.html
-   uid="303c1aa9b2"
+   uid="f0604c333e"
    accent="coral"
    kicker="bring Drex to your people"
    title="Invite me to help."

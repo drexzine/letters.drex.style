@@ -1,0 +1,25 @@
+name: email-feed-check
+# Server-side backstop for the Kit newsletter safety gate (defense-in-depth on top of
+# the local pre-push hook). Builds the site and runs the validator. Check-only: it does
+# NOT deploy — GitHub Pages still builds/deploys the site itself. A red check means the
+# email feed is unsafe or the emailable set changed without being approved (--bless).
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.4'
+          bundler-cache: true
+      - name: Ensure linux platform in lockfile
+        run: bundle lock --add-platform x86_64-linux || true
+      - name: Build site
+        run: bundle exec jekyll build
+      - name: Validate email feed
+        run: bundle exec ruby scripts/check-email-feed.rb

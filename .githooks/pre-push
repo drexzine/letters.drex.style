@@ -1,0 +1,15 @@
+#!/bin/sh
+# Pre-push SAFETY GATE for the Kit email newsletter. See FOR-CHIELO.md / PLAN.md Track 0.
+#
+# Builds the site and validates _site/email-feed.xml before any push is allowed.
+# Blocks the push if the feed is malformed, has an email-safety violation, or the set
+# of emailable letters changed without being approved (--bless). This is an automated
+# backstop on top of Kit (Single mode, auto-send OFF).
+#
+# Enable once per clone:  git config core.hooksPath .githooks
+set -e
+
+echo "[pre-push] building site + validating the email feed…"
+bundle exec jekyll build --quiet
+bundle exec ruby scripts/check-email-feed.rb
+echo "[pre-push] email feed OK — push allowed."

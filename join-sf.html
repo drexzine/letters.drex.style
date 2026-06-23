@@ -1,0 +1,25 @@
+---
+# /join-sf/ is retired as its own page — the SF and online Circles share ONE sign-up
+# now. This redirects to /join-online/ (the single Open Invite form). The URL is kept
+# so existing links / QR codes / the homepage "SF Circle" button still work.
+# Dependency-free redirect (no plugin): meta-refresh + JS + a manual link fallback.
+# NOTE: must be .html (not .md) so Jekyll emits raw HTML and doesn't mangle <!doctype>.
+layout: null
+permalink: /join-sf/
+sitemap: false
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Redirecting…</title>
+  <meta name="robots" content="noindex" />
+  <link rel="canonical" href="{{ '/join-online/' | absolute_url }}" />
+  <meta http-equiv="refresh" content="0; url={{ '/join-online/' | relative_url }}" />
+  <script>location.replace("{{ '/join-online/' | relative_url }}");</script>
+</head>
+<body>
+  <p>Taking you to the sign-up page —
+     <a href="{{ '/join-online/' | relative_url }}">join the Circle</a>.</p>
+</body>
+</html>

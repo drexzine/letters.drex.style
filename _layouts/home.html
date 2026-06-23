@@ -13,15 +13,15 @@ layout: default
       <span class="eyebrow">the correspondence</span>
       <h1 class="board-title slab">{{ site.title | replace: '.', '<span class="stop">.</span>' }}</h1>
       <p class="board-lede">{{ page.lede | default: site.description }}</p>
-    </header>
 
-    {%- comment -%} the two crucial CTAs → the two Kit funnels (online Circle = form
-      f0604c333e on /join-online/ ; SF Circle = form 303c1aa9b2 on /join-sf/). Placed on
-      the bare desk (outside the tearable banner) so they always stay put. {%- endcomment -%}
-    <div class="board-cta">
-      <a class="btn" href="{{ '/join-online/' | relative_url }}">Join the online Circle <span class="arr">&rarr;</span></a>
-      <a class="btn ink" href="{{ '/join-sf/' | relative_url }}">Join the SF Circle <span class="arr">&rarr;</span></a>
-    </div>
+      {%- comment -%} sign-up CTAs INSIDE the main banner box. ONE Kit funnel now
+        (form f0604c333e): online → /join-online/ (the sign-up); SF → /join-sf/ which
+        REDIRECTS to /join-online/. {%- endcomment -%}
+      <div class="board-cta">
+        <a class="btn" href="{{ '/join-online/' | relative_url }}">Join the online Circle <span class="arr">&rarr;</span></a>
+        <a class="btn ink" href="{{ '/join-sf/' | relative_url }}">Join the SF Circle <span class="arr">&rarr;</span></a>
+      </div>
+    </header>
 
     {%- comment -%} PERSISTENT DESK FURNITURE — decorative, aria-hidden, desktop-only
       (collapses below 1100px via _mobile/_home). Keeps the board from feeling empty. {%- endcomment -%}

@@ -1,0 +1,9 @@
+#!/bin/sh
+# One-time setup for this clone: enable the email-feed safety pre-push hook.
+# Run after cloning:  sh scripts/setup
+set -e
+cd "$(dirname "$0")/.."
+git config core.hooksPath .githooks
+chmod +x .githooks/pre-push scripts/check-email-feed.rb scripts/setup 2>/dev/null || true
+echo "✓ Enabled the pre-push safety hook (core.hooksPath=.githooks)."
+echo "  Check the email feed anytime:  bundle exec ruby scripts/check-email-feed.rb"

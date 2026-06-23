@@ -4,7 +4,8 @@
   Patrick-Hand kicker, a Courier-Prime-italic title, the dek — is OURS; the email / name /
   extra field + submit come from Kit's INLINE embed and are restyled in _subscribe.scss so the
   whole thing reads as one object. Kit keeps all the plumbing (double opt-in, validation, spam,
-  success state). Two forms exist; pass the uid + copy.
+  success state). ONE Kit form is used now — f0604c333e, the open invite (the SF form
+  is retired). Still parameterized by uid + copy in case that changes.
   API: {% include subscribe.html uid="f0604c333e" accent="grass" kicker="the list is the home"
         title="Get the next letter." dek="..." %}
        uid    — REQUIRED Kit form uid.
