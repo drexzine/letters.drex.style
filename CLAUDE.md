@@ -18,47 +18,40 @@ If you are an AI assistant working in this repo:
 ## 🚦 Newsletter safety — never send anything unintended
 - **Nothing sends by accident.** Kit RSS is **Single mode, auto-send OFF** → it only
   ever creates DRAFTS; a human reviews + sends each one in Kit.
-- A letter is emailable ONLY if ALL of: it's a real dated post in `_posts/`,
-  `newsletter: true` in front matter, AND dated on/after `email.start_date` in
-  `_config.yml`. Otherwise `/email-feed.xml` stays empty for it.
+- **ALL posts are newsletters.** A post is emailable if it's a real dated post in
+  `_posts/` dated **on/after `email.start_date`** (the launch line in `_config.yml`,
+  which keeps the pre-launch archive out). Opt ONE post OUT with `newsletter: false`.
 - `/email-feed.xml` is the Kit feed. Do **not** merge it with `/feed.xml` (RSS
   readers). Keep post **guids stable** (= permalink); changing a published post's
-  slug/date makes Kit re-draft. Never bulk-flag old posts.
+  slug/date makes Kit draft it again.
 - The **final pass + send happen in Kit**, post-publish (subject, preheader, test-send,
   Send). The repo only produces a clean draft.
 - One sign-up form only: **`Circle Jekll – Join Open Invite` (uid `f0604c333e`)**.
 
-## 📮 Sending a letter — exact runbook (AI agent follows this)
+## 📮 Sending a letter — runbook (AI agent follows this)
 The operator is a non-technical CEO; YOU run these steps when they say "send/publish
 the X letter". Go slowly and confirm.
-0. Verify the safety hook is enabled: `git config --get core.hooksPath` must print
-   `.githooks`. If it doesn't, run `sh scripts/setup` before proceeding.
-1. Ensure the letter is a real dated post in `_posts/` (not `_drafts/`, not future-dated).
-2. Add `newsletter: true` to its front matter. If it's very long, offer a `<!--more-->`
-   break (the validator warns at ~100 KB).
-3. `bundle exec jekyll build`
-4. `bundle exec ruby scripts/check-email-feed.rb` — it will BLOCK saying the emailable
-   set changed (added: this one letter). Read the diff and CONFIRM it's exactly the one
-   intended letter, with NO removals.
-   - If it reports **>1 added** or **any removed**: STOP. Do not bless. Surface to the
-     human — this is the archive-blast / re-send guard doing its job.
-5. Only if it's the single intended letter: `bundle exec ruby scripts/check-email-feed.rb --bless`
-   (records it in `scripts/email-feed-manifest.txt`). `--bless` REFUSES a >1-added or
-   removed+added (re-send) change unless you also pass `--force` — only do that after
-   the human explicitly confirms they mean to send multiple / re-send.
-6. Commit the post + the manifest together, then push. The pre-push hook re-validates.
-7. GitHub Pages rebuilds; Kit's RSS automation **drafts** the email (auto-send is OFF).
-8. Tell the human: open Kit, do the final pass (subject, preheader, read it through),
+1. Publish it as a real dated post in `_posts/` (not `_drafts/`, not future-dated),
+   dated today/after the launch cutoff. That alone makes it a newsletter — no flag.
+   (To publish a post WITHOUT emailing it, set `newsletter: false` in its front matter.)
+2. If it's very long, offer a `<!--more-->` break (keeps the email under Gmail's ~102KB clip).
+3. *(optional)* `bundle exec jekyll build && bundle exec ruby scripts/check-email-feed.rb`
+   — advisory lint; glance at any warnings (relative URLs, missing alt, clip size, >1
+   letter in the feed). It never blocks.
+4. Commit the post + push.
+5. GitHub Pages rebuilds; Kit's RSS automation **drafts** the email (auto-send OFF).
+   Kit polls on its own schedule — the draft can take minutes to hours to appear.
+6. Tell the human: open Kit, do the final pass (subject, preheader, read it through),
    **send a test to yourself**, then press Send. The send is always theirs, in Kit.
 
-## 🧰 Safety tooling (don't bypass)
-- `scripts/check-email-feed.rb` — validator (structure, email-safety, change tripwire).
-  Run via `bundle exec ruby`. `--bless` approves the current emailable set.
-- `scripts/email-feed-manifest.txt` — committed approval ledger of emailable letters.
-- `.githooks/pre-push` — builds + validates on every push. Enable once per clone:
-  `git config core.hooksPath .githooks` (verify it's set; set it if not).
-- NEVER `--bless` to silence a >1-added or any-removed warning without explicit human
-  sign-off. NEVER turn Kit auto-send ON.
+## 🧰 The safety model (right-sized for draft-only)
+- A letter goes out only if BOTH happen: (1) you publish a post dated on/after the launch
+  cutoff (so it enters `/email-feed.xml`), AND (2) a human clicks **Send** on the Kit draft.
+- **Kit "Send automatically" = OFF is the keystone.** Kit only ever DRAFTS; nothing
+  sends itself. **NEVER turn it on.** Worst case of any repo mistake = a draft you delete.
+- `scripts/check-email-feed.rb` is an **advisory lint only** — warnings, never blocks,
+  always exits 0. Optional. (We removed the old blocking validator/ledger/hook/CI on
+  purpose: with draft-only they were friction guarding a disaster Kit already prevents.)
 
 ## ✍️ Drafts — work without publishing or emailing
 - Put work-in-progress in **`_drafts/`** (undated filename). Jekyll does NOT build
@@ -66,7 +59,8 @@ the X letter". Go slowly and confirm.
 - **Future-dated** posts also don't publish (Jekyll skips future by default;
   `future: false`). 
 - Preview drafts locally only: `bundle exec jekyll serve --drafts`.
-- Never add `newsletter: true` to a post until it is genuinely ready to email.
+- A published post past the cutoff auto-becomes a newsletter — so don't put a post in
+  `_posts/` with a current date until it's ready (or set `newsletter: false` to hold it).
 
 ## 🏗️ Build / housekeeping
 - Stock GitHub Pages build (`github-pages` gem, safe mode) — **no custom plugins**.

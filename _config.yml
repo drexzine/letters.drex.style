@@ -64,11 +64,10 @@ feed:
   path: /feed.xml
 
 # --- Email newsletter feed (Kit RSS-to-email) ---
-# A letter appears in /email-feed.xml ONLY if BOTH gates pass:
-#   1. its front matter sets `newsletter: true`, AND
-#   2. its date is on/after `start_date` below.
-# Two independent gates = defense against an accidental send. See PLAN.md Track 0.
-# Bump start_date to your real launch date when ready.
+# ALL posts are newsletters. A letter appears in /email-feed.xml if its date is on/after
+# `start_date` (the launch line — this keeps the pre-launch archive out of the feed).
+# Opt a single post OUT with `newsletter: false` in its front matter.
+# Kit is draft-only (auto-send OFF), so a human still reviews + Sends every draft.
 email:
   start_date: 2026-06-23
 

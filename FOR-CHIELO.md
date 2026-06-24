@@ -6,7 +6,7 @@
 
 ## What this is (one picture)
 - You publish a letter on the site (as you do today) →
-- a **separate email feed** picks it up **only if you flag it** →
+- a **separate email feed** picks it up automatically (every post is a newsletter) →
 - **Kit drafts an email** from it →
 - **you review and click send.** Nothing goes out on its own.
 
@@ -19,13 +19,18 @@
 > email that went out to subscribers. It turns "oh no" into "oh well." Everything else
 > below is backup; this toggle is the headache-preventer.
 
-## The golden safety rule (defense in depth)
-- **A letter only sends if THREE things all happen:** (1) you flag it `newsletter: true`
-  in the repo, (2) the safety validator approves it, AND (3) **a human clicks Send on
-  the draft in Kit.** Miss any one and nothing goes out.
+## The golden safety rule
+- **A letter goes out only if TWO things both happen:** (1) you publish a post dated
+  on/after the launch line (every post auto-becomes a newsletter), AND (2) **a human
+  clicks Send on the draft in Kit.** Miss either and nothing goes out.
 - The Kit RSS automation is connected but **draft-only** (the keystone above).
-- A letter can only enter the email feed if you **explicitly tag it** `newsletter: true`.
-  Untagged letters (incl. all existing ones) can never be drafted or sent.
+- Only posts dated **on/after the launch line** enter the feed; the pre-launch archive
+  (all existing letters) never does. Opt a single post out with `newsletter: false`.
+- *(We deliberately kept this simple. Earlier there was a heavier repo-side gate
+  (blocking validator + approval ledger + git hook + CI); once Kit was confirmed
+  draft-only, that was friction guarding a disaster Kit already prevents, so we
+  right-sized it down to an optional advisory lint. The real safety is the two gates
+  above.)*
 
 ## ⭐ THE ONE TRUE FORM
 > **Every sign-up on the site goes to ONE Kit form: `Circle Jekll – Join Open Invite`
@@ -53,11 +58,11 @@
 You don't run commands by hand. **Tell Claude Code: "I'm ready to send the [name]
 letter."** Claude follows the safe runbook in `CLAUDE.md`. Plain version of what happens:
 1. (Optional) Draft privately first — see **Drafts** below; drafts never publish/email.
-2. The letter gets published on the site and marked to email (`newsletter: true`; plus
-   `<!--more-->` if it's a very long one).
-3. **An automatic safety check runs.** It refuses if anything looks wrong — more than
-   one letter going out at once, a re-send, a broken/unsafe email. You approve the one
-   intended letter, and it's recorded in a ledger.
+2. The letter gets published on the site (dated today) — that alone makes it a
+   newsletter; add a `<!--more-->` if it's a very long one. (To publish something
+   WITHOUT emailing it, mark it `newsletter: false`.)
+3. *(optional)* A quick advisory check can flag things worth a glance (a broken image
+   link, a missing alt, an oversized email). Just a heads-up — it never blocks.
 4. Kit notices the new letter and **drafts** an email. It does NOT auto-send.
 5. **The final pass happens IN KIT (post-publish).** Open the draft in Kit, do the last
    touches (subject line, preheader, a final read), **send a test to yourself**, then
@@ -81,8 +86,8 @@ letter."** Claude follows the safe runbook in `CLAUDE.md`. Plain version of what
   future posts by default. So nothing goes live before its date.
 - To preview a draft locally: `bundle exec jekyll serve --drafts` (the `--drafts` flag
   is local-only; it does not change what's published).
-- A letter only becomes emailable once it's (a) a real dated post in `_posts/`, (b)
-  flagged `newsletter: true`, and (c) dated on/after the cutoff. All three, or nothing.
+- A post becomes emailable once it's (a) a real dated post in `_posts/` and (b) dated
+  on/after the launch line. (Not in `_drafts/`, not future-dated, not `newsletter: false`.)
 
 ## What the email looks like (decided 2026-06-23)
 - **The FULL letter goes in the email** (bias to full), in a clean on-brand wrapper
@@ -150,12 +155,12 @@ letter."** Claude follows the safe runbook in `CLAUDE.md`. Plain version of what
       land on our page. (Sue can't do the Kit side; Chielo will.)
 - [x] Homepage: sign-up CTAs moved INSIDE the main banner box. Verified on a local
       server screenshot.
-- [x] Safety validator HARDENED after an adversarial multi-agent review: structural
-      allowlist (blocks iframe/form/script/svg-script/etc.), `--bless` now enforces the
-      archive-blast + re-send guards (needs `--force` to override), RSS-structure check,
-      BOM tolerance, stale-build check, 102KB hard block. 30/30 self-tests pass; real
-      furniture letter validates clean. Added `scripts/setup` + a check-only GitHub
-      Action (`.github/workflows/email-feed-check.yml`) for server-side enforcement.
+- [x] Safety RIGHT-SIZED for draft-only (2026-06-23): removed the blocking validator /
+      approval-ledger / pre-push hook / CI (friction guarding a disaster Kit already
+      prevents). Kept a lean **advisory lint** (`scripts/check-email-feed.rb` — warnings
+      only, never blocks) + the feed gates. Real safety = deliberate flag + Kit
+      draft-only + human Send. (The heavier build was first validated by an adversarial
+      multi-agent review, which confirmed the design before we chose to simplify it.)
 - [ ] Customize + test the one-click unsubscribe.
 - [x] Build the email feed skeleton + safety gates → `/email-feed.xml`. Verified it
       builds EMPTY (no letter flagged). Inert: Kit not connected.
