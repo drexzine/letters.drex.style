@@ -34,10 +34,12 @@ the X letter". Go slowly and confirm.
 1. Publish it as a real dated post in `_posts/` (not `_drafts/`, not future-dated),
    dated today/after the launch cutoff. That alone makes it a newsletter — no flag.
    (To publish a post WITHOUT emailing it, set `newsletter: false` in its front matter.)
-2. If it's very long, offer a `<!--more-->` break (keeps the email under Gmail's ~102KB clip).
-3. *(optional)* `bundle exec jekyll build && bundle exec ruby scripts/check-email-feed.rb`
-   — advisory lint; glance at any warnings (relative URLs, missing alt, clip size, >1
-   letter in the feed). It never blocks.
+2. Build + lint (always do this): `bundle exec jekyll build && bundle exec ruby
+   scripts/check-email-feed.rb`. Read the warnings (relative URLs, missing alt, size,
+   >1 item). Advisory — never blocks.
+3. **If it warns the email is near/over ~100 KB (Gmail clips long emails), offer to add
+   a `<!--more-->`** where the letter should stop in the email — that cuts the email
+   short and adds a "Continue reading →" link to the full letter on the web. Rebuild.
 4. Commit the post + push.
 5. GitHub Pages rebuilds; Kit's RSS automation **drafts** the email (auto-send OFF).
    Kit polls on its own schedule — the draft can take minutes to hours to appear.
