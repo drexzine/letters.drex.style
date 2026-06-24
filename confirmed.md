@@ -14,7 +14,7 @@ Here's what to expect: an occasional **letter from Chielo** — canon, lore, and
 thinking behind bringing your gifts into the world together. No noise, no schedule you
 didn't ask for. Just the correspondence, when there's something worth sending.
 
-While you wait for the next one, the newest letters live on [the newsstand](/).
+While you wait for the next one, the newest letters live on [the correspondence](/).
 
 Pull up a chair.
 

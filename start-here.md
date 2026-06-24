@@ -57,4 +57,4 @@ years of how communities of practice have actually been held across distance, an
 that means for how we write to you.
 
 When you're ready, [pull up a chair](/join-online/) — or just start reading on
-[the newsstand](/).
+[the correspondence](/).

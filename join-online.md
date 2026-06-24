@@ -21,5 +21,5 @@ opens — comes to you.
    title="Join the online Circle."
    dek="An open invite to the practice. Leave your name and the next online Circle comes to you." %}
 
-Prefer to read first? Newest letters live on [the newsstand](/), or follow the
+Prefer to read first? Newest letters live on [the correspondence](/), or follow the
 [feed](/feed.xml). Questions: [hi@drex.style](mailto:hi@drex.style).

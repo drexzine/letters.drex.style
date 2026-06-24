@@ -30,7 +30,7 @@ Tell me: [hi@drex.style](mailto:hi@drex.style).
 
 ## How to read it
 
-Newest letters sit on [the newsstand](/). If you'd rather they come to you — and you would,
+Newest letters sit on [the correspondence](/). If you'd rather they come to you — and you would,
 the list is the home of this whole practice — pull up a chair below, or subscribe to the
 [feed](/feed.xml).
 
