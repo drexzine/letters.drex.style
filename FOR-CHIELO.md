@@ -111,8 +111,14 @@ letter."** Claude follows the safe runbook in `CLAUDE.md`. Plain version of what
       → see the Chielo heads-up above re: tagging these in Kit.
 - [x] Audit complete: retired form `303c1aa9b2` no longer appears anywhere in the
       built site; the include comment + docs all name the one true form.
-- [ ] Sender setup: verified sending domain (SPF/DKIM/DMARC), From-name, Reply-To.
-- [ ] Confirm double opt-in is ON for the one form.
+- [x] From = Chielo, sending from **chielo@letters.drex.style** (that subdomain is a
+      verified sending domain → exact DKIM/DMARC alignment). Reply-To = a real inbox.
+      ⤷ Ensure chielo@letters.drex.style is added + set as the From in Kit (screenshot
+        showed chielo@drex.style as default — switch/add the letters.drex.style one).
+- [x] Double opt-in ON + confirmation redirect → /confirmed/ — verified end-to-end
+      (Sue confirmed via email and landed on /confirmed/).
+- [x] Verified sending domain DONE — both drex.style and letters.drex.style show
+      verified (green) in Kit → Settings → Email. From chielo@drex.style aligns.
 - [ ] **Welcome email** that sets expectations (cadence + vibe) — high-leverage,
       proven to cut spam complaints. (should-do)
 - [x] Built a branded **confirmation / welcome page** → **`https://letters.drex.style/confirmed/`**.
