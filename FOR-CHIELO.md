@@ -106,6 +106,22 @@ letter."** Claude follows the safe runbook in `CLAUDE.md`. Plain version of what
 - The validator **warns you at ~100 KB** before you push, so you're never surprised —
   that's your cue to add a `<!--more-->` (or accept the rare clip).
 
+## ⭐ Email styling in Kit — don't over-invest (note for Chielo)
+- Kit's email engine is deliberately simple. It may **flatten our custom HTML** (the
+  fancy table/inline-styled letter) into plainer formatting. Inline-styled basics —
+  headings, bold/italic, links, brand color — tend to survive; elaborate layout may not.
+- **Recommendation: don't fight it.** Chasing a pixel-perfect email *inside Kit* is
+  **terrible ROI right now.** The letter's value is the writing, and the *fully designed*
+  version already lives on the web at letters.drex.style. The email just needs to be
+  **readable, on-brand-ish, deliverable, and link to the web.** That's the 80/20 — and
+  it's done.
+- You *can* go further if you ever want: Kit supports a fully **custom HTML template**
+  (Settings → Email → templates → paste HTML containing `{{ message_content }}`). But
+  it's fiddly to build and maintain for marginal gain. **Park it.** Revisit only if the
+  newsletter grows enough that email design earns the upkeep.
+- Upshot: keep the email content clean + semantic, let Kit render it, and spend the
+  energy on writing letters. Deliverability (the part that actually matters) is handled.
+
 ## Status checklist (what's done / next)
 - [x] Confirmed: no sending automations exist (safe to build).
 - [x] Confirmed: one newsletter, everyone; forms = backend tags only.
