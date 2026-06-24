@@ -73,6 +73,8 @@ letter."** Claude follows the safe runbook in `CLAUDE.md`. Plain version of what
 > it says (or ask Claude), and only proceed if it's genuinely the single letter you meant.
 
 ## ⭐ Final pass / final touches happen in Kit (post-publish)
+- **Your drafts live here:** https://app.kit.com/campaigns?status=draft — that's where
+  each RSS-drafted letter waits for you.
 - The repo produces a clean draft; **the polish + the send live in Kit.**
 - Always expect to review and finish each issue in Kit before it goes out: subject
   line, preview text, a last read at email width, test-send to yourself.
