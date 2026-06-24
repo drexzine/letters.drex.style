@@ -10,13 +10,22 @@
 - **Kit drafts an email** from it →
 - **you review and click send.** Nothing goes out on its own.
 
-## The golden safety rule
-- **Nothing can send by accident.** Today there are **zero sending automations** in
-  Kit, so editing the site/repo cannot email anyone.
-- Even once it's live: Kit is set to **draft only** (auto-send OFF) — emails sit as
-  drafts until a human sends them.
+## 🚨 THE KEYSTONE SETTING — Kit "Send automatically" = OFF
+> This is the single most important thing in the whole workflow. In Kit's RSS feed
+> (Automate → RSS), **"Send automatically" is OFF**, which means **Kit only ever DRAFTS
+> a letter's email — it never sends on its own.** A human has to open the draft and
+> press Send. **Never turn this on.** With it off, the worst case of any mistake (a
+> wrong flag, a bad push, a weird feed) is *a draft you can just delete* — never an
+> email that went out to subscribers. It turns "oh no" into "oh well." Everything else
+> below is backup; this toggle is the headache-preventer.
+
+## The golden safety rule (defense in depth)
+- **A letter only sends if THREE things all happen:** (1) you flag it `newsletter: true`
+  in the repo, (2) the safety validator approves it, AND (3) **a human clicks Send on
+  the draft in Kit.** Miss any one and nothing goes out.
+- The Kit RSS automation is connected but **draft-only** (the keystone above).
 - A letter can only enter the email feed if you **explicitly tag it** `newsletter: true`.
-  Your existing letters are not tagged, so they can't be sent.
+  Untagged letters (incl. all existing ones) can never be drafted or sent.
 
 ## ⭐ THE ONE TRUE FORM
 > **Every sign-up on the site goes to ONE Kit form: `Circle Jekll – Join Open Invite`
@@ -111,10 +120,8 @@ letter."** Claude follows the safe runbook in `CLAUDE.md`. Plain version of what
       → see the Chielo heads-up above re: tagging these in Kit.
 - [x] Audit complete: retired form `303c1aa9b2` no longer appears anywhere in the
       built site; the include comment + docs all name the one true form.
-- [x] From = Chielo, sending from **chielo@letters.drex.style** (that subdomain is a
-      verified sending domain → exact DKIM/DMARC alignment). Reply-To = a real inbox.
-      ⤷ Ensure chielo@letters.drex.style is added + set as the From in Kit (screenshot
-        showed chielo@drex.style as default — switch/add the letters.drex.style one).
+- [x] From = Chielo, **default sender = chielo@letters.drex.style** (verified subdomain
+      → exact DKIM/DMARC alignment). Reply-To = a real inbox. (verified, done)
 - [x] Double opt-in ON + confirmation redirect → /confirmed/ — verified end-to-end
       (Sue confirmed via email and landed on /confirmed/).
 - [x] Verified sending domain DONE — both drex.style and letters.drex.style show
