@@ -167,9 +167,15 @@ letter."** Claude follows the safe runbook in `CLAUDE.md`. Plain version of what
       enabled via `core.hooksPath`). Self-tested: blocks malformed XML, `<script>`,
       relative URLs, missing alt, archive-blast (>1 new), slug-change/re-send; warns at
       ~100 KB; `--bless` approves. (Being adversarially re-verified.)
-- [ ] Connect Kit (Single mode, auto-send OFF), exclude old letters.
-- [ ] Dry run with a throwaway test letter.
-- [ ] Go live.
+- [x] Kit RSS connected + **ENABLED** — Automate → RSS, feed
+      `https://letters.drex.style/email-feed.xml`, Single mode, **auto-send OFF**,
+      recipients = All Subscribers. It will **create DRAFTS** when a new flagged letter
+      appears; it never auto-sends. (Empty feed today → drafts nothing yet.)
+- [ ] Template body = `{{post.content}}`, subject = `{{post.title}}` (confirm).
+- [ ] Dry run: throwaway test letter → Kit drafts → **test-send to self** → check it
+      arrives readable + links to web → delete test + discard draft.
+- [ ] Google Postmaster Tools (later, monitoring).
+- [ ] Go live (send real letters: flag → bless → push → review draft in Kit → Send).
 
 ## Glossary (for later)
 - **Tag** — a backend label on a subscriber. There's ONE list/newsletter; tags (e.g.
