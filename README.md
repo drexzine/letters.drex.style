@@ -4,7 +4,10 @@ This is the Drex blog: a Jekyll zine. **Writing a letter = a Markdown file + a s
 of includes. Nothing else.** You never touch SCSS, JS, colors, or shadows — the handmade
 look is applied centrally. If a post seems to need something the kit doesn't have, the
 answer is "rewrite it with the kit," not "add CSS." See `CLAUDE.md` for the full house
-rules and `BRAND-AND-UX.md` for the brand law.
+rules. For brand and design inspiration, draw on the live **drex.style** site (the
+`drexzine.github.io` repo) and the Drex brand spec in the sibling `drex-claude-skill`
+repo: `source-of-truth/branding/drex-brand.md` plus the brand-guidelines PDF
+`drex-comprehensive-brand-guidelines-v1-trim.pdf` (same folder).
 
 ## How to publish a letter
 

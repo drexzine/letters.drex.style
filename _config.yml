@@ -89,7 +89,6 @@ exclude:
   - CLAUDE.md
   - scripts
   - .githooks
-  - BRAND-AND-UX.md
   - .jekyll-cache
   - node_modules
 

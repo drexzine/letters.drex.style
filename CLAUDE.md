@@ -68,6 +68,10 @@ the X letter". Go slowly and confirm.
 - Stock GitHub Pages build (`github-pages` gem, safe mode) — **no custom plugins**.
   Production runs Liquid only; committed `_site/` is ignored.
 - Internal docs are excluded from the build in `_config.yml`: `PLAN.md`,
-  `FOR-CHIELO.md`, `CLAUDE.md`, `README.md`, `BRAND-AND-UX.md`.
-- House style for posts + the include "kit": see `README.md` and `BRAND-AND-UX.md`.
+  `FOR-CHIELO.md`, `CLAUDE.md`, `README.md`.
+- House style for posts + the include "kit": see `README.md`. There is no separate brand
+  doc — for brand/design inspiration draw on the live **drex.style** site (the
+  `drexzine.github.io` repo) and the Drex brand spec in the sibling `drex-claude-skill`
+  repo: `source-of-truth/branding/drex-brand.md` + the brand-guidelines PDF
+  `drex-comprehensive-brand-guidelines-v1-trim.pdf`.
 - Verify changes with `bundle exec jekyll build` before trusting them.
