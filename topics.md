@@ -9,7 +9,7 @@ sitemap: true
 
 Browse by topics to see thread of Drex Correspondence.
 
-{% assign labels = "talks:Talks|circle:Circle|stanford:Stanford|xchange model:XChange Model" %}
+{% assign labels = "talks:Talks|circle:Circle|stanford:Stanford|xchange models:XChange Models" %}
 
 {% for tag in site.tags %}
   {% assign tag_name = tag[0] %}
