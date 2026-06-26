@@ -5,8 +5,6 @@ title: "Chielo Mbaezue"
 name: "Chielo Mbaezue"
 ---
 
-I started Drex because I believe your gifts matter — and that they're meant to
-come into the world together, not alone. The correspondence is where I think out
-loud about that: the vision, the canon, the lore of building a place for communion.
+I started Drex because I believe your gifts matter & that they're best brought into the world together, not alone.
 
-You showed up, and that's enough. Pull up a chair.
+You showed up, and that's enough. I can't wait to see what you make.

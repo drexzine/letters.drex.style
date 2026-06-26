@@ -19,7 +19,7 @@ chielo:
   role: "Co-founder"
   accent: grass
   photo: /assets/img/team/chielo.jpg
-  bio: "Founder of Drex. Writes the correspondence — essays on bringing your gifts into the world, together. A place for communion."
+  bio: "Founder of Drex."
 
 # --- example GUEST WRITER entry (documented template) -------------------------
 # Duplicate this block, rename the key (e.g. `ada`), and fill it in. The key is

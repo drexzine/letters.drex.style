@@ -3,14 +3,13 @@ layout: page
 permalink: /topics/
 title: "Browse by topic."
 eyebrow: "the index"
-dek: "Every letter, grouped by what it's about. A way in if you'd rather follow a thread than read in order."
+dek: "Every letter, grouped by what it's about."
 sitemap: true
 ---
 
-The letters build on each other, but you don't have to read them in order. Pick a thread
-and follow it. New here? [Start here](/start-here/) instead.
+Browse by topics to see thread of Drex Correspondence.
 
-{% assign labels = "canon:How the practice works|vision:What we're building|manifesto:First principles|lore:Where it came from|lineage:The traditions we descend from|strategy:How we hold it together" %}
+{% assign labels = "talks:Talks|circle:Circle|stanford:Stanford|xchange model:XChange Model" %}
 
 {% for tag in site.tags %}
   {% assign tag_name = tag[0] %}
@@ -29,5 +28,4 @@ and follow it. New here? [Start here](/start-here/) instead.
 {% endfor %}
 {% endfor %}
 
-Want them as they land? Pull up a chair on [the online Circle](/join-online/), or follow the
-[feed](/feed.xml).
+Want them as they are shared? [Join Drex Circles](/join-online/)

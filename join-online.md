@@ -1,25 +1,21 @@
 ---
 layout: page
 permalink: /join-online/
-title: "Join the online Circle."
-eyebrow: "pull up a chair — anywhere"
-dek: "A Drex Circle that meets online. Bring your gifts; we bring the room."
+title: "Join Drex Circles."
+eyebrow: "the door into a circle"
+dek: "Learn your craft, among others."
 sitemap: true
 ---
 
-The online Circle is the open door into the practice — a place to bring your
-work, your questions, and your craft into the company of people doing the same.
-No commute, no gatekeeping: wherever you are, pull up a chair.
-
-Leave your name below and the next letter — and the next time an online Circle
-opens — comes to you.
+In Drex Circles, you'll gather with a consistent group to work on your craft. You'll contribute photos and reflections along the way, and those contributions will be made into a fun & scrappy Zine you can browse and share with others.
 
 {% include subscribe.html
    uid="f0604c333e"
    accent="grass"
-   kicker="the open invite"
-   title="Join the online Circle."
-   dek="An open invite to the practice. Leave your name and the next online Circle comes to you." %}
+   kicker="learn your craft, among others"
+   title="Join or Start a Drex Circle."%}
 
-Prefer to read first? Newest letters live on [the correspondence](/), or follow the
-[feed](/feed.xml). Questions: [hi@drex.style](mailto:hi@drex.style).
+[Drex Correspondence](/) are letters written to the community,
+by the community. You'll recieve them in your email inbox when you join a Circle. 
+
+Questions: [hi@drex.style](mailto:hi@drex.style).
