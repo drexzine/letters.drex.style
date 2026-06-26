@@ -387,6 +387,11 @@ figure.polaroid{margin:clamp(1.8rem,4vw,2.6rem) auto;width:min(320px,90%);transf
   padding:0!important;margin:0!important;max-width:none!important;min-width:0!important;
   width:100%!important;font-family:var(--f-body)!important;
 }
+// Kit reserves 56px of header/hero space on its content wrapper (gated on its own
+// min-width attr — lands on mobile here), but we supply our own kicker/title/dek and
+// hide its header, so it just reads as an awkward gap above the first field. Zero it
+// → mobile matches the tight desktop spacing.
+.kit-embed [data-style="clean"]{padding-top:0!important}
 .kit-embed .formkit-background,.kit-embed .formkit-image,
 .kit-embed .formkit-powered-by-convertkit,.kit-embed [class*="powered-by"]{display:none!important}
 .kit-embed .formkit-fields,.kit-embed .seva-fields{
