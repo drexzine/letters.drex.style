@@ -1148,7 +1148,8 @@ function initHamburgerJoy(audio) {
   const tray = document.getElementById('hb-tray');
   if (!hb || !burger || !fallen || !tray) return;
 
-  const OPEN = 1, STRAIN = 1.04, DANGER = 1.13, TRAVEL = 230;   // string is anchored at the slit + stretches; tear when taut (~34px of stretch)
+  const OPEN = 1, STRAIN = 1.04, DANGER = 1.13;   // string is anchored at the slit + stretches; tear when taut (~34px of stretch)
+  let TRAVEL = 230;   // px of drag → pull 0..1; recomputed by calibrate() from the live strand height (was hardcoded to the old, longer nav)
   let pull = 0, dragging = false, startPull = 0, startY = 0, moved = false, torn = false, lastVibe = 0;
 
   const setPull = (p) => {
@@ -1221,6 +1222,27 @@ function initHamburgerJoy(audio) {
   };
   fallen.addEventListener('pointerup', up);
   fallen.addEventListener('pointercancel', up);
+
+  // ── auto-calibrate the pull distance so the grab handle always peeks below the
+  // slit, no matter how many nav items the strand holds. It used to be a hardcoded
+  // 260px tuned to a longer nav; a shorter nav retracted the handle up out of reach.
+  // Measure the handle's natural gap below the slit → --retract. Recalc on resize +
+  // once fonts settle (item heights shift as the brand font loads).
+  const strand = document.getElementById('hb-strand');
+  const slit = hb.querySelector('.hb-slit');
+  function calibrate() {
+    if (!strand || !slit) return;
+    const had = hb.style.getPropertyValue('--pull');
+    hb.style.setProperty('--pull', '1');                     // fully extended (translateY 0) → handle at its natural low point (--pull defaults to 0, so we can't just clear it)
+    const gap = fallen.getBoundingClientRect().top - slit.getBoundingClientRect().bottom;
+    if (had) hb.style.setProperty('--pull', had); else hb.style.removeProperty('--pull');   // restore synchronously — no repaint between
+    const retract = Math.max(120, Math.round(gap - 14));     // 14px of the handle peeks below the slit
+    hb.style.setProperty('--retract', retract + 'px');
+    TRAVEL = Math.round(retract * 0.88);                     // preserve the original 230/260 drag feel
+  }
+  calibrate();
+  window.addEventListener('resize', calibrate, { passive: true });
+  try { document.fonts && document.fonts.ready.then(calibrate); } catch (_) {}
 
   window.__drexHb = { flop, reset, tear, open: () => { setState('open'); setPull(OPEN); },
     setPull, get pull(){return pull;}, get state(){return hb.dataset.state;} };

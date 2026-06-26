@@ -94,7 +94,7 @@
   .sheet-leaf,.sheet-leaf:nth-of-type(2n),.sheet-leaf:nth-of-type(3n),.sheet-leaf:nth-of-type(5n){transform:none}
   // the title can be large — make sure it never forces a scrollbar
   .post-title{font-size:clamp(1.8rem,9vw,2.6rem)}
-  .board-title{font-size:clamp(2rem,10vw,3rem)}
+  .board-title{font-size:clamp(1.7rem,8vw,3rem)}
 }
 
 // ---------------------------------------------------------------
