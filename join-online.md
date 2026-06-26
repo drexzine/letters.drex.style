@@ -7,7 +7,7 @@ dek: "Learn your craft, among others."
 sitemap: true
 ---
 
-In Drex Circles, you'll gather with a consistent group to work on your craft. You'll contribute photos and reflections along the way, and those contributions will be made into a fun & scrappy Zine you can browse and share with others.
+In Drex Circles, you'll gather with a consistent group to **work on your craft**. You'll contribute photos and reflections along the way, and those contributions will be made into a **fun & scrappy Zine** you can browse and share with others.
 
 {% include subscribe.html
    uid="f0604c333e"
