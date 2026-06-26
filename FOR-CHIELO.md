@@ -1,4 +1,4 @@
-# FOR-CHIELO.md — running the drex correspondence newsletter
+# FOR-CHIELO.md — running the Circle Letters newsletter
 
 Plain how-to for the email newsletter. (Full detail + the "why" lives in `PLAN.md`.)
 

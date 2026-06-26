@@ -1,4 +1,4 @@
-# The correspondence — how to publish a letter
+# Circle Letters — how to publish a letter
 
 This is the Drex blog: a Jekyll zine. **Writing a letter = a Markdown file + a small kit
 of includes. Nothing else.** You never touch SCSS, JS, colors, or shadows — the handmade

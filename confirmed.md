@@ -9,6 +9,6 @@ sitemap: false
 
 Thank you for confirming. I will follow up with an email shortly!
 
-While you wait for that email, check out the latest letters on [drex correspondence](/).
+While you wait for that email, check out the latest letters on [Circle Letters](/).
 
 *— Chielo*

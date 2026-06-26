@@ -1,5 +1,5 @@
 # ===================================================================
-# authors.yml — the byline registry for the correspondence.
+# authors.yml — the byline registry for Circle Letters.
 #
 # Each post's front matter carries `author: <key>` (e.g. author: chielo).
 # byline.html looks that key up here to render the author chip(s):
@@ -29,4 +29,4 @@ guest:
   role: "Guest contributor"      # short role line under the name
   accent: lazuli                 # chip accent: grass | coral | lazuli | bus | happy | ink
   photo: /assets/img/team/uko.jpg  # square headshot; ~600x600 looks best
-  bio: "One or two sentences introducing the guest and why they're writing for the correspondence."
+  bio: "One or two sentences introducing the guest and why they're writing for Circle Letters."

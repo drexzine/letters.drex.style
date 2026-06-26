@@ -63,7 +63,7 @@
 // vocabulary (oats|cloth|kraft|grass|lazuli|coral). Vivid/dark faces get light
 // title text; cream/saffron faces get ink title text (all AA).
 .post-banner--cloth::before{background:var(--sambas)}
-.post-banner--cloth .post-title{color:var(--oats);text-shadow:1.5px 1.5px 0 rgba(0,0,0,.3)}
+.post-banner--cloth .post-title{color:var(--oats);text-shadow:1.5px 1.5px 0 rgba(65,77,87,.55)}  // Sambas-ink seam (was pure black)
 .post-banner--lazuli::before{background:var(--lazuli)}
 .post-banner--lazuli .post-title{color:var(--oats);text-shadow:1.5px 1.5px 0 rgba(12,76,110,.55)}
 .post-banner--coral::before{background:var(--colorado)}
@@ -74,13 +74,15 @@
 .post-banner--kraft .post-title{color:var(--ink);text-shadow:none}
 // the thumbtack pin (a glossy dome + a short metal shaft grounding it).
 .pin{position:absolute;top:-13px;left:50%;margin-left:-14px;width:28px;height:28px;z-index:4;pointer-events:none}
+// on-palette FLAT fills (no metallic gradients): Sambas-ink shaft, Colorado/Grass/Oats
+// domes. The Sambas-based border + offset shadow keep it grounded and subtle.
 .pin::before{content:"";position:absolute;left:9px;top:18px;width:6px;height:14px;border-radius:0 0 2px 2px;
-  background:linear-gradient(90deg,#8a93a0,#c6ccd4 45%,#6d7682);transform:rotate(8deg)}
+  background:var(--sambas);transform:rotate(8deg)}
 .pin::after{content:"";position:absolute;left:0;top:0;width:28px;height:28px;border-radius:50%;
-  background:radial-gradient(circle at 36% 32%, #ff9ea0 0 14%, var(--colorado) 46%, #b23b3e 100%);
+  background:var(--colorado);
   border:1.5px solid rgba(65,77,87,.45);box-shadow:2px 3px 0 0 rgba(65,77,87,.28)}
-.pin[data-pin="grass"]::after{background:radial-gradient(circle at 36% 32%, #6fe0a0 0 14%, var(--grass) 46%, var(--grass-deep) 100%)}
-.pin[data-pin="oats"]::after{background:radial-gradient(circle at 36% 32%, #fffaf0 0 14%, var(--oats) 46%, #d9cbab 100%)}
+.pin[data-pin="grass"]::after{background:var(--grass)}
+.pin[data-pin="oats"]::after{background:var(--oats)}
 
 // the standfirst — dek + meta on ONE cream slip, offset off the title's left edge.
 .post-standfirst{z-index:2;display:block;width:fit-content;max-width:min(100%,52ch);

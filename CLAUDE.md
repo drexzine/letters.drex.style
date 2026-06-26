@@ -1,6 +1,6 @@
 # CLAUDE.md — house rules for this repo
 
-This repo is the **drex correspondence** — a Jekyll zine that ALSO powers a live email
+This repo is **Circle Letters** — a Jekyll zine that ALSO powers a live email
 **newsletter** sent via Kit (RSS-to-email). Editing here can affect a public site and,
 once Kit is connected, real emails. Read this before doing anything.
 

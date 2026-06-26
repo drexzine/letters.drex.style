@@ -11,7 +11,7 @@ stock: oats
 reading_time: auto
 ---
 
-{% include stamp.html text="CORRESPONDENCE · № 1" %}
+{% include stamp.html text="CIRCLE LETTERS · № 1" %}
 
 **To those in AFRICAAM 263,**
 

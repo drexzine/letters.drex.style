@@ -1,6 +1,6 @@
 ---
 # =============================================================================
-# GUEST WRITER TEMPLATE — copy this file to add a guest voice to the correspondence.
+# GUEST WRITER TEMPLATE — copy this file to add a guest voice to Circle Letters.
 #
 # Steps:
 #   1. Copy this file to _authors/<slug>.md  (e.g. _authors/ada.md). Pick a short,
@@ -21,5 +21,5 @@ name: "Guest Writer"
 ---
 
 A sentence or two in the guest's own voice — who they are, what they care about,
-and why they're writing for the correspondence. Keep it warm and plain. Everything
+and why they're writing for Circle Letters. Keep it warm and plain. Everything
 else (photo, role, accent, short bio) comes from their entry in _data/authors.yml.

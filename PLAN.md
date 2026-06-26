@@ -1,4 +1,4 @@
-# PLAN — Sending the drex correspondence as a newsletter (Kit RSS-to-email)
+# PLAN — Sending Circle Letters as a newsletter (Kit RSS-to-email)
 
 ## The request
 Every letter on the site also goes out as a Kit newsletter. We want the *article*

@@ -1,14 +1,14 @@
 # ===================================================================
-# Drex blog — letters.drex.style ("the correspondence")
+# Drex blog — letters.drex.style ("Circle Letters")
 # Chielo's founder/CEO essays + guest writers, in the Drex zine aesthetic.
 # GitHub-Pages-native Jekyll build. Only Pages-whitelisted plugins.
 # ===================================================================
 
 title: "drex."
-tagline: "The correspondence, made public."
+tagline: "Circle Letters, made public."
 description: >-
-  The Drex correspondence — founder essays, canon, and lore on
-  bringing your gifts into the world together. A place for communion.
+  Circle Letters — founder essays, canon, and lore.
+  Learn your craft, among others. A place for communion.
 author: "Chielo Mbaezue"
 
 url: "https://letters.drex.style"
@@ -50,6 +50,11 @@ defaults:
       path: ""
     values:
       layout: default
+      # Default social-share preview image. jekyll-seo-tag (2.8.0) reads
+      # `page.image` only, so we set it as a front-matter default → every
+      # page emits og:image + twitter:image. Chielo's founder portrait;
+      # `url` above makes it an absolute URL. A post may override `image`.
+      image: /assets/img/team/chielo.jpg
 
 # --- pagination-free home; posts sorted newest-first by Jekyll ---
 show_excerpts: false

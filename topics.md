@@ -7,7 +7,7 @@ dek: "Every letter, grouped by what it's about."
 sitemap: true
 ---
 
-Browse by topics to see thread of Drex Correspondence.
+Browse by topics to see threads of Circle Letters.
 
 {% assign labels = "talks:Talks|circle:Circle|stanford:Stanford|xchange models:XChange Models" %}
 

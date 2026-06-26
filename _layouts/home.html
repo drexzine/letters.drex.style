@@ -11,14 +11,15 @@ layout: default
       <span class="tape c bh-tape bh-tape--l" aria-hidden="true"></span>
       <span class="tape c bh-tape bh-tape--r" aria-hidden="true"></span>
       <span class="eyebrow">written to drex circles</span>
-      <h1 class="board-title slab">{{ "drex correspondence." | replace: '.', '<span class="stop">.</span>' }}</h1>
+      <h1 class="board-title slab">{{ "Circle Letters." | replace: '.', '<span class="stop">.</span>' }} <span class="cmark" aria-hidden="true"><svg viewBox="0 0 28 28"><circle cx="14" cy="14" r="10" transform="rotate(-42 14 14)"/></svg></span></h1>
       <p class="board-lede">{{ page.lede | default: site.description }}</p>
 
       {%- comment -%} ONE sign-up, inside the main banner box → the single Kit form
         (f0604c333e) via /join-online/. (Old SF/online split retired; /join-sf still
         redirects for inbound links.) {%- endcomment -%}
       <div class="board-cta">
-        <a class="btn" href="{{ '/join-online/' | relative_url }}">Join Or Start A Circle <span class="arr">&rarr;</span></a>
+        <a class="btn" href="{{ '/join-online/' | relative_url }}">Join a Circle <span class="arr">&rarr;</span></a>
+        <a class="board-cta-alt" href="{{ '/join-online/' | relative_url }}">or start one <span class="arr">&rarr;</span></a>
       </div>
     </header>
 
@@ -36,14 +37,14 @@ layout: default
     <div class="board-pile">
       {% for post in site.posts %}
         {%- assign tilt = forloop.index0 | modulo: 7 -%}
-        {%- comment -%} colored stocks only — never plain cream-on-cream {%- endcomment -%}
-        {%- assign stocki = forloop.index0 | modulo: 4 -%}
-        {%- case stocki -%}
-          {%- when 0 -%}{%- assign clipstock = 'lazuli' -%}
-          {%- when 1 -%}{%- assign clipstock = 'kraft' -%}
-          {%- when 2 -%}{%- assign clipstock = 'coral' -%}
-          {%- else -%}{%- assign clipstock = 'grass' -%}
-        {%- endcase -%}
+        {%- comment -%} STOCK is FOUNDATION-grounded: cards default to the two brand
+          grounds — Oats (light) and Sambas/'cloth' (dark) — alternating by index so
+          adjacent clips never share a ground, and the index-seeded tilt stays.
+          Color (lazuli/coral/grass/kraft) is opt-in ONLY via a post's `stock:`
+          front-matter, so palette reads as accents (banners/labels), not full fields. {%- endcomment -%}
+        {%- assign stockparity = forloop.index0 | modulo: 2 -%}
+        {%- if stockparity == 0 -%}{%- assign defaultstock = 'oats' -%}{%- else -%}{%- assign defaultstock = 'cloth' -%}{%- endif -%}
+        {%- assign clipstock = post.stock | default: defaultstock -%}
         {%- comment -%} tape = the OPPOSITE colour of the paper stock (contrast, never match).
           tape variants: '' = happy/yellow · b = lazuli/blue · c = coral/red {%- endcomment -%}
         {%- case clipstock -%}
@@ -51,6 +52,7 @@ layout: default
           {%- when 'coral'  -%}{%- assign tc = 'b' -%}{%- comment -%}red paper → blue tape{%- endcomment -%}
           {%- when 'grass'  -%}{%- assign tc = 'c' -%}{%- comment -%}green paper → coral tape{%- endcomment -%}
           {%- when 'kraft'  -%}{%- assign tc = 'b' -%}{%- comment -%}saffron paper → blue tape{%- endcomment -%}
+          {%- when 'cloth'  -%}{%- assign tc = 'b' -%}{%- comment -%}dark sambas ground → blue tape (Sambas+Lazuli combo){%- endcomment -%}
           {%- else          -%}{%- assign tc = 'c' -%}{%- comment -%}cream/oats → coral tape{%- endcomment -%}
         {%- endcase -%}
 
@@ -58,7 +60,7 @@ layout: default
           <span class="tape {{ tc }}" aria-hidden="true"></span>
           <div class="clip-body">
 
-            {% if post.eyebrow %}<span class="eyebrow">{{ post.eyebrow }}</span>{% endif %}
+            {% if post.eyebrow %}<span class="eyebrow"><span class="cmark" aria-hidden="true"><svg viewBox="0 0 28 28"><circle cx="14" cy="14" r="10" transform="rotate(-42 14 14)"/></svg></span>{{ post.eyebrow }}</span>{% endif %}
             {% if post.kicker %}<span class="clip-kicker">{{ post.kicker }}</span>{% endif %}
 
             <h2 class="clip-title slab"><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h2>

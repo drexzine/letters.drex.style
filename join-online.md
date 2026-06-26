@@ -15,7 +15,7 @@ In Drex Circles, you'll gather with a consistent group to **work on your craft**
    kicker="learn your craft, among others"
    title="Join or Start a Drex Circle."%}
 
-[Drex Correspondence](/) are letters written to the community,
+[Circle Letters](/) are letters written to the community,
 by the community. You'll recieve them in your email inbox when you join a Circle. 
 
 Questions: [hi@drex.style](mailto:hi@drex.style).
