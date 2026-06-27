@@ -104,8 +104,18 @@
 // Boils via #rough/#rough2/#rough3 (defined once in _includes/filters.html).
 .cmark{display:inline-grid;place-items:center;width:.92em;height:.92em;vertical-align:-.08em;color:var(--happy)}
 .cmark svg{width:100%;height:100%;display:block;overflow:visible}
-.cmark circle{fill:none;stroke:currentColor;stroke-width:2.7;stroke-linecap:round;stroke-dasharray:55 9;filter:url(#rough);animation:cmark-boil .5s step-end infinite}
-@keyframes cmark-boil{0%{filter:url(#rough)}33%{filter:url(#rough2)}66%{filter:url(#rough3)}}
+// the rare yellow washes out on light grounds (cream cards / white), so the ring
+// carries a hard INK offset (brand language: flat colour + solid ink shadow) — it
+// now reads on ANY background while staying Happy yellow. Offset is in `em` so it
+// scales with the glyph (big title ring -> bigger ghost, tiny eyebrow ring -> tiny).
+// The boil cycles `filter`, so the shadow is repeated in every keyframe or it'd flash off.
+.cmark circle{fill:none;stroke:currentColor;stroke-width:2.7;stroke-linecap:round;stroke-dasharray:55 9;
+  filter:url(#rough) drop-shadow(.045em .055em 0 var(--ink));animation:cmark-boil .5s step-end infinite}
+@keyframes cmark-boil{
+  0%  {filter:url(#rough)  drop-shadow(.045em .055em 0 var(--ink))}
+  33% {filter:url(#rough2) drop-shadow(.045em .055em 0 var(--ink))}
+  66% {filter:url(#rough3) drop-shadow(.045em .055em 0 var(--ink))}
+}
 @media (prefers-reduced-motion:reduce){.cmark circle{animation:none}}
 // the Circle glyph rides the rare yellow EVERYWHERE it appears, including inline
 // before a Circle name in an eyebrow (brand consistency over per-stock contrast).
@@ -335,7 +345,11 @@ body[data-motion="full"] .ul.draw.in::after{scale:1 1}
 footer{position:relative;background:var(--grass-deep);margin-top:clamp(2.5rem,6vw,4.5rem);
   padding:clamp(2.6rem,6vw,4.2rem) 0 clamp(1.8rem,4vw,2.6rem);color:var(--oats)}
 footer::before{content:"";position:absolute;left:0;right:0;top:-15px;height:30px;background:var(--grass-deep);filter:url(#tornbig2)}
-footer .top{display:flex;justify-content:space-between;align-items:flex-start;gap:2rem;flex-wrap:wrap}
+/* brand block + links read as ONE composed group on the left, whitespace falling as an
+   intentional right margin (broadsheet) instead of a hole punched through the middle */
+footer .top{display:flex;justify-content:flex-start;align-items:flex-start;gap:clamp(2rem,6vw,5rem);flex-wrap:wrap}
+footer .top > div:first-child{max-width:32rem}   /* brand block: a held column, not a sprawl */
+footer .links{padding-top:.4rem}                 /* nudge the links' cap-line off the wordmark's top */
 /* full brand lockup: the mark (dominant) + the wordmark, mirroring the masthead
    .brand. gap:0 — the SVG art's built-in whitespace already = one 'x' exclusion unit. */
 footer .ft-brand{display:flex;align-items:center;gap:0}
@@ -343,8 +357,8 @@ footer .ft-icon{width:clamp(70px,12vw,116px);display:block;flex:0 0 auto}
 footer .ft-icon svg{display:block;width:100%;height:auto}
 footer .ft-word{width:clamp(150px,24vw,240px);display:block}
 footer .ft-word svg{display:block;width:100%;height:auto}
-footer .tagline{font-family:var(--f-slab);font-style:italic;font-weight:700;font-size:clamp(1.5rem,3.4vw,2.3rem);color:var(--oats);max-width:13ch;margin:.8rem 0 0;line-height:1.05}
-footer .ft-credo{font-family:var(--f-mono);font-size:.82rem;letter-spacing:.04em;font-style:italic;color:rgba(254,246,228,.92);margin:.7rem 0 0;max-width:24ch}
+footer .tagline{font-family:var(--f-slab);font-style:italic;font-weight:700;font-size:clamp(1.5rem,3.4vw,2.3rem);color:var(--oats);max-width:13ch;margin:clamp(1.2rem,2.4vw,1.7rem) 0 0;line-height:1.08}
+footer .ft-credo{font-family:var(--f-mono);font-size:.82rem;letter-spacing:.04em;font-style:italic;color:rgba(254,246,228,.92);margin:1rem 0 0;max-width:24ch}
 footer .links{display:flex;flex-direction:column;gap:.35rem}
 footer .links a{font-family:var(--f-mono);font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--oats);
   display:inline-flex;align-items:center;min-height:44px;
