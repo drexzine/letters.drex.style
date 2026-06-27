@@ -91,7 +91,7 @@ html[data-tier="lite"] .circle-marg{ filter:none; animation:none; }
 // ===== BOARD (home) + FOOTER mounts (added: circle marginalia exploration) =====
 .board > .wrap{ z-index:1; }                         // banner + clippings ride above the ring field
 .board .circle-marg{ opacity:.66; }                  // CALMER than the join-page field
-.board .circle-marg .cm:nth-of-type(2n):not(.cm--env){ display:none; }   // halve density — but KEEP every envelope (already sparse)
+.board .circle-marg .cm:nth-of-type(2n){ display:none; }   // halve density (rings AND envelopes alike -> the 1:2 envelope:ring ratio is preserved)
 .board .circle-marg .cm--pale{ display:none; }       // drop the faint pale rings for a cleaner read
 footer > .wrap{ position:relative; z-index:1; }       // footer content above the ring field
 footer .circle-marg{ opacity:.18; }                   // quiet
