@@ -14,35 +14,41 @@ layout: default
   {%- endcomment -%}
   <header class="post-head">
     <div class="wrap">
+      {%- comment -%} COLLAGE: the cream standfirst card is the centered anchor; the
+        eyebrow scrap overlaps its top-left corner and the title banner tucks into the
+        bottom-right corner (absolute on desktop, flat flow on mobile). {%- endcomment -%}
+      <div class="post-masthead">
 
-      {% if page.eyebrow %}
-      <span class="post-eyebrow reveal">
-        <span class="eyebrow">{{ page.eyebrow }}</span>
-      </span>
-      {% endif %}
+        <div class="post-standfirst reveal">
+          {% if page.dek %}<p class="post-dek">{{ page.dek }}</p>{% endif %}
 
-      {%- assign bstock = page.stock | default: 'grass' -%}
-      <div class="post-banner post-banner--{{ bstock }} slam">
-        <span class="pin" aria-hidden="true"></span>
-        <h1 class="post-title slab">{{ page.title }}</h1>
-      </div>
+          <div class="post-meta">
+            <span class="post-datestamp"><time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%B %-d, %Y" }}</time></span>
+            {%- comment -%} 240 wpm: furniture (pull-quotes, definitions, call-outs) lets
+               the eye rest, so raw word count overstates effort. {%- endcomment -%}
+            {% assign words = content | strip_html | number_of_words %}
+            {% assign rt = words | divided_by: 240 | plus: 1 %}
+            <span class="sep" aria-hidden="true">&middot;</span>
+            <span>{{ rt }} min read</span>
+          </div>
 
-      <div class="post-standfirst reveal">
-        {% if page.dek %}<p class="post-dek">{{ page.dek }}</p>{% endif %}
-
-        <div class="post-meta">
-          <span class="post-datestamp"><time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%B %-d, %Y" }}</time></span>
-          {%- comment -%} 240 wpm: furniture (pull-quotes, definitions, call-outs) lets
-             the eye rest, so raw word count overstates effort. {%- endcomment -%}
-          {% assign words = content | strip_html | number_of_words %}
-          {% assign rt = words | divided_by: 240 | plus: 1 %}
-          <span class="sep" aria-hidden="true">&middot;</span>
-          <span>{{ rt }} min read</span>
+          <div class="post-byline">
+            {% include byline.html author=page.author %}
+          </div>
         </div>
 
-        <div class="post-byline">
-          {% include byline.html author=page.author %}
+        {% if page.eyebrow %}
+        <span class="post-eyebrow reveal">
+          <span class="eyebrow">{{ page.eyebrow }}</span>
+        </span>
+        {% endif %}
+
+        {%- assign bstock = page.stock | default: 'grass' -%}
+        <div class="post-banner post-banner--{{ bstock }} slam">
+          <span class="pin" aria-hidden="true"></span>
+          <h1 class="post-title slab">{{ page.title }}</h1>
         </div>
+
       </div>
     </div>
   </header>

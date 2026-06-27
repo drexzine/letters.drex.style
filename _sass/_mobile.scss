@@ -83,6 +83,19 @@
 // the washi tape shrinks. NO horizontal overflow. (overflow-x:hidden on body in
 // _base belt-and-braces; here we also flatten transforms that could push width.)
 // ---------------------------------------------------------------
+// COLLAGE MASTHEAD FALLBACK — the corner overlap needs horizontal room, so below
+// ~700px drop the absolute eyebrow + title banner back into normal flow and stack
+// them eyebrow → title → card (the card no longer needs the overhang padding).
+@media(max-width:700px){
+  .post-masthead{display:flex;flex-direction:column;align-items:flex-start;
+    gap:clamp(.8rem,3vw,1.4rem);max-width:100%;padding-top:0;padding-bottom:0}
+  .post-eyebrow,.post-banner{position:static;order:0;max-width:100%}
+  .post-eyebrow{order:1}
+  .post-banner{order:2}
+  .post-standfirst{order:3}
+}
+
+// ---------------------------------------------------------------
 @media(max-width:480px){
   .clip,.clip.tilt-0,.clip.tilt-1,.clip.tilt-2,.clip.tilt-3,.clip.tilt-4,.clip.tilt-5,.clip.tilt-6,
   .pullquote,.callout,.definition,.cite,figure.polaroid,
