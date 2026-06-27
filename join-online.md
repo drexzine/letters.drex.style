@@ -5,6 +5,7 @@ title: "Join Drex Circles."
 eyebrow: "the door into a circle"
 dek: "Learn your craft, among others."
 sitemap: true
+marginalia: circles
 ---
 
 In Drex Circles, you'll gather with a consistent group to **work on your craft**. You'll contribute photos and reflections along the way, and those contributions will be made into a **fun & scrappy Zine** you can browse and share with others.

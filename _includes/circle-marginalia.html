@@ -1,0 +1,57 @@
+{%- comment -%}
+  circle-marginalia.html — THE CIRCLE FIELD (join page). The .cmark brand glyph (a
+  hand-drawn OPEN ring) scattered as background marginalia in SQUIGGLE VISION and ALL
+  brand inks. Modeled VERBATIM on desk-marginalia.html's jittered 6-col grid (even
+  density, no clusters/bare bands) but every cell emits the ring, and the field runs
+  the boil — a ring SURVIVES displacement and reads as redrawn-by-a-different-hand
+  each frame (that IS the .cmark look).
+
+  PERF RESOLUTION (per-ring vs wrapper): ONE wrapper-level boil pass (in SCSS) wobbles
+  the whole field in a single cheap displacement op (~6 seed flips/sec, step-end). The
+  rings carry NO per-ring filter and NO float — the boil IS the motion. (A 60fps float
+  UNDER a filtered wrapper would force a full re-raster every frame and erase the win.)
+
+  DEPTH: size/stroke/opacity TIERS (sm near + crisp, md body, lg far + thin + faint)
+  give parallax with STATIC layers; uniform scale-4 displacement also wobbles small
+  rings more RELATIVE to radius, so they boil livelier and big rings calmer — free depth.
+
+  LEGIBILITY is structural: wrapper z:0, the opaque .prose paper-face sheet + .page-head
+  text ride z>=1 and OCCLUDE every ring behind the reading column. The 2 pale inks
+  (schoolbus, happy) are sparse + forced onto the crisp near tier + thickened.
+  aria-hidden, pointer-events:none. API: {% include circle-marginalia.html %}
+{%- endcomment -%}
+{%- comment -%} 11-slot ink ring (coprime to the 6-col grid -> no vertical stripes / no two grid-neighbours share a hue). Pales: schoolbus idx3, happy idx9 — sparse, never adjacent. {%- endcomment -%}
+{%- assign cset = "#1CAB5B,#F75458,#2496C9,#ECAF21,#0C6E39,#F75458,#2496C9,#414D57,#1CAB5B,#F1DD01,#F75458" | split: "," -%}
+{%- assign dset = "55 9|30 7 18 8|60 5" | split: "|" -%}
+{%- assign GC = 6 -%}{%- assign N = 54 -%}
+<div class="circle-marg" aria-hidden="true">
+{%- for i in (1..N) -%}
+  {%- assign i0 = i | minus: 1 -%}
+  {%- assign cxn = i0 | modulo: GC -%}
+  {%- assign cyn = i0 | divided_by: GC -%}
+  {%- assign jx = i | times: 37 | modulo: 15 | minus: 7 -%}
+  {%- assign jy = i | times: 53 | modulo: 13 | minus: 6 -%}
+  {%- assign xx = cxn | times: 16 | plus: 8 | plus: jx -%}
+  {%- assign yy = cyn | times: 11 | plus: 6 | plus: jy -%}
+  {%- assign rr = i | times: 13 | modulo: 30 | minus: 15 -%}
+  {%- assign sraw = i | times: 17 | modulo: 30 -%}
+  {%- assign sval = sraw | plus: 85 | divided_by: 100.0 -%}
+  {%- assign dg = i | times: 29 | modulo: 360 -%}
+  {%- assign ci = i | modulo: 11 -%}
+  {%- assign di = i | modulo: 3 -%}
+  {%- assign nest = i | modulo: 7 -%}
+  {%- comment -%} pale = schoolbus(idx3) or happy(idx9) {%- endcomment -%}
+  {%- assign pale = false -%}
+  {%- if ci == 3 or ci == 9 -%}{%- assign pale = true -%}{%- endif -%}
+  {%- comment -%} TIER by hash, interleaved across the grid (lg rare). pales forced to near tier. {%- endcomment -%}
+  {%- assign tmod = i | times: 7 | modulo: 10 -%}
+  {%- assign tier = "md" -%}
+  {%- if tmod >= 9 -%}{%- assign tier = "lg" -%}{%- elsif tmod >= 5 -%}{%- assign tier = "sm" -%}{%- endif -%}
+  {%- if pale -%}{%- assign tier = "sm" -%}{%- endif -%}
+  {%- assign cls = "cm cm--" | append: tier -%}
+  {%- if pale -%}{%- assign cls = cls | append: " cm--pale" -%}{%- endif -%}
+  {%- if nest == 0 -%}{%- assign cls = cls | append: " cm--nest" -%}{%- endif -%}
+  {%- if xx >= 28 and xx <= 72 -%}{%- assign cls = cls | append: " cm--inner" -%}{%- endif -%}
+  <span class="{{ cls }}" style="--x:{{ xx }}%;--y:{{ yy }}%;--r:{{ rr }}deg;--s:{{ sval }};--dg:{{ dg }}deg;--dash:{{ dset[di] }};color:{{ cset[ci] }}"><svg viewBox="0 0 28 28" fill="none" aria-hidden="true"><circle cx="14" cy="14" r="10"/>{% if nest == 0 %}<circle cx="14" cy="14" r="5.4"/>{% endif %}</svg></span>
+{%- endfor -%}
+</div>

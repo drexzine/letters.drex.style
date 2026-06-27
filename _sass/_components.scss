@@ -96,23 +96,40 @@
   animation:boil-roughsm var(--boil-stamp) step-end infinite}
 .stamp.g{color:var(--grass-deep);border-color:var(--grass-deep)}
 
-// ---------- amber circle brand glyph (.cmark) ----------
-// The hand-drawn ring from the reader's ringMark(), used as a decorative AMBER
-// brand motif at Circle Letters anchor points (hero title, footer tagline).
-// Amber (#ECAF21) is intentional — distinct from the reader's status colors, so
-// it reads as a brand mark, not a copy-edit ring. Boils via #rough/#rough2/#rough3
-// (defined once in _includes/filters.html).
-.cmark{display:inline-grid;place-items:center;width:.92em;height:.92em;vertical-align:-.08em;color:var(--schoolbus)}
+// ---------- Circle brand glyph (.cmark) ----------
+// The hand-drawn ring from the reader's ringMark(), used as a decorative brand
+// motif at Circle Letters anchor points (hero title, footer tagline). It rides in
+// the brand's RARE yellow — Happy (#F1DD01), reserved for special accents (it also
+// colours the title's period .stop, so the ring + the stop now read as one signal).
+// Boils via #rough/#rough2/#rough3 (defined once in _includes/filters.html).
+.cmark{display:inline-grid;place-items:center;width:.92em;height:.92em;vertical-align:-.08em;color:var(--happy)}
 .cmark svg{width:100%;height:100%;display:block;overflow:visible}
 .cmark circle{fill:none;stroke:currentColor;stroke-width:2.7;stroke-linecap:round;stroke-dasharray:55 9;filter:url(#rough);animation:cmark-boil .5s step-end infinite}
 @keyframes cmark-boil{0%{filter:url(#rough)}33%{filter:url(#rough2)}66%{filter:url(#rough3)}}
 @media (prefers-reduced-motion:reduce){.cmark circle{animation:none}}
-// CONTRAST-ADAPTIVE: before a Circle name the glyph inherits the eyebrow's text
-// colour (ink on light/yellow grounds, Oats on dark/blue) — never the global
-// School-Bus accent, which would fall out of contrast on coloured card stocks.
-.eyebrow .cmark{color:inherit}
-// On the dark Grass footer band the glyph rides in Oats for contrast.
-footer .cmark{color:var(--oats)}
+// the Circle glyph rides the rare yellow EVERYWHERE it appears, including inline
+// before a Circle name in an eyebrow (brand consistency over per-stock contrast).
+.eyebrow .cmark{color:var(--happy)}
+// On the dark Grass footer band the rare-yellow ring pops (good contrast on green).
+footer .cmark{color:var(--happy)}
+
+// ---------- Photo VANDALISM (blog.js initPhotoVandal): a tapped figure.polaroid
+// gets a sharpie doodle scrawled on. The layer is ABSOLUTE so it overlays the photo
+// box (it's pinned to .ph via inline left/top/width/height in JS) — without this it
+// would flow in as a tall static box and stretch the polaroid long. ----------
+.vandal-layer{position:absolute;z-index:4;overflow:visible;pointer-events:none}
+.sharpie{position:absolute;left:50%;top:50%;width:62%;
+  transform:translate(-50%,-50%) rotate(var(--vr,0)) scale(var(--vs,1));
+  color:var(--vc,var(--ink));will-change:transform;
+  animation:sharpie-pop .19s cubic-bezier(.3,1.5,.5,1) both}
+.sharpie svg{display:block;width:100%;height:auto;overflow:visible;
+  filter:drop-shadow(.5px .8px 0 rgba(65,77,87,.18))}
+.sharpie [pathLength]{stroke-dasharray:1;stroke-dashoffset:1;animation:sharpie-draw .3s ease-out forwards}
+.sharpie .googly{animation:none}
+@keyframes sharpie-draw{to{stroke-dashoffset:0}}
+@keyframes sharpie-pop{from{opacity:0;transform:translate(-50%,-50%) rotate(var(--vr,0)) scale(calc(var(--vs,1)*.55))}
+  to{opacity:1;transform:translate(-50%,-50%) rotate(var(--vr,0)) scale(var(--vs,1))}}
+@media(prefers-reduced-motion:reduce){.sharpie,.sharpie [pathLength]{animation:none;stroke-dashoffset:0;opacity:1}}
 
 // secondary CTA — subordinate "or start one" link beside the stamp button (mirrors drex.style #3)
 .board-cta-alt{align-self:center;font-family:var(--f-mono);font-weight:500;font-size:.8rem;text-transform:uppercase;letter-spacing:.05em;color:var(--grass-deep);text-decoration:underline;text-underline-offset:3px}
@@ -250,9 +267,9 @@ footer .cmark{color:var(--oats)}
 .mast{position:relative;background:var(--oats);border-bottom:0;z-index:30}
 .mast::after{content:"";position:absolute;left:0;right:0;bottom:-15px;height:30px;background:var(--oats);filter:url(#tornbig);z-index:1}
 .mast .wrap{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding-block:1.15rem;position:relative;z-index:2}
-.mast .brand{display:flex;align-items:center;gap:.62rem;text-decoration:none}
-.mast .lg-icon{width:36px;display:block}
-.mast .lg-word{width:76px;display:block}
+.mast .brand{display:flex;align-items:center;gap:0;text-decoration:none} /* gap:0 — the SVG art's internal whitespace already = one 'x' (brand exclusion unit) */
+.mast .lg-icon{width:46px;display:block}   /* mark = dominant element, per brand lockups */
+.mast .lg-word{width:84px;display:block}
 .mast .lg-icon svg,.mast .lg-word svg{display:block;width:100%;height:auto}
 
 // ===================================================================

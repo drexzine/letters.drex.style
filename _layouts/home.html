@@ -10,18 +10,31 @@ layout: default
       {%- comment -%} fastened to the desk like every other scrap; coral tape contrasts the green {%- endcomment -%}
       <span class="tape c bh-tape bh-tape--l" aria-hidden="true"></span>
       <span class="tape c bh-tape bh-tape--r" aria-hidden="true"></span>
-      <span class="eyebrow">written to drex circles</span>
-      <h1 class="board-title slab">{{ "Circle Letters." | replace: '.', '<span class="stop">.</span>' }} <span class="cmark" aria-hidden="true"><svg viewBox="0 0 28 28"><circle cx="14" cy="14" r="10" transform="rotate(-42 14 14)"/></svg></span></h1>
-      <p class="board-lede">{{ page.lede | default: site.description }}</p>
+      {%- comment -%} the head TEXT is its own column so the author photo (a separate
+        column, below) can never reflow or bury it. {%- endcomment -%}
+      <div class="bh-copy">
+        <span class="eyebrow">running crafty groups</span>
+        <h1 class="board-title slab"><span class="cl-unit">Circle&nbsp;<span class="cmark cmark--title" aria-hidden="true"><svg viewBox="0 0 28 28"><circle cx="14" cy="14" r="10" transform="rotate(-42 14 14)"/></svg></span></span> Letters<span class="stop">.</span></h1>
+        <p class="board-lede">{{ page.lede | default: site.description }}</p>
 
-      {%- comment -%} ONE sign-up, inside the main banner box → the single Kit form
-        (f0604c333e) via /join-online/. (Old SF/online split retired; /join-sf still
-        redirects for inbound links.) {%- endcomment -%}
-      <div class="board-cta">
-        <a class="btn" href="{{ '/join-online/' | relative_url }}">Join a Circle <span class="arr">&rarr;</span></a>
-        <a class="board-cta-alt" href="{{ '/join-online/' | relative_url }}">or start one <span class="arr">&rarr;</span></a>
+        {%- comment -%} ONE sign-up, inside the main banner box → the single Kit form
+          (f0604c333e) via /join-online/. (Old SF/online split retired; /join-sf still
+          redirects for inbound links.) {%- endcomment -%}
+        <div class="board-cta">
+          <a class="btn" href="{{ '/join-online/' | relative_url }}">Join a Circle <span class="arr">&rarr;</span></a>
+          <a class="board-cta-alt" href="{{ '/join-online/' | relative_url }}">or start one <span class="arr">&rarr;</span></a>
+        </div>
       </div>
     </header>
+
+    {%- comment -%} the author: Chielo's polaroid. NOT a child of the header card — a
+      separate desk element pinned to the top-right, so it can never reflow or bury the
+      card's text. Stacks in-flow on narrow screens. {%- endcomment -%}
+    <figure class="polaroid board-snap">
+      <span class="tape b" aria-hidden="true"></span>
+      <div class="ph"><img src="{{ '/assets/img/team/chielo.jpg' | relative_url }}" alt="Chielo Mbaezue, CEO of Drex" width="600" height="720" loading="lazy"></div>
+      <figcaption class="cap"><b>Chielo</b><span>CEO of Drex</span></figcaption>
+    </figure>
 
     {%- comment -%} PERSISTENT DESK FURNITURE — decorative, aria-hidden, desktop-only
       (collapses below 1100px via _mobile/_home). Keeps the board from feeling empty. {%- endcomment -%}
