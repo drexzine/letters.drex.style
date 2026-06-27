@@ -791,17 +791,24 @@ function initTearAway() {
     function fallPaper(dx, dy, vx0, vy0, rot0) {
       const cs = getComputedStyle(el);
       const margin = cs.margin;
+      // An ABSOLUTE/FIXED piece (e.g. the home board-snap polaroid, pinned to the desk)
+      // is already OUT of document flow, so it holds no slot — adding a spacer would
+      // inject a phantom block and shove everything below it down. Only in-flow pieces
+      // (the .clip cards, notes, etc.) get a spacer so their neighbours don't jump.
+      const inFlow = cs.position !== 'absolute' && cs.position !== 'fixed';
       // measure the true untransformed layout box in viewport coords
       const t = el.style.transform, ro = el.style.rotate, tr = el.style.translate, scl = el.style.scale;
       el.style.transform = 'none'; el.style.rotate = 'none'; el.style.translate = 'none'; el.style.scale = 'none';
       const L = el.getBoundingClientRect();
       el.style.transform = t; el.style.rotate = ro; el.style.translate = tr; el.style.scale = scl;
 
-      const spacer = document.createElement('div');
-      spacer.dataset.tearSpacer = '';
-      spacer.style.cssText = 'flex:0 0 auto;visibility:hidden;pointer-events:none;width:' +
-        L.width + 'px;height:' + L.height + 'px;margin:' + margin;
-      el.parentNode.insertBefore(spacer, el);
+      if (inFlow) {
+        const spacer = document.createElement('div');
+        spacer.dataset.tearSpacer = '';
+        spacer.style.cssText = 'flex:0 0 auto;visibility:hidden;pointer-events:none;width:' +
+          L.width + 'px;height:' + L.height + 'px;margin:' + margin;
+        el.parentNode.insertBefore(spacer, el);
+      }
 
       el.classList.remove('tearing');
       el.style.transition = 'none';

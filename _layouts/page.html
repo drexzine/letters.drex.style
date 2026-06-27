@@ -1,7 +1,8 @@
 ---
 layout: default
 ---
-<article class="page">
+<article class="page{% if page.marginalia == 'circles' %} page--circles{% endif %}">
+  {% if page.marginalia == 'circles' %}{% include circle-marginalia.html %}{% endif %}
   <header class="page-head">
     <div class="wrap">
       {% if page.eyebrow %}<span class="eyebrow">{{ page.eyebrow }}</span>{% endif %}

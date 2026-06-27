@@ -1,0 +1,84 @@
+// ===================================================================
+// CIRCLE MARGINALIA — squiggle-vision RING FIELD for the JOIN page.
+// The .cmark brand glyph (a hand-drawn open ring) multiplied into a field on the bare
+// Oats desk: "the door into a circle." Modeled on the proven desk-marginalia engine
+// (same jittered 6-col grid, same occlusion model) but every mark is the ring and the
+// field BOILS — a ring survives displacement and reads as a wobbly hand-drawn circle.
+//
+// PERF RESOLUTION (per-ring vs wrapper): ONE wrapper-level boil pass. filter:url(#rough)
+// lives on .circle-marg (NOT on each ring) and @keyframes cmark-boil (already defined in
+// _components.scss) cycles its seed #rough->#rough2->#rough3 — the whole field redraws
+// "by a different hand" in a single cheap displacement op (~6 step-end flips/sec). The
+// rings carry NO per-ring filter and NO float: the boil IS the motion. A 60fps float
+// under a filtered wrapper would force a full-field re-raster every frame and kill the
+// win — so motion is the boil, depth is STATIC size/stroke/opacity tiers.
+//   FALLBACK (only if a future, much TALLER page makes the full-page buffer costly):
+//   move filter:url(#rough)+animation:cmark-boil OFF .circle-marg and ONTO `.cm circle`
+//   (54 tiny per-ring regions, far less displaced area), then add three explicit kills:
+//   `.cm circle{animation:none}` under reduced-motion, and `filter:none` under
+//   html[data-tier="lite"] + the 900px query. For this short join page the wrapper wins.
+//
+// LEGIBILITY is structural: wrapper z:0; .page-head text + the opaque .prose paper-face
+// sheet ride z>=1 and OCCLUDE every ring behind the reading column. Rings show only in
+// the bare desk + gutters. aria-hidden + pointer-events:none -> drag/selection/scroll free.
+// ===================================================================
+
+// MOUNT — the join <article class="page page--circles"> is the positioning context;
+// header + reading column ride ABOVE the z:0 field.
+.page--circles{ position:relative; }
+.page--circles > .page-head{ position:relative; z-index:1; }   // big slab h1/eyebrow/dek paint over the field
+.page--circles > .wrap{ position:relative; z-index:1; }        // reading column wrapper above the field
+// (.prose already has position:relative + z-index:1 + an opaque paper-face ::before — see _post.scss)
+
+.circle-marg{
+  position:absolute; inset:0; z-index:0;
+  pointer-events:none; overflow:clip;                          // clip honours the gutter-rail no-h-scroll invariant
+  contain:layout paint style; isolation:isolate;
+  opacity:.85;
+  filter:url(#rough);                                          // THE ONE PASS — shared by all 54 rings
+  animation:cmark-boil .5s step-end infinite;                  // reuse the brand keyframes (rough->rough2->rough3)
+}
+
+.cm{
+  position:absolute; left:var(--x); top:var(--y);
+  transform:rotate(var(--r,-4deg)) scale(var(--s,1));          // resting tilt + size jitter (STATIC — no float)
+}
+.cm svg{ display:block; width:var(--size,3.3em); height:var(--size,3.3em); overflow:visible; }
+.cm circle{
+  fill:none; stroke:currentColor; stroke-linecap:round;        // mirrors .cmark circle
+  stroke-width:var(--sw,2.7);
+  stroke-dasharray:var(--dash,55 9);                           // hand-drawn OPEN ring (one+ gaps)
+  transform-box:fill-box; transform-origin:center;
+  transform:rotate(var(--dg,-42deg));                          // spin the gap to a different clock position per ring
+}
+// concentric "target" (every 7th ring): inner ring, counter-rotated gap, finer pass
+.cm--nest circle + circle{
+  stroke-dasharray:26 7; stroke-width:calc(var(--sw,2.7) - .5);
+  transform:rotate(calc(var(--dg,-42deg) * -1));
+}
+
+// DEPTH TIERS — size + stroke + opacity move together = parallax (no float needed).
+.cm--sm{ --size:2.4em; --sw:2.7; opacity:.95; }                // near: crisp, full brand stroke
+.cm--md{ --size:3.3em; --sw:2.3; opacity:.82; }               // body
+.cm--lg{ --size:4.6em; --sw:1.7; opacity:.6;  }               // far: big, thin, faint (rare)
+
+// PALE inks (schoolbus #ECAF21, happy #F1DD01) — sparse + forced to the near tier above +
+// thickened so the wobble outline still registers on the cream Oats desk.
+.cm--pale circle{ stroke-width:calc(var(--sw,2.7) + .6); }
+
+// REDUCED MOTION — freeze the boil to one static seed (still a wobbly hand ring). No float to kill.
+@media (prefers-reduced-motion:reduce){
+  .circle-marg{ animation:none; filter:url(#rough); }
+}
+// LITE TIER (FPS governor latches html[data-tier="lite"]) — drop the live filter; crisp colour rings.
+html[data-tier="lite"] .circle-marg{ filter:none; animation:none; }
+
+// MOBILE — single-column measure: kill the filter cost, drop the rings that sit behind the
+// column, shrink the big back-layer. Keep two inner rings as a token presence behind the sheet.
+@media (max-width:900px){
+  .circle-marg{ opacity:.62; filter:none; animation:none; }
+  .circle-marg .cm--inner{ display:none; }
+  .circle-marg .cm--inner:nth-of-type(1),
+  .circle-marg .cm--inner:nth-of-type(2){ display:block; }
+  .cm--lg{ --size:3.4em; }
+}
