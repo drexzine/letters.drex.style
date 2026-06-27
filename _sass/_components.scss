@@ -355,7 +355,7 @@ footer .links{padding-top:.4rem}                 /* nudge the links' cap-line of
 footer .ft-brand{display:flex;align-items:center;gap:0}
 footer .ft-icon{width:clamp(70px,12vw,116px);display:block;flex:0 0 auto}
 footer .ft-icon svg{display:block;width:100%;height:auto}
-footer .ft-word{width:clamp(150px,24vw,240px);display:block}
+footer .ft-word{width:clamp(150px,24vw,240px);display:block;margin-left:calc(-0.42 * clamp(70px,12vw,116px))}  /* pull the wordmark in: the two SVGs' built-in whitespace overshot one 'x' — claw back to one-'x' clear space */
 footer .ft-word svg{display:block;width:100%;height:auto}
 footer .tagline{font-family:var(--f-slab);font-style:italic;font-weight:700;font-size:clamp(1.5rem,3.4vw,2.3rem);color:var(--oats);max-width:13ch;margin:clamp(1.2rem,2.4vw,1.7rem) 0 0;line-height:1.08}
 footer .ft-credo{font-family:var(--f-mono);font-size:.82rem;letter-spacing:.04em;font-style:italic;color:rgba(254,246,228,.92);margin:1rem 0 0;max-width:24ch}

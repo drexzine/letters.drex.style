@@ -101,6 +101,7 @@ function boot() {
   initInteractionSounds();          // stamp / toggle / blip on interaction
   initSoundToggle(audio);           // footer opt-in toggle
   initCollage();                    // littered collage scraps + scroll entrance + parallax
+  initMarginaliaFloat();            // home board + footer ring marginalia: scroll parallax (idle float is pure CSS)
   initHamburgerJoy(audio);          // the hamburger that lies — flop, slit, pull-out nav
   initResetDesk();                  // re-show torn pieces without a reload
   // initFinale();                  // DISABLED (per request): tear-off-everything finale
@@ -883,6 +884,46 @@ function initTearAway() {
       }, 120);
     },
   };
+}
+
+/* ===================================================================
+   CIRCLE MARGINALIA float — scroll PARALLAX for the .circle-marg fields on the home
+   board + footer. We set --sc on the WRAPPER only; CSS turns it into a `translate`
+   (composited move of the cached filtered texture — the filter input is unchanged, so
+   NO re-raster; the boil's ~6 flips/sec is the untouched baseline). Translating a .cm
+   ring instead would change the filter input and force a full-field re-raster every
+   frame — which is exactly what this avoids. Idle drift is @keyframes cmark-drift (CSS
+   transform), so there is no per-frame JS when idle.
+   GATES: reduced-motion / tier=lite / <=900px -> no JS parallax (--sc stays 0px).
+   =================================================================== */
+function initMarginaliaFloat(){
+  if (Stage.reduce) return;                                   // reduced motion: static field
+  if (!matchMedia('(min-width:901px)').matches) return;       // mobile: no scroll float
+  var items = Array.prototype.slice
+    .call(document.querySelectorAll('.board .circle-marg, footer .circle-marg'))
+    .map(function(el){ return { el: el, depth: el.closest('footer') ? 14 : 8 }; });  // footer parallaxes a touch deeper
+  if (!items.length) return;
+  var ticking = false, vh = window.innerHeight || document.documentElement.clientHeight;
+  function apply(){
+    ticking = false;
+    if (document.documentElement.dataset.tier === 'lite'){     // governor demoted mid-session -> drop the offset
+      for (var k = 0; k < items.length; k++) items[k].el.style.removeProperty('--sc');
+      return;
+    }
+    var mid = vh / 2;
+    for (var i = 0; i < items.length; i++){
+      var it = items[i], r = it.el.getBoundingClientRect();    // read-only; --sc feeds `translate` (composited), no reflow
+      if (r.bottom < -200 || r.top > vh + 200) continue;       // offscreen -> skip the write
+      var rel = ((r.top + r.height / 2) - mid) / mid;          // -1 above .. +1 below viewport centre
+      it.el.style.setProperty('--sc', (-rel * it.depth).toFixed(1) + 'px');
+    }
+  }
+  function onScroll(){ if (!ticking){ ticking = true; requestAnimationFrame(apply); } }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', function(){
+    vh = window.innerHeight || document.documentElement.clientHeight; onScroll();
+  }, { passive: true });
+  apply();
 }
 
 /* ===================================================================

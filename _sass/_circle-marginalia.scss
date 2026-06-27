@@ -51,16 +51,21 @@
   transform-box:fill-box; transform-origin:center;
   transform:rotate(var(--dg,-42deg));                          // spin the gap to a different clock position per ring
 }
-// concentric "target" (every 7th ring): inner ring, counter-rotated gap, finer pass
-.cm--nest circle + circle{
-  stroke-dasharray:26 7; stroke-width:calc(var(--sw,2.7) - .5);
-  transform:rotate(calc(var(--dg,-42deg) * -1));
+// ENVELOPE — sparse hand-drawn letter glyph woven among the rings ("Circle LETTERS").
+// Same stroke language as the ring; rides the same boil + tiers + occlusion + float.
+// Targets `path` (the ring rules target `circle`, never overlap).
+.cm--env path{
+  fill:none; stroke:currentColor;
+  stroke-linecap:round; stroke-linejoin:round;
+  stroke-width:calc(var(--sw,2.7) + .5);     // a touch heavier so the flap crease reads + pale inks stay legible
 }
 
 // DEPTH TIERS — size + stroke + opacity move together = parallax (no float needed).
 .cm--sm{ --size:2.4em; --sw:2.7; opacity:.95; }                // near: crisp, full brand stroke
 .cm--md{ --size:3.3em; --sw:2.3; opacity:.82; }               // body
 .cm--lg{ --size:4.6em; --sw:1.7; opacity:.6;  }               // far: big, thin, faint (rare)
+// envelopes ride a fixed, slightly-larger size + full opacity so the sparse few READ as letters (not lost among the rings)
+.circle-marg .cm--env{ --size:3.5em; opacity:1; }
 
 // PALE inks (schoolbus #ECAF21, happy #F1DD01) — sparse + forced to the near tier above +
 // thickened so the wobble outline still registers on the cream Oats desk.
@@ -86,8 +91,36 @@ html[data-tier="lite"] .circle-marg{ filter:none; animation:none; }
 // ===== BOARD (home) + FOOTER mounts (added: circle marginalia exploration) =====
 .board > .wrap{ z-index:1; }                         // banner + clippings ride above the ring field
 .board .circle-marg{ opacity:.66; }                  // CALMER than the join-page field
-.board .circle-marg .cm:nth-of-type(2n){ display:none; }   // halve density — let the banner + clippings breathe
+.board .circle-marg .cm:nth-of-type(2n):not(.cm--env){ display:none; }   // halve density — but KEEP every envelope (already sparse)
 .board .circle-marg .cm--pale{ display:none; }       // drop the faint pale rings for a cleaner read
 footer > .wrap{ position:relative; z-index:1; }       // footer content above the ring field
 footer .circle-marg{ opacity:.18; }                   // quiet
 footer .circle-marg .cm{ color:var(--oats) !important; }   // single chalk-light ink reads on the Grass band
+
+// ===== FLOAT + SCROLL PARALLAX — home board + footer fields ONLY (join page stays static) =====
+// Only the WRAPPER moves: translate (scroll parallax, --sc from blog.js) + transform (idle drift)
+// over the SAME cached filtered texture. boil owns `filter`, drift owns `transform`, parallax owns
+// `translate` — three independent properties; none changes the filter input, so the boil's raster is
+// reused and motion is a compositor layer-move (no per-frame re-raster). This (0,2,0) enable rule
+// OUTRANKS the base (0,1,0) kills, so the three explicit kills below are REQUIRED, in this order.
+.board .circle-marg,
+footer .circle-marg{
+  --sc:0px;                                             // scroll-parallax offset, set per field by initMarginaliaFloat()
+  translate:0 var(--sc);                                // composited texture shift
+  will-change:transform;
+  animation:cmark-boil .5s step-end infinite,           // boil (filter) — unchanged baseline
+            cmark-drift 19s ease-in-out infinite;       // idle float (transform) — slow, low-amplitude, GPU
+}
+@keyframes cmark-drift{                                 // idle wander — transform only (translate3d -> GPU); long period so it never beats with the .5s boil
+  0%,100%{ transform:translate3d(0,0,0); }
+  30%    { transform:translate3d(5px,-4px,0); }
+  60%    { transform:translate3d(-4px,3px,0); }
+}
+@media (prefers-reduced-motion:reduce){
+  .board .circle-marg, footer .circle-marg{ animation:none; translate:none; }
+}
+html[data-tier="lite"] .board .circle-marg,
+html[data-tier="lite"] footer .circle-marg{ animation:none; translate:none; }
+@media (max-width:900px){
+  .board .circle-marg, footer .circle-marg{ animation:none; translate:none; }
+}
