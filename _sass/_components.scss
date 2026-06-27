@@ -109,7 +109,9 @@
 @media (prefers-reduced-motion:reduce){.cmark circle{animation:none}}
 // the Circle glyph rides the rare yellow EVERYWHERE it appears, including inline
 // before a Circle name in an eyebrow (brand consistency over per-stock contrast).
-.eyebrow .cmark{color:var(--happy)}
+// the markup sets the ring immediately before the label with no space, so give it
+// a little right margin or the text smooshes against the glyph.
+.eyebrow .cmark{color:var(--happy);margin-right:.4em}
 // On the dark Grass footer band the rare-yellow ring pops (good contrast on green).
 footer .cmark{color:var(--happy)}
 
@@ -334,6 +336,11 @@ footer{position:relative;background:var(--grass-deep);margin-top:clamp(2.5rem,6v
   padding:clamp(2.6rem,6vw,4.2rem) 0 clamp(1.8rem,4vw,2.6rem);color:var(--oats)}
 footer::before{content:"";position:absolute;left:0;right:0;top:-15px;height:30px;background:var(--grass-deep);filter:url(#tornbig2)}
 footer .top{display:flex;justify-content:space-between;align-items:flex-start;gap:2rem;flex-wrap:wrap}
+/* full brand lockup: the mark (dominant) + the wordmark, mirroring the masthead
+   .brand. gap:0 — the SVG art's built-in whitespace already = one 'x' exclusion unit. */
+footer .ft-brand{display:flex;align-items:center;gap:0}
+footer .ft-icon{width:clamp(70px,12vw,116px);display:block;flex:0 0 auto}
+footer .ft-icon svg{display:block;width:100%;height:auto}
 footer .ft-word{width:clamp(150px,24vw,240px);display:block}
 footer .ft-word svg{display:block;width:100%;height:auto}
 footer .tagline{font-family:var(--f-slab);font-style:italic;font-weight:700;font-size:clamp(1.5rem,3.4vw,2.3rem);color:var(--oats);max-width:13ch;margin:.8rem 0 0;line-height:1.05}
