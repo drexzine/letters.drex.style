@@ -54,7 +54,7 @@ defaults:
       # `page.image` only, so we set it as a front-matter default → every
       # page emits og:image + twitter:image. Chielo's founder portrait;
       # `url` above makes it an absolute URL. A post may override `image`.
-      image: /assets/img/team/chielo.jpg
+      image: /assets/img/og.png
 
 # --- pagination-free home; posts sorted newest-first by Jekyll ---
 show_excerpts: false
