@@ -21,6 +21,9 @@
     {%- if include.kicker %}<span class="replycard-kicker scrawl">{{ include.kicker }}</span>{%- endif %}
     {%- if include.title %}<h2 class="replycard-title slab">{{ include.title }}</h2>{%- endif %}
     {%- if include.dek %}<p class="replycard-dek">{{ include.dek }}</p>{%- endif %}
+    <p class="replycard-dek replycard-consent">Before you request an invite, please review the
+      <a href="{{ '/participant-agreement/' | relative_url }}">Drex Participant Agreement</a>.
+      You'll confirm you accept it with the checkbox below.</p>
     <div class="kit-embed">
       <script async data-uid="{{ include.uid }}" src="https://drex-2.kit.com/{{ include.uid }}/index.js"></script>
       <noscript><p class="replycard-noscript">Enable JavaScript, or write to
