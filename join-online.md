@@ -2,20 +2,20 @@
 layout: page
 permalink: /join-online/
 title: "Join Drex."
-eyebrow: "grow with your circle"
-dek: "get better, making together"
+eyebrow: "you're becoming a creator"
+dek: "A club for whatever you make"
 sitemap: true
 marginalia: circles
 ---
 
-Drex is a place for you and your friends to **make things together**. Take on recurring creative challenges in your craft that end in a zine you’re all in.
+Drex Clubs are tiny creative clubs with show-and-tell deadlines. Host or join a club for **whatever you make**. 
 
 {% include subscribe.html
    uid="f0604c333e"
    accent="grass"
-   kicker="get better, making together"
-   title="Request an Invite to Drex."%}
+   kicker="a club for whatever you make"
+   title="Join Drex Waitlist."%}
 
-When you sign up for an invite, you’ll also start receiving [Circle Letters](/). You can also see what Circles are up to on [@drexcircles](https://www.instagram.com/drexcircles/).
+When you sign up, you’ll also start receiving [Club Letters](/). You can also see what clubs are up to on [@drexclubs](https://www.instagram.com/drexclubs/).
 
 Questions: [hi@drex.style](mailto:hi@drex.style).

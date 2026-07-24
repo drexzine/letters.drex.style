@@ -2,11 +2,11 @@
 layout: post
 title: "What you did for each other."
 eyebrow: "XChange Models · № 1"
-kicker: "The Circle"
+kicker: "The club"
 author: chielo
 date: 2026-06-23
-dek: "A letter to the eleven who walked the Silk Road runway — on what I watched happen that night, and the Circle that keeps it going."
-tags: [circle, xchange models]
+dek: "A letter to the eleven who walked the Silk Road runway — on what I watched happen that night, and the club that keeps it going."
+tags: [club, xchange models]
 stock: cloth
 reading_time: auto
 ---
@@ -35,9 +35,9 @@ There's a name for what you did — I studied it back at Stanford.
 
 You got braver by watching each other, and that's the whole engine of learning in community — you watch, you try, you ask, and someone notices you first. That engine keeps working as long as you keep the community and the space to practice. 
 
-At Drex, we call this a Circle — and in partnership with the Fashion XChange team, we've created the **XChange Models** Circle for you all to continue to grow in this craft as a community. Over the next five months, there will be a Silk Runway, hosted by Fashion XChange, **every second Friday** for you to come practice your craft. Like last time, you'll walk, answer some reflection questions, and have moments photographed through your practice.
+At Drex, we call this a club — and in partnership with the Fashion XChange team, we've created the **XChange Models** club for you all to continue to grow in this craft as a community. Over the next five months, there will be a Silk Runway, hosted by Fashion XChange, **every second Friday** for you to come practice your craft. Like last time, you'll walk, answer some reflection questions, and have moments photographed through your practice.
 
-And with all of this material, your Circle creates an issue of a **fun & scrappy Zine** to capture the *magazine-worthy moments* from practicing your craft. Each Silk Runway show will have its own issue, and over the six Silk Runway shows you'll develop a record of who you're becoming, that you can share with others. We can't wait to share the first issue with you.
+And with all of this material, your club creates an issue of a **fun & scrappy Zine** to capture the *magazine-worthy moments* from practicing your craft. Each Silk Runway show will have its own issue, and over the six Silk Runway shows you'll develop a record of who you're becoming, that you can share with others. We can't wait to share the first issue with you.
 {% include m-note.html text="for <em>you</em> — a record of who you're becoming, never a résumé." color="grass" side="left" %}
 
 {% include callout.html kind="note" title="Issue № 1 · Silk Road 001" body="Everything we gathered — your photos, your words — becomes the Zine, focused on the theme of the night: **Come As Your Heritage. Come As Yourself** & the two questions I asked you all: What were you carrying that night? And what changed when you stepped off the runway?" %}

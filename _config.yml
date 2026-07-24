@@ -1,14 +1,14 @@
 # ===================================================================
-# Drex blog — letters.drex.style ("Circle Letters")
+# Drex blog — letters.drex.style ("Club Letters")
 # Chielo's founder/CEO essays + guest writers, in the Drex zine aesthetic.
 # GitHub-Pages-native Jekyll build. Only Pages-whitelisted plugins.
 # ===================================================================
 
 title: "drex."
-tagline: "Circle Letters, made public."
+tagline: "Club Letters, made public."
 description: >-
-  Circle Letters — founder essays, canon, and lore.
-  Get better, making together.
+  Club Letters — founder essays, canon, and lore.
+  A club for whatever you make.
 author: "Chielo Mbaezue"
 
 url: "https://letters.drex.style"
@@ -81,7 +81,7 @@ social:
   name: "Drex"
   links:
     - https://drex.style
-    - https://instagram.com/drexcircles
+    - https://instagram.com/drexclubs
 
 # --- build hygiene ---
 exclude:

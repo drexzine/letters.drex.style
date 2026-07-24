@@ -13,15 +13,15 @@ layout: default
       {%- comment -%} the head TEXT is its own column so the author photo (a separate
         column, below) can never reflow or bury it. {%- endcomment -%}
       <div class="bh-copy">
-        <span class="eyebrow">sharing circle insights</span>
-        <h1 class="board-title slab"><span class="cl-unit">Circle&nbsp;<span class="cmark cmark--title" aria-hidden="true"><svg viewBox="0 0 28 28"><circle cx="14" cy="14" r="10" transform="rotate(-42 14 14)"/></svg></span></span> Letters<span class="stop">.</span></h1>
+        <span class="eyebrow">sharing club insights</span>
+        <h1 class="board-title slab"><span class="cl-unit">Club&nbsp;<span class="cmark cmark--title" aria-hidden="true"><svg viewBox="0 0 28 28"><circle cx="14" cy="14" r="10" transform="rotate(-42 14 14)"/></svg></span></span> Letters<span class="stop">.</span></h1>
         <p class="board-lede">{{ page.lede | default: site.description }}</p>
 
         {%- comment -%} ONE sign-up, inside the main banner box → the single Kit form
           (f0604c333e) via /join-online/. (Old SF/online split retired; /join-sf still
           redirects for inbound links.) {%- endcomment -%}
         <div class="board-cta">
-          <a class="btn" href="{{ '/join-online/' | relative_url }}">Request A Drex Invite <span class="arr">&rarr;</span></a>
+          <a class="btn" href="{{ '/join-online/' | relative_url }}">Join Drex Waitlist <span class="arr">&rarr;</span></a>
         </div>
       </div>
     </header>

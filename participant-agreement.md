@@ -3,7 +3,7 @@ layout: page
 permalink: /participant-agreement/
 title: "Participant Agreement"
 eyebrow: "the terms"
-dek: "The agreement you accept when you request an invite to Drex."
+dek: "The agreement you accept when you join the Drex waitlist."
 sitemap: false
 ---
 
@@ -47,4 +47,4 @@ This Agreement will be governed by the laws of the State of California, without 
 
 ## Accepting this Agreement
 
-You accept this Agreement when you check the box confirming you have read and accept these terms as you request an invite to Drex. If you do not agree, do not check the box.
+You accept this Agreement when you check the box confirming you have read and accept these terms as you join the Drex waitlist. If you do not agree, do not check the box.

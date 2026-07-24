@@ -1,5 +1,5 @@
 # ===================================================================
-# authors.yml — the byline registry for Circle Letters.
+# authors.yml — the byline registry for Club Letters.
 #
 # Each post's front matter carries `author: <key>` (e.g. author: chielo).
 # byline.html looks that key up here to render the author chip(s):
@@ -19,7 +19,7 @@ chielo:
   role: "CEO · situated-learning researcher"
   accent: grass
   photo: /assets/img/team/chielo.jpg
-  bio: "Founder of Drex. Researched legitimate peripheral participation — how people get good at a craft by doing it alongside others — at Stanford's Product Realization Lab. Drex Circles are that idea, online."
+  bio: "Founder of Drex. Researched legitimate peripheral participation — how people get good at a craft by doing it alongside others — at Stanford's Product Realization Lab. Drex Clubs are that idea, online."
 
 # --- example GUEST WRITER entry (documented template) -------------------------
 # Duplicate this block, rename the key (e.g. `ada`), and fill it in. The key is
@@ -29,4 +29,4 @@ guest:
   role: "Guest contributor"      # short role line under the name
   accent: lazuli                 # chip accent: grass | coral | lazuli | bus | happy | ink
   photo: /assets/img/team/uko.jpg  # square headshot; ~600x600 looks best
-  bio: "One or two sentences introducing the guest and why they're writing for Circle Letters."
+  bio: "One or two sentences introducing the guest and why they're writing for Club Letters."

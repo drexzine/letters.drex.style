@@ -7,9 +7,9 @@ dek: "Every letter, grouped by what it's about."
 sitemap: true
 ---
 
-Browse by topics to see threads of Circle Letters.
+Browse by topics to see threads of Club Letters.
 
-{% assign labels = "talks:Talks|circle:Circle|stanford:Stanford|xchange models:XChange Models" %}
+{% assign labels = "talks:Talks|club:Club|stanford:Stanford|xchange models:XChange Models" %}
 
 {% for tag in site.tags %}
   {% assign tag_name = tag[0] %}
@@ -28,4 +28,4 @@ Browse by topics to see threads of Circle Letters.
 {% endfor %}
 {% endfor %}
 
-Want them as they are shared? [Join Drex Circles](/join-online/)
+Want them as they are shared? [Join Drex](/join-online/)
